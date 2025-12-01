@@ -1,0 +1,16 @@
+[
+    {
+        "id": "pattern-journey",
+        "title": "軟體設計模式精通之旅",
+        "author": "水球潘",
+        "description": "用一趟旅程的時間，成為硬核的 Coding 實戰高手",
+        "image": "/images/pattern-journey.jpg"
+    },
+    {
+        "id": "ai-bdd",
+        "title": "AI x BDD：規格驅動全自動開發術",
+        "author": "水球潘",
+        "description": "AI Top 1% 工程師必修課，掌握規格驅動的全自動化開發",
+        "image": "/images/ai-bdd.jpg"
+    }
+]
