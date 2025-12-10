@@ -28,7 +28,7 @@ export default function ChapterList({ chapters }: { chapters: Chapter[] }) {
               className="w-full flex items-center justify-between p-5 hover:bg-slate-800/50 transition-colors text-left"
             >
               <span className="text-lg font-bold text-white">
-                {chapter.title}
+                {chapter.name}
               </span>
               {isOpen ? (
                 <ChevronUp className="text-slate-400" />
@@ -42,7 +42,7 @@ export default function ChapterList({ chapters }: { chapters: Chapter[] }) {
               <div className="border-t border-slate-700/50 bg-[#0B1121]">
                 {chapter.lessons.map((lesson) => (
                   <div 
-                    key={lesson.id} 
+                    key={lesson.name} 
                     className="flex items-center gap-4 p-4 pl-8 hover:bg-slate-800/30 transition-colors cursor-pointer group border-b border-slate-800/50 last:border-0"
                   >
                     {/* Icon: 根據類型顯示不同圖示 */}
@@ -53,7 +53,7 @@ export default function ChapterList({ chapters }: { chapters: Chapter[] }) {
                     {/* 標題與資訊 */}
                     <div className="flex-1">
                       <div className="text-slate-300 group-hover:text-white font-medium transition-colors text-sm md:text-base">
-                        {lesson.title}
+                        {lesson.name}
                       </div>
                     </div>
 

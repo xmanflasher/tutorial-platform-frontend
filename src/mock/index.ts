@@ -137,58 +137,75 @@ const SDP_DATA: JourneyDetail = {
   chapters: [
     {
       id: 'ch0',
-      title: '課程介紹 & 試聽',
+      name: '課程介紹 & 試聽',
       lessons: [
-        { id: 'l1', title: '課程導覽：為什麼你需要這門課？', type: 'video', isFree: true, duration: '05:30' },
-        { id: 'l2', title: '試聽：策略模式 (Strategy Pattern)', type: 'video', isFree: true, duration: '12:15' },
+        { id: 'l1', name: '課程導覽：為什麼你需要這門課？', type: 'video', isFree: true, duration: '05:30' },
+        { id: 'l2', name: '試聽：策略模式 (Strategy Pattern)', type: 'video', isFree: true, duration: '12:15' },
       ]
     },
     {
       id: 'ch1',
-      title: '副本零：冒險者指引',
+      name: '副本零：冒險者指引',
       lessons: [
-        { id: 'l3', title: '平台使用手冊', type: 'text' },
-        { id: 'l4', title: '如何使用課程贊助給大家的專業 UML Editor — Astah Pro ?', type: 'text' },
-        { id: 'l5', title: '加入 Discord 學員專屬社群', type: 'text' },
+        { id: 'l3', name: '平台使用手冊', type: 'text' },
+        { id: 'l4', name: '如何使用課程贊助給大家的專業 UML Editor — Astah Pro ?', type: 'text' },
+        { id: 'l5', name: '加入 Discord 學員專屬社群', type: 'text' },
       ]
     },
     {
       id: 'ch2',
-      title: '副本一：行雲流水的設計底層思路',
+      name: '副本一：行雲流水的設計底層思路',
       lessons: [
-        { id: 'l6', title: '物件導向基礎回顧', type: 'video', duration: '15:00' },
-        { id: 'l7', title: '內聚力與耦合度 (Cohesion & Coupling)', type: 'video', duration: '20:10' },
-        { id: 'l8', title: 'SOLID 原則實戰解析', type: 'video', duration: '35:20' },
+        { id: 'l6', name: '物件導向基礎回顧', type: 'video', duration: '15:00' },
+        { id: 'l7', name: '內聚力與耦合度 (Cohesion & Coupling)', type: 'video', duration: '20:10' },
+        { id: 'l8', name: 'SOLID 原則實戰解析', type: 'video', duration: '35:20' },
       ]
     },
     {
       id: 'ch3',
-      title: '副本二：Christopher Alexander 設計模式',
+      name: '副本二：Christopher Alexander 設計模式',
       lessons: [
-        { id: 'l9', title: '設計模式起源', type: 'video', duration: '10:00' },
-        { id: 'l10', title: '工廠模式 (Factory Pattern)', type: 'video', duration: '25:00' },
-        { id: 'l11', title: '觀察者模式 (Observer Pattern)', type: 'video', duration: '22:30' },
+        { id: 'l9', name: '設計模式起源', type: 'video', duration: '10:00' },
+        { id: 'l10', name: '工廠模式 (Factory Pattern)', type: 'video', duration: '25:00' },
+        { id: 'l11', name: '觀察者模式 (Observer Pattern)', type: 'video', duration: '22:30' },
       ]
     },
     {
       id: 'ch4',
-      title: '副本三：複雜框架實戰演練',
+      name: '副本三：複雜框架實戰演練',
       lessons: [
-        { id: 'l12', title: 'RPG 遊戲戰鬥系統架構', type: 'video', duration: '40:00' },
-        { id: 'l13', title: '電商訂單狀態機設計', type: 'video', duration: '45:00' },
+        { id: 'l12', name: 'RPG 遊戲戰鬥系統架構', type: 'video', duration: '40:00' },
+        { id: 'l13', name: '電商訂單狀態機設計', type: 'video', duration: '45:00' },
       ]
     },
     {
       id: 'ch5',
-      title: '副本四：規模化架構思維',
+      name: '副本四：規模化架構思維',
       lessons: []
     },
     {
       id: 'ch6',
-      title: '副本五：生命週期及控制反轉',
+      name: '副本五：生命週期及控制反轉',
       lessons: []
     }
-  ]
+  ],
+  menus: [
+    {
+      name: "所有單元",
+      href: "/journeys/software-design-pattern",
+      icon: "layers"
+    },
+    {
+      name: "挑戰地圖",
+      href: "/challenges",
+      icon: "map"
+    },
+    {
+      name: "SOP 寶典",
+      href: "/sop",
+      icon: "book-open"
+    }
+  ],
 };
 const AI_BDD_DATA: JourneyDetail = {
   id: 'journey_ai_bdd',
@@ -210,40 +227,52 @@ const AI_BDD_DATA: JourneyDetail = {
   chapters: [
     {
       id: 'ch1',
-      title: '規格驅動開發的前提',
+      name: '規格驅動開發的前提',
       lessons: []
     },
     {
       id: 'ch2',
-      title: '100% 全自動化開發的脈絡：規格的光譜',
+      name: '100% 全自動化開發的脈絡：規格的光譜',
       lessons: []
     },
     {
       id: 'ch3',
-      title: '70% 自動化：測試驅動開發',
+      name: '70% 自動化：測試驅動開發',
       lessons: []
     },
     {
       id: 'ch4',
-      title: '80% 自動化：行為驅動開發 (BDD)',
+      name: '80% 自動化：行為驅動開發 (BDD)',
       lessons: []
     },
     {
       id: 'ch5',
-      title: '90% 自動化：指令集架構之可執行規格',
+      name: '90% 自動化：指令集架構之可執行規格',
       lessons: []
     },
     {
       id: 'ch6',
-      title: '99% 自動化：為企業打造專屬 BDD Master Agent',
+      name: '99% 自動化：為企業打造專屬 BDD Master Agent',
       lessons: []
     },
     {
       id: 'ch7',
-      title: '100% 自動化：超 AI 化全自動化開發 in 敏捷/DevOps',
+      name: '100% 自動化：超 AI 化全自動化開發 in 敏捷/DevOps',
       lessons: []
     }
-  ]
+  ],
+  menus: [
+    {
+      name: "所有單元",
+      href: "/journeys/ai-bdd",
+      icon: "layers"
+    },
+    {
+      name: "Prompt 寶典",
+      href: "/journeys/ai-bdd/prompts",
+      icon: "sparkles"
+    },
+  ],
 };
 // 2. ★★★ 關鍵：整合到一個大物件中，用 Slug 當作 Key ★★★
 export const JOURNEY_MAP: Record<string, JourneyDetail> = {

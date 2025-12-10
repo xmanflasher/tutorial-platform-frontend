@@ -1,110 +1,129 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, LayoutGrid, Trophy, Layers, Map, BookOpen, Sparkles, X } from 'lucide-react';
-import { useJourney } from '@/context/JourneyContext'; // ★ 1. 引入 Context
+import Link from "next/link";
+import Image from "next/image"; // 引入 Image 用來顯示 Logo
+import { usePathname } from "next/navigation";
+import { 
+  Home,         // 首頁圖示
+  LayoutGrid,   // 課程圖示
+  Trophy,       // 排行榜圖示
+  Layers, 
+  Map, 
+  BookOpen, 
+  Sparkles, 
+  CircleHelp,
+  type LucideIcon,
+  X 
+} from "lucide-react";
+import { JourneyDetail } from "@/types";
 
-// 主選單 (固定不變)
-const MAIN_MENU = [
-  { name: '首頁', href: '/', icon: Home },
-  { name: '課程', href: '/courses', icon: LayoutGrid },
-  { name: '排行榜', href: '/leaderboard', icon: Trophy },
-];
+// 1. 定義圖示對應表
+const ICON_MAP: Record<string, LucideIcon> = {
+  "layers": Layers,
+  "map": Map,
+  "book-open": BookOpen,
+  "sparkles": Sparkles,
+  "default": CircleHelp 
+};
 
 interface SidebarProps {
+  journey: JourneyDetail | null;
   className?: string;
   onClose?: () => void;
 }
 
-export default function Sidebar({ className = '', onClose }: SidebarProps) {
+export default function Sidebar({ journey, className = "", onClose }: SidebarProps) {
   const pathname = usePathname();
-  // ★ 2. 從 Context 取得當前激活的旅程資訊
-  const { activeJourney } = useJourney(); 
 
-  // ★ 3. 判斷要顯示哪個選單
-  // 邏輯：這裡直接使用 Context 的 activeJourney.slug 即可
-  // 因為 Context 已經在 useEffect 裡處理過「如果是 /journeys/ai-bdd 網址，就自動切換狀態」的邏輯了
-  const isAiBdd = activeJourney.slug === 'ai-bdd';
-
-  // 定義次要選單內容
-  const secondaryMenu = isAiBdd 
-    ? [
-        { name: '所有單元', href: '/journeys/ai-bdd', icon: Layers },
-        { name: 'Prompt 寶典', href: '/journeys/ai-bdd/prompts', icon: Sparkles },
-      ]
-    : [
-        { name: '所有單元', href: '/journeys/software-design-pattern', icon: Layers },
-        { name: '挑戰地圖', href: '/challenges', icon: Map },
-        { name: 'SOP 寶典', href: '/sop', icon: BookOpen },
-      ];
-
-  const isActiveLink = (href: string) => {
-    if (href === '/') return pathname === '/';
-    // 這裡判斷 active 狀態
-    return pathname === href || pathname.startsWith(href + '/');
-  };
-
-  const NavItem = ({ item }: { item: any }) => {
-    const isActive = isActiveLink(item.href);
-    return (
-      <Link
-        href={item.href}
-        onClick={onClose}
-        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 font-medium ${
-          isActive
-            ? 'bg-yellow-400 text-slate-900 shadow-md font-bold'
-            : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-        }`}
-      >
-        <item.icon size={20} />
-        <span>{item.name}</span>
-      </Link>
-    );
-  };
+  // 如果沒有 journey 資料，至少顯示全域選單，不顯示 Loading
+  // 這樣畫面才不會閃一下
 
   return (
-    <aside className={`bg-[#0d0e11] border-r border-slate-800 flex flex-col flex-shrink-0 transition-all ${className}`}>
-      {/* ... Logo 區塊 (保持不變) ... */}
-      <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800 md:border-none shrink-0">
-         {/* Logo HTML ... */}
-         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg shadow-blue-900/50">W</div>
-          <div className="flex flex-col">
-            <h1 className="text-white font-bold leading-none text-lg">水球軟體學院</h1>
-            <span className="text-[10px] text-blue-400 tracking-wider">WATERBALLSA.TW</span>
-          </div>
-        </div>
+    // 2. 修正配色：強制使用深色背景 bg-[#0d0e11] 與白色文字
+    <aside className={`border-r border-gray-800 bg-[#0d0e11] text-white flex flex-col ${className}`}>
+      
+      {/* 3. Sidebar Header: Logo 區域 */}
+      <div className="p-6 border-b border-gray-800 flex justify-between items-center h-16">
+        <Link href="/" className="flex items-center gap-2 font-bold text-lg tracking-wider">
+            {/* 這裡假設你有 logo 圖片，如果沒有先用文字代替 */}
+            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                W
+            </div>
+            <span>WATERBALLSA</span>
+        </Link>
+        
+        {/* 手機版關閉按鈕 */}
         {onClose && (
-          <button onClick={onClose} className="md:hidden text-slate-400 hover:text-white">
-            <X size={24} />
-          </button>
+            <button onClick={onClose} className="md:hidden text-gray-400 hover:text-white">
+                <X size={20} />
+            </button>
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto py-6 px-3 space-y-2 custom-scrollbar">
-        <nav className="space-y-1">
-          {MAIN_MENU.map((item) => (
-            <NavItem key={item.href} item={item} />
-          ))}
-        </nav>
-
-        <div className="my-4 border-t border-slate-800 mx-2" />
-
-        {/* ★ 4. 動態顯示標題 (跟隨 Context) */}
-        <div className="px-4 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-          {isAiBdd ? 'AI x BDD 旅程' : '設計模式旅程'}
+      <nav className="flex-1 p-4 space-y-6 overflow-y-auto">
+        
+        {/* 4. 第一區塊：全域導覽 (固定不變) */}
+        <div className="space-y-2">
+            <NavItem href="/" icon={Home} label="首頁" active={pathname === "/"} onClick={onClose} />
+            <NavItem href="/courses" icon={LayoutGrid} label="課程" active={pathname === "/courses"} onClick={onClose} />
+            <NavItem href="/leaderboard" icon={Trophy} label="排行榜" active={pathname === "/leaderboard"} onClick={onClose} />
         </div>
-        <nav className="space-y-1">
-          {secondaryMenu.map((item) => (
-            <NavItem key={item.href} item={item} />
-          ))}
-        </nav>
-      </div>
 
-      <div className="p-4 border-t border-slate-800 shrink-0">
-        <p className="text-xs text-slate-600 text-center">© 2025 WaterballSA</p>
+        {/* 分隔線 */}
+        {journey && journey.menus.length > 0 && (
+            <div className="h-px bg-gray-800 my-2" />
+        )}
+
+        {/* 5. 第二區塊：旅程專屬選單 (動態讀取) */}
+        {journey && (
+            <div className="space-y-2">
+                {journey.menus.map((menu, index) => {
+                    const IconComponent = ICON_MAP[menu.icon] || ICON_MAP["default"];
+                    const isActive = pathname === menu.href;
+                    
+                    // 特別樣式：選中時變黃色
+                    return (
+                        <Link
+                            key={`${menu.href}-${index}`}
+                            href={menu.href}
+                            onClick={onClose}
+                            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors text-sm font-medium ${
+                                isActive 
+                                ? "bg-yellow-400 text-black font-bold" 
+                                : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                            }`}
+                        >
+                            <IconComponent className="w-4 h-4" />
+                            <span>{menu.name}</span>
+                        </Link>
+                    );
+                })}
+            </div>
+        )}
+      </nav>
+      
+      {/* Footer */}
+      <div className="p-4 border-t border-gray-800 text-xs text-gray-500 text-center">
+        © WaterballSA
       </div>
     </aside>
   );
+}
+
+// 抽取一個簡單的小元件來處理全域選單的按鈕樣式
+function NavItem({ href, icon: Icon, label, active, onClick }: { href: string, icon: LucideIcon, label: string, active: boolean, onClick?: () => void }) {
+    return (
+        <Link
+            href={href}
+            onClick={onClick}
+            className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors text-sm font-medium ${
+                active 
+                ? "bg-gray-800 text-white" 
+                : "text-gray-400 hover:bg-gray-800 hover:text-white"
+            }`}
+        >
+            <Icon className="w-4 h-4" />
+            <span>{label}</span>
+        </Link>
+    );
 }

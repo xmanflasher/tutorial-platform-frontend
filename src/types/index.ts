@@ -72,7 +72,7 @@ export interface Instructor {
 // 單元 (Lesson)
 export interface Lesson {
   id: string;
-  title: string;
+  name: string;
   type: 'video' | 'text' | 'quiz';
   isFree?: boolean; // 是否為試看
   duration?: string; // e.g. "10:05"
@@ -81,8 +81,15 @@ export interface Lesson {
 // 章節 (Chapter)
 export interface Chapter {
   id: string;
-  title: string;
+  name: string;
   lessons: Lesson[];
+}
+//選單介面 (sidebar)
+export interface JourneyMenu {
+  name: string;
+  href: string;
+  icon: string; // 後端傳來的是字串 key
+
 }
 
 // 旅程詳情頁 (Journey Detail)
@@ -95,7 +102,7 @@ export interface JourneyDetail {
   totalVideos: number;
   tags: string[]; // e.g. ["大量實戰題"]
   chapters: Chapter[]; // 課程大綱
-  
+  menus: JourneyMenu[];
   // 右側資訊
   certificateImage?: string;
   features: string[]; // e.g. ["中文課程", "支援行動裝置", "專業的完課認證"]
