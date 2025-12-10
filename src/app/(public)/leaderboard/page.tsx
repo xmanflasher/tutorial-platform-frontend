@@ -1,94 +1,114 @@
-import { getLeaderboard, getAnnouncement } from '@/lib/api';
-import AnnouncementBar from '@/components/home/AnnouncementBar';
+'use client';
 
-export const metadata = {
-  title: '學員排行榜 - 水球軟體學院',
-};
+import { useEffect, useState } from 'react';
 
-export default async function LeaderboardPage() {
-  // 1. 並行獲取資料
-  const [leaderboard, announcement] = await Promise.all([
-    getLeaderboard(),
-    getAnnouncement(),
-  ]);
+interface LeaderboardItem {
+  id: number;
+  name: string;
+  avatar: string; 
+  jobTitle: string;
+  level: number;
+  exp: number;
+}
+
+export default function LeaderboardPage() {
+  const [members, setMembers] = useState<LeaderboardItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // ★ 請確認後端 (TutorialPlatformApplication) 有執行，否則會 failed to fetch
+    fetch('http://localhost:8080/api/leaderboard')
+      .then(res => res.json())
+      .then(data => {
+        setMembers(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch leaderboard:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  // Helper: 產生隨機背景色 (根據名字計算 Hash)
+  const getAvatarColor = (name: string) => {
+    const colors = ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-purple-500', 'bg-pink-500', 'bg-indigo-500', 'bg-orange-500'];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  };
 
   return (
-    <div className="pb-10 max-w-5xl mx-auto">
-      {/* 2. 頂部廣告條 */}
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-8">
-        <AnnouncementBar data={announcement} />
+        <h1 className="text-3xl font-bold text-white mb-2">學習排行榜</h1>
+        <p className="text-gray-400">看看誰是目前最強的學習者！</p>
       </div>
 
-      {/* 3. 排行榜主要容器 (包覆 Tab 與 列表) */}
-      <div className="bg-[#0f1623] border border-slate-800 rounded-2xl p-6 shadow-xl">
+      {/* ★ 1. 設定固定高度 (h-[600px]) 並使用 flex-col 佈局 */}
+      <div className="bg-[#1e1f24] rounded-xl border border-gray-800 overflow-hidden flex flex-col h-[600px]">
         
-        {/* A. Tabs 切換區塊 (位於容器內部上方) */}
-        <div className="flex items-center gap-1 mb-6">
-          <button className="px-6 py-2 bg-yellow-400 text-slate-900 font-bold rounded-lg text-sm shadow hover:bg-yellow-300 transition-colors">
-            學習排行榜
-          </button>
-          <button className="px-6 py-2 bg-transparent text-slate-500 hover:text-slate-300 font-bold rounded-lg text-sm transition-colors">
-            本週成長榜
-          </button>
+        {/* ★ 2. 表頭固定 (flex-none) */}
+        <div className="flex-none flex items-center p-4 border-b border-gray-700 bg-gray-900/90 text-gray-400 text-sm font-medium z-10 backdrop-blur-sm">
+          <div className="w-16 text-center">排名</div>
+          <div className="flex-1">學員</div>
+          <div className="w-24 text-center">等級</div>
+          <div className="w-32 text-right pr-4">經驗值</div>
         </div>
 
-        {/* B. 可捲動的列表區域 (限制高度 + overflow-y-auto) */}
-        {/* h-[500px] 大約是可以顯示 5 個項目 + 一點點露出的高度，讓使用者知道可以捲動 */}
-        <div className="h-[500px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
-          {leaderboard.map((user, index) => {
-            const avatarDisplay = user.avatar || user.name.charAt(0);
-            // 為了演示捲動效果，如果資料少於 5 筆，您可以去 mock/index.ts 多複製幾份資料
-            
-            return (
-              <div 
-                key={user.id} 
-                className="flex items-center p-4 bg-[#1E293B] rounded-xl border border-slate-700/50 hover:border-slate-600 transition-all group"
-              >
-                {/* 排名 */}
-                <div className="w-16 flex-shrink-0 text-center">
-                  <span className={`font-mono font-bold text-2xl ${
-                    user.rank <= 3 ? 'text-white scale-110 inline-block' : 'text-slate-500'
+        {/* ★ 3. 列表區域可捲動 (flex-1 overflow-y-auto) */}
+        <div className="flex-1 overflow-y-auto">
+          {loading ? (
+            <div className="p-8 text-center text-gray-500 h-full flex items-center justify-center">載入中...</div>
+          ) : (
+            <div className="divide-y divide-gray-800">
+              {members.map((member, index) => (
+                <div 
+                  key={member.id} 
+                  className="flex items-center p-4 hover:bg-gray-800/50 transition-colors"
+                >
+                  {/* 排名 */}
+                  <div className={`w-16 text-center text-xl font-bold ${
+                    index === 0 ? 'text-yellow-400' :
+                    index === 1 ? 'text-gray-300' :
+                    index === 2 ? 'text-orange-400' : 'text-gray-500'
                   }`}>
-                    {user.rank}
-                  </span>
-                </div>
-
-                {/* 頭像與名稱 */}
-                <div className="flex-1 flex items-center gap-4 min-w-0">
-                  <div className="w-14 h-14 rounded-full bg-slate-800 flex items-center justify-center text-white font-bold border-2 border-slate-600 overflow-hidden flex-shrink-0 group-hover:border-slate-400 transition-colors">
-                    {avatarDisplay.length === 1 ? (
-                      <span className="text-xl">{avatarDisplay}</span>
-                    ) : (
-                      <img src={avatarDisplay} alt={user.name} className="w-full h-full object-cover" />
-                    )}
+                    {index + 1}
                   </div>
-                  
-                  <div className="min-w-0">
-                    <div className="text-white font-bold text-lg truncate group-hover:text-yellow-400 transition-colors">
-                      {user.name}
+
+                  {/* 頭像與資訊 */}
+                  <div className="flex-1 flex items-center gap-4">
+                    
+                    {/* ★ 4. 純 CSS 文字頭像 (解決圖片載入問題) */}
+                    <div className={`
+                      w-12 h-12 rounded-full flex items-center justify-center 
+                      text-white font-bold text-lg border-2 border-gray-700 shrink-0
+                      ${getAvatarColor(member.name)}
+                    `}>
+                      {member.name.charAt(0).toUpperCase()}
                     </div>
-                    <div className="text-slate-400 text-xs md:text-sm">{user.title}</div>
-                  </div>
-                </div>
 
-                {/* 等級與分數 */}
-                <div className="flex items-center gap-4 md:gap-8 ml-4">
-                  <div className="px-3 py-1 bg-slate-200/10 text-slate-300 rounded text-xs md:text-sm font-bold font-mono whitespace-nowrap border border-slate-700">
-                    Lv.{user.level}
+                    <div className="min-w-0"> {/* min-w-0 確保文字過長時會 truncate */}
+                      <div className="font-bold text-white text-lg truncate">{member.name}</div>
+                      <div className="text-xs text-gray-400 truncate">{member.jobTitle || '熱愛學習的工程師'}</div>
+                    </div>
                   </div>
-                  <div className="w-20 md:w-24 text-right text-xl md:text-2xl font-medium text-slate-200 font-mono">
-                    {user.score.toLocaleString()}
+
+                  {/* 等級徽章 */}
+                  <div className="w-24 flex justify-center">
+                    <span className="bg-gray-700 text-white text-xs font-bold px-2 py-1 rounded">
+                      Lv.{member.level}
+                    </span>
+                  </div>
+
+                  {/* 經驗值 */}
+                  <div className="w-32 text-right pr-4 font-mono text-yellow-400 font-bold">
+                    {member.exp.toLocaleString()}
                   </div>
                 </div>
-              </div>
-            );
-          })}
-          
-          {/* 空狀態 (如果沒資料時顯示) */}
-          {leaderboard.length === 0 && (
-             <div className="h-full flex items-center justify-center text-slate-500">
-                暫無排名資料
-             </div>
+              ))}
+            </div>
           )}
         </div>
       </div>
