@@ -29,7 +29,23 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   // ... (原本的 handleSwitchJourney 可以刪除，因為邏輯移到 Header 裡了) ...
 
   const handleMockLogin = async (email: string) => {
-    // ... (保留登入邏輯) ...
+    // ★ 修正重點：補上 try-catch
+    try {
+      const res = await fetch(`http://localhost:8080/api/auth/dev-login?email=${email}`, {
+        method: 'POST',
+      });
+
+      if (res.ok) {
+        const dbUser = await res.json();
+        login(dbUser); // 這裡現在應該不會報錯了
+        setLoginModalOpen(false);
+      } else {
+        alert("登入失敗，請確認後端是否啟動");
+      }
+    } catch (error) { // ★ 這裡就是你原本少掉的 catch
+      console.error(error);
+      alert("連線錯誤");
+    }
   };
 
   return (

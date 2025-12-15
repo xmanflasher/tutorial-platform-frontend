@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "diff": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"git diff --cached | Out-File -Encoding utf8 staged_changes.diff; Write-Host '前端 Diff 已生成' -ForegroundColor Green\"",
+    "backend:diff": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"cd ../tutorial-platform-backend; git diff --cached | Out-File -Encoding utf8 staged_changes.diff; Write-Host '後端 Backend Diff 已生成' -ForegroundColor Cyan\""
   },
   "dependencies": {
     "clsx": "^2.1.1",
