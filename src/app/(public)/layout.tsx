@@ -1,35 +1,28 @@
 'use client';
 
-import { useState } from 'react'; // 移除 useRef, useEffect, menu, chevronDown 相關引入
+import { useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-// import { Menu, ChevronDown } from 'lucide-react'; // 這些可以拿掉
 import Sidebar from '@/components/layout/Sidebar';
-// import { ALL_JOURNEYS } from '@/mock'; // 這些也可以拿掉，因為 Dropdown 邏輯移走了
-import { JourneyProvider, useJourney } from '@/context/JourneyContext';
-import { AuthProvider, useAuth } from '@/context/AuthContext';
+// ★ 修改處：只引入 Hook，移除 Provider
+import { useJourney } from '@/context/JourneyContext';
+import { useAuth } from '@/context/AuthContext';
 import Header from '@/components/layout/Header';
 import LoginModal from '@/components/auth/LoginModal';
 
-function LayoutContent({ children }: { children: React.ReactNode }) {
+// ★ 修改處：直接將 LayoutContent 改名為 default export 的 PublicLayout
+// 不需要再外面包一層 <AuthProvider> 了
+export default function PublicLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  // const [isDropdownOpen, setDropdownOpen] = useState(false); // 刪除
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
-  // const dropdownRef = useRef<HTMLDivElement>(null); // 刪除
 
   const router = useRouter();
   const pathname = usePathname();
-  // const { activeJourney, setActiveSlug } = useJourney(); // Layout 可能不需要 setActiveSlug 了，除非 Sidebar 需要
+
+  // 這裡的 useJourney 和 useAuth 會自動往上層找 (src/app/layout.tsx) 的 Provider
   const { activeJourney } = useJourney();
   const { login } = useAuth();
 
-  // ... (原本的 useEffect handleClickOutside 可以刪除) ...
-
-  // ... (原本的 useEffect pathname match 可以保留，如果你需要同步網址) ...
-
-  // ... (原本的 handleSwitchJourney 可以刪除，因為邏輯移到 Header 裡了) ...
-
   const handleMockLogin = async (email: string) => {
-    // ★ 修正重點：補上 try-catch
     try {
       const res = await fetch(`http://localhost:8080/api/auth/dev-login?email=${email}`, {
         method: 'POST',
@@ -37,12 +30,12 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
       if (res.ok) {
         const dbUser = await res.json();
-        login(dbUser); // 這裡現在應該不會報錯了
+        login(dbUser);
         setLoginModalOpen(false);
       } else {
         alert("登入失敗，請確認後端是否啟動");
       }
-    } catch (error) { // ★ 這裡就是你原本少掉的 catch
+    } catch (error) {
       console.error(error);
       alert("連線錯誤");
     }
@@ -50,6 +43,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-[#0d0e11] text-white flex">
+      {/* 全站 Sidebar */}
       <Sidebar
         journey={activeJourney}
         onClose={() => setSidebarOpen(false)}
@@ -61,6 +55,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         `}
       />
 
+      {/* 手機版遮罩 */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
@@ -68,18 +63,16 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         />
       )}
 
+      {/* 右側內容區 */}
       <div className="flex-1 flex flex-col min-w-0">
 
-        {/* ▼▼▼▼▼ 修改重點：原本這裡有一大串 <header>...</header> ▼▼▼▼▼ */}
-        {/* 我們把它全部換成單純的 <Header /> 元件 */}
-
+        {/* 全站 Header */}
         <Header
           onMenuClick={() => setSidebarOpen(true)}
           onLoginClick={() => setLoginModalOpen(true)}
         />
 
-        {/* ▲▲▲▲▲ 修改結束 ▲▲▲▲▲ */}
-
+        {/* 頁面內容 */}
         <main className="flex-1 overflow-x-hidden">
           {children}
         </main>
@@ -91,15 +84,5 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         />
       </div>
     </div>
-  );
-}
-
-export default function PublicLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <AuthProvider>
-      <JourneyProvider>
-        <LayoutContent>{children}</LayoutContent>
-      </JourneyProvider>
-    </AuthProvider>
   );
 }
