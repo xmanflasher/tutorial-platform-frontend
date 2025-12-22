@@ -73,9 +73,9 @@ export interface Instructor {
 export interface Lesson {
   id: string;
   name: string;
-  type: 'video' | 'text' | 'quiz';
-  isFree?: boolean; // 是否為試看
-  duration?: string; // e.g. "10:05"
+  type: 'video' | 'scroll' | 'google-form'| 'boss';
+  premiumOnly?: boolean; // 是否為試看
+  videoLength?: string; // e.g. "10:05"
 }
 
 // 章節 (Chapter)
