@@ -18,7 +18,6 @@ import {
   type LucideIcon,
   X
 } from "lucide-react";
-import { JourneyDetail } from "@/types";
 import { useAuth } from "@/context/AuthContext";
 
 // 定義圖示對應表
@@ -41,7 +40,8 @@ export default function Sidebar({ className = "", onClose }: SidebarProps) {
   const pathname = usePathname();
   const { user } = useAuth();
   const { activeJourney } = useJourney(); // ★ 直接從 Context 取得 activeJourney
-
+  const currentJourneySlug = activeJourney?.slug || "software-design-pattern";
+  const missionsLink = `/journeys/${currentJourneySlug}/missions`;
   return (
     <aside className={`border-r border-gray-800 bg-[#0d0e11] text-white flex flex-col ${className}`}>
 
@@ -92,7 +92,13 @@ export default function Sidebar({ className = "", onClose }: SidebarProps) {
             <>
               {/* ★★★ 移除這裡原本寫死的 "獎勵任務" (Gift) ★★★ */}
               {/* 因為獎勵任務現在已經在資料庫的 journey.menus 裡了，會在區塊三顯示 */}
-
+              <NavItem
+                href={missionsLink} // 使用上面計算好的動態連結
+                icon={Gift}
+                label="獎勵任務"
+                active={pathname === missionsLink}
+                onClick={onClose}
+              />
               <NavItem
                 href="/users/me/portfolio"
                 icon={ScrollText}

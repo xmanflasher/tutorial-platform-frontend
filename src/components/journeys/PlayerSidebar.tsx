@@ -41,7 +41,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
     const pathname = usePathname();
     const { isSidebarOpen } = usePlayerUI();
     // const { activeJourney } = useJourney(); // 移除
-
+    const safeSlug = journey?.slug || "software-design-pattern";
     // 控制哪些章節是展開的
     const [expandedChapterIds, setExpandedChapterIds] = useState<string[]>([]);
 
@@ -130,7 +130,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
                                             <Link
                                                 key={lesson.id}
                                                 // 組裝 URL：這裡使用 props 傳進來的 journey.slug
-                                                href={`/journeys/${journey.slug}/chapters/${chapter.id}/missions/${lesson.id}`}
+                                                href={`/journeys/${safeSlug}/chapters/${chapter.id}/missions/${lesson.id}`}
                                                 className={cn(
                                                     "flex items-center gap-3 px-4 py-3 text-sm transition-colors border-l-[3px]",
                                                     isActive
