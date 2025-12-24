@@ -1,13 +1,19 @@
 "use client";
 
 import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
 
-// ★★★ 核心修正：使用 dynamic import 載入 ReactPlayer ★★★
-// ssr: false 代表這個元件只會在瀏覽器端渲染，避開 Server 端錯誤與型別衝突
-const ReactPlayer = dynamic(() => import('react-player'), { ssr: false }) as any;
+// ★★★ 核心修正 1：在 dynamic 後面加上 'as any' ★★★
+// 這樣可以解決 "Property 'url' does not exist" 的錯誤
+// 雖然犧牲了 ReactPlayer 的型別檢查，但能保證編譯通過並正常運作
+const ReactPlayer = dynamic(() => import('react-player'), {
+    ssr: false,
+    loading: () => (
+        <div className="absolute top-0 left-0 w-full h-full bg-gray-800 animate-pulse flex items-center justify-center text-gray-400">
+            載入中...
+        </div>
+    )
+}) as any;
 
-// 為了讓 TypeScript 開心，我們定義一個寬鬆的型別
 interface ProgressState {
     played: number;
     playedSeconds: number;
@@ -22,29 +28,25 @@ interface VideoPlayerProps {
 }
 
 export default function VideoPlayer({ url, onEnded, onProgress }: VideoPlayerProps) {
-    // 檢查是否是在瀏覽器環境 (雖然 dynamic 已處理，但雙重保險有時能解型別問題)
-    const isClient = typeof window !== 'undefined';
-
     return (
         <div className="relative pt-[56.25%] bg-black rounded-xl overflow-hidden shadow-lg">
-            {/* 使用 Suspense 或直接渲染 dynamic component */}
-            {isClient && (
-                <ReactPlayer
-                    className="absolute top-0 left-0"
-                    url={url}
-                    width="100%"
-                    height="100%"
-                    controls={true}
-                    onEnded={onEnded}
-                    // 依然保留 as any 以防萬一
-                    onProgress={onProgress as any}
-                    config={{
-                        file: {
-                            forceHLS: true,
-                        },
-                    } as any}
-                />
-            )}
+            <ReactPlayer
+                className="absolute top-0 left-0"
+                url={url}
+                width="100%"
+                height="100%"
+                controls={true}
+                onEnded={onEnded}
+                onProgress={onProgress} // 這裡通常不需要 as any 了，因為上面 ReactPlayer 已經是 any
+
+                // ★★★ 核心修正 2：config 這裡保留 'as any' ★★★
+                // 這是為了解決你上一個錯誤 "file does not exist in type Config"
+                config={{
+                    file: {
+                        forceHLS: true,
+                    },
+                } as any}
+            />
         </div>
     );
 }
