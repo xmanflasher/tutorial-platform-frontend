@@ -112,3 +112,41 @@ export interface JourneyDetail {
     secondary: string; // "預約 1v1 諮詢"
   };
 }
+
+// --- 1. Reward (共用結構) ---
+export interface Reward {
+  exp: number;
+  coin: number;
+  subscriptionExtensionInDays: number;
+  journeyId: number;
+  externalRewardDescription: string;
+}
+
+export type MissionStatus = 'LOCKED' | 'AVAILABLE' | 'IN_PROGRESS' | 'COMPLETED' | 'CLAIMED';
+
+/**
+ * 對應後端的 MemberMissionDTO
+ * 用於顯示使用者的任務列表、狀態與進度
+ */
+export interface MemberMission {
+  missionId: number;
+  name: string;
+  description: string;
+  status: MissionStatus;
+  
+  // 顯示用欄位 (後端已經格式化好的字串，前端直接顯示即可)
+  rewardDescription: string;          // e.g. "經驗值 100, 金幣 50"
+  unlockConditionDescription: string; // e.g. "通過道館 2"
+  duration: number;
+  // 期限與進度
+  deadline: string | null; // ISO 字串
+  currentProgress: number; // 0-100
+  
+  // 機會卡機制
+  opportunityCardsUsed: number;
+  maxOpportunityCards: number;
+  isExtendable: boolean;
+}
+
+
+

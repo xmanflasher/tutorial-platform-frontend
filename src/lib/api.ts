@@ -19,16 +19,7 @@ import {
 // =============================================================================
 // 1. 環境變數設定與開關
 // =============================================================================
-
-// 後端 API 位址
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
-
-// ★ 關鍵開關：判斷是否使用 Mock
-// 只有當變數字串嚴格等於 'true' 時才開啟 Mock，否則預設跑真實 API
-const USE_MOCK_DATA = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
-
-// 模擬延遲 (Mock 模式用)
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+import { API_BASE_URL, USE_MOCK_DATA, delay } from '@/lib/api-config';
 
 // =============================================================================
 // 2. API 實作
@@ -54,7 +45,7 @@ export async function getJourneyBySlug(slug: string): Promise<JourneyDetail> {
   // 這是您之前缺少的「真實請求」邏輯
   const url = `${API_BASE_URL}/journeys/${slug}`;
   console.log(`[API Mode: REAL] 正在請求後端: ${url}`);
-
+  console.log(`[API Debug] 正在請求 URL: ${url}`);
   try {
     const res = await fetch(url, { cache: 'no-store' });
     
@@ -63,10 +54,10 @@ export async function getJourneyBySlug(slug: string): Promise<JourneyDetail> {
     }
     
     const data = await res.json();
-    
     // 資料補全 (因為後端目前沒有圖片欄位，前端補上以免畫面壞掉)
     return {
       ...data,
+      slug: data.slug || slug || 'software-design-pattern',
       certificateImage: '/images/certificate-placeholder.jpg',
       features: ['中文課程', '支援行動裝置', '專業的完課認證'],
       // 防呆：確保按鈕欄位存在
