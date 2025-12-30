@@ -20,7 +20,6 @@ interface MissionData {
     description: string;
     type: 'video' | 'scroll' | 'VIDEO' | 'SCROLL';
     createdAt: number;
-    // ★★★ 修正：這裡必須是陣列，因為 JSON 是 content: [ { ... } ] ★★★
     content: MissionContent[];
     reward?: {
         exp: number;
@@ -31,18 +30,20 @@ interface MissionData {
 
 async function fetchMissionData(missionId: string): Promise<MissionData | null> {
     try {
+        console.log(`[Fetch] 開始請求 Mission ID: ${missionId}`);
         const res = await fetch(`http://localhost:8080/api/lessons/${missionId}`, {
             cache: 'no-store'
         });
 
         if (!res.ok) {
-            console.error(`API Error: ${res.status} ${res.statusText}`);
+            console.error(`[Fetch Error] Status: ${res.status} ${res.statusText}`);
             return null;
         }
         const data = await res.json();
+        console.log(`[Fetch Success] 取得資料:`, data);
         return data;
     } catch (e) {
-        console.error("Network Error:", e);
+        console.error("[Fetch Error] Network:", e);
         return null;
     }
 }
@@ -59,18 +60,16 @@ export default function MissionPage({
     useEffect(() => {
         const loadData = async () => {
             setLoading(true);
-            try {
-                const data = await fetchMissionData(missionId);
-                console.log("API Data:", data); // 方便除錯用
-                setMission(data);
-            } catch (error) {
-                console.error("Failed to fetch mission", error);
-            } finally {
-                setLoading(false);
-            }
+            const data = await fetchMissionData(missionId);
+            setMission(data);
+            setLoading(false);
         };
         loadData();
     }, [missionId]);
+
+    // Debug Log: 監控渲染時的資料狀態
+    console.log("--- Render MissionPage ---");
+    console.log("Mission State:", mission);
 
     if (loading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin text-white" /></div>;
 
@@ -83,14 +82,21 @@ export default function MissionPage({
         );
     }
 
-    // ★★★ 關鍵修正：從陣列中取出第一筆資料 ★★★
-    // JSON: "content": [ { "url": "..." } ]
+    // 解析資料
     const firstContent = mission.content && mission.content.length > 0 ? mission.content[0] : null;
-
-    // 取得 url
     const videoUrl = firstContent?.url;
     const markdownContent = firstContent?.content;
     const missionType = mission.type?.toLowerCase();
+
+    // 判斷邏輯
+    const isVideo = missionType === "video" || firstContent?.type?.toLowerCase() === "video";
+
+    console.log("解析結果:", {
+        videoUrl,
+        missionType,
+        isVideo,
+        firstContent
+    });
 
     return (
         <div className="max-w-5xl mx-auto w-full pb-20">
@@ -100,7 +106,6 @@ export default function MissionPage({
                         <h1 className="text-2xl font-bold text-white mb-2">{mission.name}</h1>
                         <p className="text-gray-400">{mission.description}</p>
                     </div>
-                    {/* 顯示影片長度 (如果有) */}
                     {mission.videoLength && (
                         <span className="text-sm bg-gray-800 px-2 py-1 rounded text-gray-300">
                             {mission.videoLength}
@@ -112,13 +117,25 @@ export default function MissionPage({
             <div className="bg-[#111827] rounded-2xl overflow-hidden border border-gray-800 shadow-xl min-h-[400px]">
 
                 {/* 1. 影片播放器 */}
-                {missionType === "video" && videoUrl ? (
-                    <VideoPlayer
-                        url={videoUrl}
-                        // 這裡可以加上 onEnded 處理任務完成邏輯
-                        onProgress={(p) => { }}
-                    />
-                ) : null}
+                {isVideo && videoUrl ? (
+                    <>
+                        {/* 這裡加一個額外的 Log 區塊，確保有進到這裡 */}
+                        <div className="hidden">Debug: Rendering Player for {videoUrl}</div>
+                        <VideoPlayer
+                            url={videoUrl}
+                            onProgress={(p) => {
+                                // console.log("Progress:", p.playedSeconds); 
+                            }}
+                        />
+                    </>
+                ) : (
+                    isVideo && (
+                        <div className="p-10 text-red-500">
+                            偵測到影片類型，但 URL 為空。
+                            <pre>{JSON.stringify(firstContent, null, 2)}</pre>
+                        </div>
+                    )
+                )}
 
                 {/* 2. 文章閱讀器 */}
                 {missionType === "scroll" && markdownContent ? (
@@ -128,19 +145,6 @@ export default function MissionPage({
                         </article>
                     </div>
                 ) : null}
-
-                {/* 3. 錯誤提示 (如果有 type 是 video 但沒 url) */}
-                {missionType === "video" && !videoUrl && (
-                    <div className="flex flex-col items-center justify-center h-[400px] text-gray-500 gap-4">
-                        <AlertCircle className="w-12 h-12" />
-                        <p className="text-lg">無法讀取影片連結</p>
-                        <div className="text-xs font-mono bg-black/30 p-4 rounded text-left max-w-md break-all">
-                            DEBUG: content array is {mission.content?.length ? 'present' : 'empty'}
-                            <br />
-                            Data: {JSON.stringify(mission.content)}
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
     );
