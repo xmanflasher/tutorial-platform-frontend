@@ -17,10 +17,8 @@ export default function MissionsPage() {
 
     useEffect(() => {
         if (journeySlug) {
-            setLoading(true);
             missionService.getMissionsByJourneySlug(journeySlug)
                 .then((data) => {
-                    console.log("API Data:", data); // 方便你 Debug 確認資料
                     setMissions(data);
                 })
                 .catch((err) => console.error(err))
