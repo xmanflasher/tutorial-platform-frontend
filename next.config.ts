@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
         hostname: 'api.dicebear.com',
       },
     ],
+    domains: ['cdn.waterballsa.tw'], // 允許此網域的圖片
   },
 };
 
