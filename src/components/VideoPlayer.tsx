@@ -31,11 +31,19 @@ export default function VideoPlayer({ url, onEnded, onProgress }: VideoPlayerPro
 
     const videoId = getYouTubeId(url);
 
+    // 1. 專門處理 Hydration (解決 Server/Client 不一致)
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsMounted(true);
-        // 清理 Timer
+    }, []);
+
+    // 2. 專門處理 Cleanup (組件卸載時，確保 Timer 被清除)
+    useEffect(() => {
         return () => {
-            if (progressInterval.current) clearInterval(progressInterval.current);
+            // 這裡不需要依賴 array，因為是用 ref，隨時都能讀到最新值
+            if (progressInterval.current) {
+                clearInterval(progressInterval.current);
+            }
         };
     }, []);
 
