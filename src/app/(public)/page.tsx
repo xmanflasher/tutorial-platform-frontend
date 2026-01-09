@@ -1,10 +1,10 @@
-import { 
-  getAnnouncement, 
-  getFeaturedCourses, 
-  getResourceCards, 
-  getInstructor 
+import {
+  getAnnouncement,
+  getFeaturedCourses,
+  getResourceCards,
+  getInstructor,
+  getJourneyBySlug
 } from '@/lib/api';
-
 import AnnouncementBar from '@/components/home/AnnouncementBar';
 import WelcomeSection from '@/components/home/WelcomeSection';
 import ResourceGrid from '@/components/home/ResourceGrid';
@@ -15,28 +15,33 @@ export const metadata = {
   description: '軟體設計模式精通之旅，成為硬核的 Coding 實戰高手',
 };
 
+const DEFAULT_JOURNEY_SLUG = "software-design-pattern";
+
 export default async function HomePage() {
-  // 並行獲取所有資料
-  const [announcement, courses, resourceCards, instructor] = await Promise.all([
+  const [announcement, courses, resourceCards, instructor, defaultJourney] = await Promise.all([
     getAnnouncement(),
     getFeaturedCourses(),
     getResourceCards(),
     getInstructor(),
+    getJourneyBySlug(DEFAULT_JOURNEY_SLUG),
   ]);
 
   return (
-    <div className="pb-10">
-      {/* 1. 頂部廣告條 */}
-      <AnnouncementBar data={announcement} />
+    <>
+      <div className="pb-10">
+        {/* 1. 頂部廣告條 */}
+        <AnnouncementBar data={announcement} />
 
-      {/* 2. 歡迎區塊與主打課程 */}
-      <WelcomeSection courses={courses} />
+        {/* 2. 歡迎區塊與主打課程 */}
+        <WelcomeSection courses={courses} />
 
-      {/* 3. 資源連結方格 */}
-      <ResourceGrid cards={resourceCards} />
+        {/* 3. 資源連結方格 */}
+        <ResourceGrid cards={resourceCards} />
 
-      {/* 4. 講師介紹與 Footer */}
-      <InstructorSection instructor={instructor} />
-    </div>
+        {/* 4. 講師介紹與 Footer */}
+        <InstructorSection instructor={instructor} />
+      </div>
+    </>
+
   );
 }

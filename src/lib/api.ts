@@ -42,10 +42,10 @@ export async function getJourneyBySlug(slug: string): Promise<JourneyDetail> {
   }
 
   // [模式 B] Real Fetch
-  // 這是您之前缺少的「真實請求」邏輯
   const url = `${API_BASE_URL}/journeys/${slug}`;
   console.log(`[API Mode: REAL] 正在請求後端: ${url}`);
   console.log(`[API Debug] 正在請求 URL: ${url}`);
+  
   try {
     const res = await fetch(url, { cache: 'no-store' });
     
@@ -54,19 +54,24 @@ export async function getJourneyBySlug(slug: string): Promise<JourneyDetail> {
     }
     
     const data = await res.json();
-    // 資料補全 (因為後端目前沒有圖片欄位，前端補上以免畫面壞掉)
+    
+    // Debug: 印出後端回傳的原始資料，方便確認 menus 是否存在
+    //console.log('[API Debug] 後端回傳的完整資料:', JSON.stringify(data, null, 2));
+    
+    // 資料補全 (前端補上後端缺少的 UI 欄位)
     return {
       ...data,
       slug: data.slug || slug || 'software-design-pattern',
+      // 如果後端沒給 menus，給個空陣列防爆
+      menus: data.menus || [], 
       certificateImage: '/images/certificate-placeholder.jpg',
       features: ['中文課程', '支援行動裝置', '專業的完課認證'],
-      // 防呆：確保按鈕欄位存在
       actionButtons: data.actionButtons || { primary: '立即加入', secondary: '了解更多' }
     };
 
   } catch (error) {
     console.error(`[API Error] 請求失敗，自動降級回傳 Mock 資料以維持顯示`, error);
-    // 降級策略：連不上後端時，暫時顯示 Mock，避免畫面全白
+    // 降級策略：連不上後端時，暫時顯示 Mock
     return JOURNEY_MAP[slug] || JOURNEY_MAP['software-design-pattern'];
   }
 }
@@ -90,32 +95,31 @@ export async function getFeaturedCourses(): Promise<Course[]> {
     
     const data: JourneyDetail[] = await res.json();
 
-    // DTO 轉換：後端回傳的是 JourneyDetail 陣列，首頁卡片需要 Course 格式
+    // DTO 轉換：JourneyDetail[] -> Course[]
     return data.map(journey => ({
       id: journey.id,
       title: journey.title,
-      subtitle: journey.subtitle,
-      author: '水球潘', 
+      subtitle: journey.subtitle || journey.description.slice(0, 30) + '...', // 簡單防呆
+      author: '水球潘test', 
       description: journey.description,
       slug: journey.slug,
       
-      // [修正] 這裡如果不給圖片，真實模式下就會沒有封面圖
-      // 因為後端目前還沒回傳 imageUrl，我們先用前端的邏輯給它一張預設圖
-      // 如果是 AI 課程就給 AI 圖，否則給設計模式圖 (這是一個暫時的 UI 邏輯)
+      // 圖片邏輯
       image: journey.slug.includes('ai') 
-        ? '/images/course_4.png' // 確保您的 public/images 有這張圖
+        ? '/images/course_4.png' 
         : '/images/course_0.png',
         
-      tags: journey.tags,
-      statusLabel: '尚未擁有',
-      couponText: journey.price > 3000 ? '你有一張 3,000 折價券' : undefined,
+      tags: journey.tags || [],
+      statusLabel: '尚未擁有test',
+      couponText: (journey.price > 3000) ? '你有一張 3,000 折價券' : undefined,
+      
       primaryAction: { 
-        text: '試聽課程', 
+        text: '試聽課程test', 
         href: `/journeys/${journey.slug}`, 
         style: 'solid' 
       },
       secondaryAction: { 
-        text: '立刻購買', 
+        text: '立刻購買test', 
         href: '#', 
         style: 'outline' 
       }
