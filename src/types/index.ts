@@ -111,6 +111,15 @@ export interface JourneyDetail {
     primary: string; // "立即加入課程"
     secondary: string; // "預約 1v1 諮詢"
   };
+  // ★★★ 這裡就是缺少的欄位，請補上 ★★★
+  // 因為你的 createEmptyJourney 有給這些預設值，所以介面必須定義
+  missions: MemberMission[]; // 使用你下方定義的 MemberMission
+  badges: string[];          // 假設徽章是字串列表，若有 Badge 介面可改成 Badge[]
+
+  // 使用者等級進度資訊
+  level: number;
+  currentExp: number;
+  maxExp: number;
 }
 
 // --- 1. Reward (共用結構) ---

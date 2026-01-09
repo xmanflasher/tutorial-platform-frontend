@@ -191,17 +191,17 @@ const SDP_DATA: JourneyDetail = {
   ],
   menus: [
     {
-      name: "所有單元",
+      name: "所有單元mock",
       href: "/journeys/software-design-pattern",
       icon: "layers"
     },
     {
-      name: "挑戰地圖",
+      name: "挑戰地圖mock",
       href: "/challenges",
       icon: "map"
     },
     {
-      name: "SOP 寶典",
+      name: "SOP 寶典mock",
       href: "/sop",
       icon: "book-open"
     }
@@ -263,12 +263,12 @@ const AI_BDD_DATA: JourneyDetail = {
   ],
   menus: [
     {
-      name: "所有單元",
+      name: "所有單元mock",
       href: "/journeys/ai-bdd",
       icon: "layers"
     },
     {
-      name: "Prompt 寶典",
+      name: "Prompt 寶典mock",
       href: "/journeys/ai-bdd/prompts",
       icon: "sparkles"
     },
