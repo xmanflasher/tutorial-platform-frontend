@@ -110,12 +110,27 @@ export default function Sidebar({ className = "", onClose }: SidebarProps) {
           )}
         </div>
 
-        {/* 區塊三：旅程選單 (★ 這裡會自動渲染資料庫設定好的項目) */}
-        {activeJourney && activeJourney.menus && activeJourney.menus.length > 0 && (
+        {/* 區塊三：旅程選單 (只要有 activeJourney 就顯示) */}
+        {activeJourney && (
           <>
             <div className="h-px bg-gray-800 mx-2" />
             <div className="space-y-1">
-              {activeJourney.menus.map((menu, index) => {
+
+              {/* ★★★ 1. 固定項目：所有單元 (回到該旅程首頁) ★★★ */}
+              <Link
+                href={`/journeys/${activeJourney.slug}`}
+                onClick={onClose}
+                className={`flex items-center gap-3 px-4 py-3 rounded-full transition-all text-sm font-medium ${pathname === `/journeys/${activeJourney.slug}` // 精準比對
+                  ? "bg-yellow-400 text-black font-bold shadow-sm"
+                  : "text-gray-300 hover:text-white hover:bg-white/10"
+                  }`}
+              >
+                <Layers className="w-4 h-4" />
+                <span>所有單元</span>
+              </Link>
+
+              {/* ★★★ 2. 動態項目：從資料庫來的選單 (獎勵任務、挑戰地圖、SOP...) ★★★ */}
+              {activeJourney.menus?.map((menu, index) => {
                 const IconComponent = ICON_MAP[menu.icon] || ICON_MAP["default"];
                 const isActive = pathname === menu.href;
 
