@@ -1,6 +1,4 @@
 import { getJourneyBySlug } from "@/lib/api";
-import JourneyInitializer from "@/components/JourneyInitializer";
-
 export default async function JourneyLayout({
     children,
     params,
@@ -19,9 +17,8 @@ export default async function JourneyLayout({
     const journey = await getJourneyBySlug(slug);
 
     return (
-        <>
-            <JourneyInitializer journey={journey} />
+        <section className="journey-player-layout h-screen w-full bg-black">
             {children}
-        </>
+        </section>
     );
 }
