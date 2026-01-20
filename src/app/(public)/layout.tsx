@@ -48,7 +48,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         journey={activeJourney}
         onClose={() => setSidebarOpen(false)}
         className={`
-          fixed inset-y-0 left-0 z-50 w-64
+          fixed inset-y-0 left-0 z-50 w-56
           transform transition-transform duration-300 ease-in-out
           md:translate-x-0 md:static md:h-screen md:sticky md:top-0
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}

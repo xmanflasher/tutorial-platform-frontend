@@ -24,7 +24,7 @@ export default function MainJourneyLayout({
                 // ★ 5. 關鍵修正：把資料傳進去！
                 onClose={() => setSidebarOpen(false)} // ★ 6. 補上必要屬性
                 className={`
-                    w-64 h-screen fixed left-0 top-0 z-50 
+                    w-56 h-screen fixed left-0 top-0 z-50 
                     md:flex 
                     ${isSidebarOpen ? 'flex' : 'hidden'} // 簡單的手機版顯示邏輯
                 `}
