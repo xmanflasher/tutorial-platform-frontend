@@ -43,7 +43,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
     // const { activeJourney } = useJourney(); // 移除
     const safeSlug = journey?.slug || "software-design-pattern";
     // 控制哪些章節是展開的
-    const [expandedChapterIds, setExpandedChapterIds] = useState<string[]>([]);
+    const [expandedChapterIds, setExpandedChapterIds] = useState<number[]>([]);
 
     // ★ 自動展開邏輯：依賴傳入的 journey
     useEffect(() => {
@@ -61,7 +61,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
         });
     }, [pathname, journey]);
 
-    const toggleChapter = (id: string) => {
+    const toggleChapter = (id: number) => {
         setExpandedChapterIds((prev) =>
             prev.includes(id) ? prev.filter((cId) => cId !== id) : [...prev, id]
         );

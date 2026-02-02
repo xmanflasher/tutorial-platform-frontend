@@ -13,9 +13,9 @@ interface ChapterListProps {
 
 export default function ChapterList({ chapters, journeySlug }: ChapterListProps) {
   // 預設展開第一個章節
-  const [openChapterIds, setOpenChapterIds] = useState<string[]>([chapters[0]?.id]);
+  const [openChapterIds, setOpenChapterIds] = useState<number[]>([chapters[0]?.id]);
 
-  const toggleChapter = (id: string) => {
+  const toggleChapter = (id: number) => {
     setOpenChapterIds((prev) =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     );
