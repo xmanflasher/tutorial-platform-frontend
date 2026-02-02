@@ -1,6 +1,12 @@
-// 定義課程的資料結構
+// src/types/index.ts
+
+// ==========================================
+// 1. 公開頁面與行銷相關 (Courses, Leaderboard, Ads)
+// ==========================================
+
+// 定義課程的資料結構 (首頁卡片用)
 export interface Course {
-  id: string;
+  id: number;
   title: string;
   subtitle?: string;
   author: string;
@@ -8,7 +14,7 @@ export interface Course {
   slug: string;
   image?: string;
   tags?: string[];
-  
+
   // 新增欄位以支援截圖 UI
   statusLabel?: string;     // e.g. "尚未擁有"
   couponText?: string;      // e.g. "你有一張 3,000 折價券"
@@ -26,7 +32,7 @@ export interface Course {
 
 // 定義排行榜使用者的資料結構
 export interface LeaderboardUser {
-  id: string;
+  id: number;
   rank: number; // 排名
   name: string;
   title: string; // 頭銜 (e.g. 初級工程師)
@@ -36,17 +42,17 @@ export interface LeaderboardUser {
   trend?: 'up' | 'down' | 'same';
 }
 
-// 1. 頂部廣告條
+// 頂部廣告條
 export interface Announcement {
-  id: string;
+  id: number;
   message: string;
   linkText: string;
   linkHref: string;
 }
 
-// 2. 資源連結卡片 (首頁中間的四個區塊)
+// 資源連結卡片 (首頁中間的四個區塊)
 export interface ResourceCard {
-  id: string;
+  id: number;
   iconName: 'BookOpen' | 'FileText' | 'Users' | 'Award'; // 對應 Lucide Icon 字串
   title: string;
   description: string;
@@ -54,7 +60,7 @@ export interface ResourceCard {
   secondaryAction?: { text: string; href: string }; // 給 Discord 用
 }
 
-// 3. 講師資訊
+// 講師資訊
 export interface Instructor {
   name: string;
   title: string;
@@ -69,60 +75,6 @@ export interface Instructor {
   };
 }
 
-// 單元 (Lesson)
-export interface Lesson {
-  id: string;
-  name: string;
-  type: 'video' | 'scroll' | 'google-form'| 'boss';
-  premiumOnly?: boolean; // 是否為試看
-  videoLength?: string; // e.g. "10:05"
-}
-
-// 章節 (Chapter)
-export interface Chapter {
-  id: string;
-  name: string;
-  lessons: Lesson[];
-}
-//選單介面 (sidebar)
-export interface JourneyMenu {
-  name: string;
-  href: string;
-  icon: string; // 後端傳來的是字串 key
-
-}
-
-// 旅程詳情頁 (Journey Detail)
-export interface JourneyDetail {
-  id: string;
-  slug: string;
-  title: string;
-  subtitle: string; // "用一趟旅程的時間..."
-  description: string; // 長文簡介
-  totalVideos: number;
-  tags: string[]; // e.g. ["大量實戰題"]
-  chapters: Chapter[]; // 課程大綱
-  menus: JourneyMenu[];
-  // 右側資訊
-  certificateImage?: string;
-  features: string[]; // e.g. ["中文課程", "支援行動裝置", "專業的完課認證"]
-  price: number;
-  actionButtons: {
-    primary: string; // "立即加入課程"
-    secondary: string; // "預約 1v1 諮詢"
-  };
-  // ★★★ 這裡就是缺少的欄位，請補上 ★★★
-  // 因為你的 createEmptyJourney 有給這些預設值，所以介面必須定義
-  missions: MemberMission[]; // 使用你下方定義的 MemberMission
-  badges: string[];          // 假設徽章是字串列表，若有 Badge 介面可改成 Badge[]
-
-  // 使用者等級進度資訊
-  level: number;
-  currentExp: number;
-  maxExp: number;
-}
-
-// --- 1. Reward (共用結構) ---
 export interface Reward {
   exp: number;
   coin: number;
@@ -130,32 +82,11 @@ export interface Reward {
   journeyId: number;
   externalRewardDescription: string;
 }
-
-export type MissionStatus = 'LOCKED' | 'AVAILABLE' | 'IN_PROGRESS' | 'COMPLETED' | 'CLAIMED';
-
-/**
- * 對應後端的 MemberMissionDTO
- * 用於顯示使用者的任務列表、狀態與進度
- */
-export interface MemberMission {
-  missionId: number;
-  name: string;
-  description: string;
-  status: MissionStatus;
-  
-  // 顯示用欄位 (後端已經格式化好的字串，前端直接顯示即可)
-  rewardDescription: string;          // e.g. "經驗值 100, 金幣 50"
-  unlockConditionDescription: string; // e.g. "通過道館 2"
-  duration: number;
-  // 期限與進度
-  deadline: string | null; // ISO 字串
-  currentProgress: number; // 0-100
-  
-  // 機會卡機制
-  opportunityCardsUsed: number;
-  maxOpportunityCards: number;
-  isExtendable: boolean;
-}
-
-
-
+// ==========================================
+// ★★★ 核心修改：引入 Journey 相關定義 ★★★
+// ==========================================
+// 這裡會自動匯出 Journey.ts 裡面的所有 export
+// 包含：Gym, Chapter, JourneyDetail, MemberMission, GymStatus, RenderStage...等
+export * from './Journey';
+export * from './Gym';
+export * from './record';
