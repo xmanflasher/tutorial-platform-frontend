@@ -1,4 +1,6 @@
-import { getJourneyBySlug } from '@/lib/api';
+export const dynamic = 'force-dynamic';//強制設定動態渲染 (解決 Route 錯誤)
+
+import { journeyService } from '@/services';
 import ChapterList from '@/components/journeys/ChapterList';
 import CertificateWidget from '@/components/journeys/CertificateWidget';
 import { Video, CheckCircle2, ArrowRight } from 'lucide-react';
@@ -9,7 +11,7 @@ export default async function JourneyDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params; // 這裡已經取得了 slug
-  const journey = await getJourneyBySlug(slug);
+  const journey = await journeyService.getJourneyBySlug(slug);
 
   return (
     <div className="max-w-7xl mx-auto pb-20 px-4 pt-6">

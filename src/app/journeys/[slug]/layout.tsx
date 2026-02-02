@@ -1,4 +1,4 @@
-import { getJourneyBySlug } from "@/lib/api";
+import { journeyService } from '@/services';
 export default async function JourneyLayout({
     children,
     params,
@@ -14,7 +14,7 @@ export default async function JourneyLayout({
     if (!slug) return null;
 
     // 4. 使用解析出來的 slug 呼叫 API
-    const journey = await getJourneyBySlug(slug);
+    const journey = await journeyService.getJourneyBySlug(slug);
 
     return (
         <section className="journey-player-layout h-screen w-full bg-black">

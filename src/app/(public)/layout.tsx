@@ -45,7 +45,6 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
     <div className="min-h-screen bg-[#0d0e11] text-white flex">
       {/* 全站 Sidebar */}
       <Sidebar
-        journey={activeJourney}
         onClose={() => setSidebarOpen(false)}
         className={`
           fixed inset-y-0 left-0 z-50 w-56

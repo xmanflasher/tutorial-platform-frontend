@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import PlayerSidebar from "@/components/journeys/PlayerSidebar";
 import PlayerHeader from "@/components/journeys/PlayerHeader";
 import { PlayerUIProvider } from "@/context/PlayerUIContext";
-import { getJourneyBySlug } from "@/lib/api"; // ★ 1. 引入真實 API
+import { journeyService } from '@/services';
 
 // ★ 2. 定義 Props，params 必須是 Promise
 interface LayoutProps {
@@ -19,7 +19,7 @@ export default async function JourneyPlayerLayout({
     const { slug } = await params;
 
     // 呼叫真實 API
-    const journey = await getJourneyBySlug(slug);
+    const journey = await journeyService.getJourneyBySlug(slug);
 
     if (!journey) return <div className="text-white p-10">Journey Not Found</div>;
 

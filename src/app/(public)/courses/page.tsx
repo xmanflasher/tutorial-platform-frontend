@@ -1,4 +1,4 @@
-import { getFeaturedCourses } from '@/lib/api';
+import { homeService } from '@/services';
 import CourseCard from '@/components/courses/CourseCard';
 import { Receipt } from 'lucide-react';
 
@@ -7,11 +7,11 @@ export const metadata = {
 };
 
 export default async function CoursesPage() {
-  const courses = await getFeaturedCourses();
+  const courses = await homeService.getFeaturedCourses();
 
   return (
     <div className="max-w-7xl mx-auto pb-12">
-      
+
       {/* 1. 課程列表區塊 
           修改重點：
           改為 md:grid-cols-3，確保在半視窗 (平板尺寸) 下依然維持三欄並排，

@@ -1,10 +1,6 @@
-import {
-  getAnnouncement,
-  getFeaturedCourses,
-  getResourceCards,
-  getInstructor,
-  getJourneyBySlug
-} from '@/lib/api';
+export const dynamic = 'force-dynamic';//強制設定動態渲染 (解決 Route 錯誤)
+
+import { homeService, journeyService } from '@/services';
 import AnnouncementBar from '@/components/home/AnnouncementBar';
 import WelcomeSection from '@/components/home/WelcomeSection';
 import ResourceGrid from '@/components/home/ResourceGrid';
@@ -19,11 +15,11 @@ const DEFAULT_JOURNEY_SLUG = "software-design-pattern";
 
 export default async function HomePage() {
   const [announcement, courses, resourceCards, instructor, defaultJourney] = await Promise.all([
-    getAnnouncement(),
-    getFeaturedCourses(),
-    getResourceCards(),
-    getInstructor(),
-    getJourneyBySlug(DEFAULT_JOURNEY_SLUG),
+    homeService.getAnnouncement(),
+    homeService.getFeaturedCourses(),
+    homeService.getResourceCards(),
+    homeService.getInstructor(),
+    journeyService.getJourneyBySlug(DEFAULT_JOURNEY_SLUG),
   ]);
 
   return (
