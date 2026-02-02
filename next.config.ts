@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   images: {
     // 支援 SVG 圖片
     dangerouslyAllowSVG: true,

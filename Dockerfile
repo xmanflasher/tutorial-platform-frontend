@@ -16,6 +16,12 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 # 複製專案其餘檔案
 COPY . .
+
+# 【關鍵】在 Build 階段開啟 Mock，防止因為抓不到 API 導致 Prerender Error
+ENV NEXT_PUBLIC_USE_MOCK_DATA=true
+# 如果 Build 階段需要基礎 URL 也可以設定
+ENV NEXT_PUBLIC_API_URL=http://localhost:8080/api
+
 # 執行 Next.js 建構命令 (使用 npm)
 RUN npm run build
 
