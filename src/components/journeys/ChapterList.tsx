@@ -51,7 +51,7 @@ export default function ChapterList({ chapters, journeySlug }: ChapterListProps)
                   // ★ 3. 將原本的 div 改為 Link，並組裝 href
                   <Link
                     key={lesson.id} // 建議改用 id 當 key
-                    href={`/journeys/${journeySlug}/chapters/${chapter.id}/missions/${lesson.id}`}
+                    href={`/journeys/${journeySlug}/chapters/${chapter.id}/lessons/${lesson.id}`}
                     className="flex items-center gap-4 p-4 pl-8 hover:bg-slate-800/30 transition-colors cursor-pointer group border-b border-slate-800/50 last:border-0"
                   >
                     {/* Icon: 根據類型顯示不同圖示 */}
