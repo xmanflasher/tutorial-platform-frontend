@@ -30,18 +30,6 @@ export interface Course {
   };
 }
 
-// 定義排行榜使用者的資料結構
-export interface LeaderboardUser {
-  id: number;
-  rank: number; // 排名
-  name: string;
-  title: string; // 頭銜 (e.g. 初級工程師)
-  level: number;
-  score: number;
-  avatar?: string; // 頭像 URL (選填)
-  trend?: 'up' | 'down' | 'same';
-}
-
 // 頂部廣告條
 export interface Announcement {
   id: number;
@@ -87,6 +75,7 @@ export interface Reward {
 // ==========================================
 // 這裡會自動匯出 Journey.ts 裡面的所有 export
 // 包含：Gym, Chapter, JourneyDetail, MemberMission, GymStatus, RenderStage...等
+export * from './User';
 export * from './Journey';
 export * from './Gym';
-export * from './record';
+export * from './Record';

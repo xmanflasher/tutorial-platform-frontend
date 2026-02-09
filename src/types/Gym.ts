@@ -1,5 +1,5 @@
 // src/types/Gym.ts
-import { Lesson } from './Journey';
+import { LessonDetail } from './Journey';
 import { Reward } from './index';
 
 export type GymType = 'CHALLENGE' | 'BOSS';
@@ -44,7 +44,7 @@ export interface GymDetailData {
     difficulty: number;
     reward: Reward; // 確保詳情頁也能拿到獎勵資訊
     challenges: Challenge[];
-    lessons: Lesson[]; // 這是在 gymService 中 map 出來的實體資料
+    lessons: LessonDetail[]; // 這是在 gymService 中 map 出來的實體資料
     relatedLessonIds: string[];
     createdAt?: number;
 }

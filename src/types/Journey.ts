@@ -77,3 +77,23 @@ export interface Mission {
   // 任務獎勵
   reward: Reward;
 }
+
+// 單元內容 (影片連結或 Markdown 文字)
+export interface LessonContent {
+  type: 'VIDEO' | 'MARKDOWN' | 'video' | 'markdown';
+  url?: string;
+  id?: number;
+  content?: string;
+}
+
+// 完整的單元詳情 (API: /api/lessons/{id})
+export interface LessonDetail {
+  id: number;
+  name: string;
+  description: string;
+  type: 'VIDEO' | 'SCROLL' | 'video' | 'scroll' | 'google-form' | 'boss';
+  createdAt: number;
+  content: LessonContent[];
+  reward: Reward;
+  videoLength?: string;
+}
