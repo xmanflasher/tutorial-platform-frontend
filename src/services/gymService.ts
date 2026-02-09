@@ -1,6 +1,6 @@
 import { apiRequest } from '@/lib/api';
 import { USE_MOCK_DATA, delay } from '@/lib/api-config';
-import { Gym, GymDetailData, GymChallengeRecord } from '@/types';
+import { Gym, GymDetailData } from '@/types';
 import { recordService } from '@/services/recordService'; // 建議直接指名路徑避免循環引用
 
 export const gymService = {
