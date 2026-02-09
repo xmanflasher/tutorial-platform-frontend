@@ -1,3 +1,4 @@
+// src/app/(public)/users/[userId]/portfolio/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -5,14 +6,10 @@ import ChallengePortfolio from "@/components/ChallengePortfolio";
 import PortfolioHeader from "@/components/PortfolioHeader";
 import MarketingBanner from "@/components/MarketingBanner";
 import { Loader2 } from "lucide-react";
+import { userService } from "@/services/userService"; // 匯入 Service
+import { UserProfile } from "@/types/User";
 
-interface UserProfile {
-    id: number;
-    name: string;
-    nickName: string;
-    jobTitle: string;
-    avatar: string;
-}
+
 
 export default function PortfolioPage({ params }: { params: Promise<{ userId: string }> }) {
     const [userId, setUserId] = useState<string>("");
@@ -22,29 +19,12 @@ export default function PortfolioPage({ params }: { params: Promise<{ userId: st
     useEffect(() => {
         const init = async () => {
             const resolvedParams = await params;
-            setUserId(resolvedParams.userId);
+            const uid = resolvedParams.userId;
+            setUserId(uid);
 
-            try {
-                // 這裡 fetch User 基本資料
-                const res = await fetch(`http://localhost:8080/api/users?ids=${resolvedParams.userId}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (Array.isArray(data) && data.length > 0) {
-                        const user = data[0];
-                        setProfile({
-                            id: user.id,
-                            name: user.name,
-                            nickName: user.nickName,
-                            jobTitle: user.jobTitle,
-                            avatar: user.pictureUrl || user.avatar
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error("Failed to fetch profile", error);
-            } finally {
-                setLoading(false);
-            }
+            const data = await userService.getUserProfile(uid);
+            setProfile(data);
+            setLoading(false);
         };
         init();
     }, [params]);

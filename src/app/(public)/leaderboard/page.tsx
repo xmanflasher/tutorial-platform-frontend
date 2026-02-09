@@ -1,32 +1,26 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
-interface LeaderboardItem {
-  id: number;
-  name: string;
-  avatar: string; 
-  jobTitle: string;
-  level: number;
-  exp: number;
-}
+import { homeService } from '@/services/homeService';
+import { LeaderboardMember } from '@/types';
 
 export default function LeaderboardPage() {
-  const [members, setMembers] = useState<LeaderboardItem[]>([]);
+  const [members, setMembers] = useState<LeaderboardMember[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // ★ 請確認後端 (TutorialPlatformApplication) 有執行，否則會 failed to fetch
-    fetch('http://localhost:8080/api/leaderboard')
-      .then(res => res.json())
-      .then(data => {
+    const fetchLeaderboard = async () => {
+      setLoading(true);
+      try {
+        const data = await homeService.getLeaderboard(); // 透過 Service 拿資料
         setMembers(data);
+      } catch (err) {
+        console.error("Failed:", err);
+      } finally {
         setLoading(false);
-      })
-      .catch(err => {
-        console.error("Failed to fetch leaderboard:", err);
-        setLoading(false);
-      });
+      }
+    };
+    fetchLeaderboard();
   }, []);
 
   // Helper: 產生隨機背景色 (根據名字計算 Hash)
@@ -48,7 +42,7 @@ export default function LeaderboardPage() {
 
       {/* ★ 1. 設定固定高度 (h-[600px]) 並使用 flex-col 佈局 */}
       <div className="bg-[#1e1f24] rounded-xl border border-gray-800 overflow-hidden flex flex-col h-[600px]">
-        
+
         {/* ★ 2. 表頭固定 (flex-none) */}
         <div className="flex-none flex items-center p-4 border-b border-gray-700 bg-gray-900/90 text-gray-400 text-sm font-medium z-10 backdrop-blur-sm">
           <div className="w-16 text-center">排名</div>
@@ -64,22 +58,21 @@ export default function LeaderboardPage() {
           ) : (
             <div className="divide-y divide-gray-800">
               {members.map((member, index) => (
-                <div 
-                  key={member.id} 
+                <div
+                  key={member.id}
                   className="flex items-center p-4 hover:bg-gray-800/50 transition-colors"
                 >
                   {/* 排名 */}
-                  <div className={`w-16 text-center text-xl font-bold ${
-                    index === 0 ? 'text-yellow-400' :
-                    index === 1 ? 'text-gray-300' :
-                    index === 2 ? 'text-orange-400' : 'text-gray-500'
-                  }`}>
+                  <div className={`w-16 text-center text-xl font-bold ${index === 0 ? 'text-yellow-400' :
+                      index === 1 ? 'text-gray-300' :
+                        index === 2 ? 'text-orange-400' : 'text-gray-500'
+                    }`}>
                     {index + 1}
                   </div>
 
                   {/* 頭像與資訊 */}
                   <div className="flex-1 flex items-center gap-4">
-                    
+
                     {/* ★ 4. 純 CSS 文字頭像 (解決圖片載入問題) */}
                     <div className={`
                       w-12 h-12 rounded-full flex items-center justify-center 
