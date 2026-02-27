@@ -68,7 +68,10 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         {/* 全站 Header */}
         <Header
           onMenuClick={() => setSidebarOpen(true)}
-          onLoginClick={() => setLoginModalOpen(true)}
+          onLoginClick={() => {
+            console.log("Header Login Button Clicked");
+            setLoginModalOpen(true);
+          }}
         />
 
         {/* 頁面內容 */}

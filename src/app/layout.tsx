@@ -6,6 +6,7 @@ import { Toaster } from 'sonner'; // 1. 確認有引入這行
 
 import { AuthProvider } from "@/context/AuthContext";
 import { JourneyProvider } from "@/context/JourneyContext";
+import OnboardingOverlay from "@/components/layout/OnboardingOverlay";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <JourneyProvider>
+            <OnboardingOverlay />
             {children}
 
             {/* ★★★ 2. 必須加上這一行，Sonner 的提示視窗才會出現 ★★★ */}

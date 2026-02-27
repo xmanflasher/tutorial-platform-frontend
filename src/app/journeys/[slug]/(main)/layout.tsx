@@ -1,36 +1,54 @@
 // src/app/journeys/[slug]/(main)/layout.tsx
-'use client'; // ★ 1. 必須加上這行，因為用到了 Context Hook
+'use client';
 
 import React, { useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
-import { useJourney } from "@/context/JourneyContext"; // ★ 2. 引入 Context Hook
+import LoginModal from "@/components/auth/LoginModal";
+import { useAuth } from "@/context/AuthContext";
+import { useJourney } from "@/context/JourneyContext";
 
 export default function MainJourneyLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    // ★ 3. 從 Context 取得當前旅程資料
     const { activeJourney } = useJourney();
+    const { login } = useAuth();
 
-    // ★ 4. 管理手機版 Sidebar 開關狀態 (為了滿足 onClose 屬性)
     const [isSidebarOpen, setSidebarOpen] = useState(false);
+    const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+
+    const handleMockLogin = async (email: string) => {
+        try {
+            const res = await fetch(`http://localhost:8080/api/auth/dev-login?email=${email}`, {
+                method: 'POST',
+            });
+
+            if (res.ok) {
+                const dbUser = await res.json();
+                login(dbUser);
+                setLoginModalOpen(false);
+            } else {
+                alert("登入失敗，請確認後端是否啟動");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("連線錯誤");
+        }
+    };
 
     return (
         <div className="flex min-h-screen bg-[#0d0e11] text-white">
-            {/* 1. 左側固定主選單 */}
             <Sidebar
-                // ★ 5. 關鍵修正：把資料傳進去！
-                onClose={() => setSidebarOpen(false)} // ★ 6. 補上必要屬性
+                onClose={() => setSidebarOpen(false)}
                 className={`
                     w-56 h-screen fixed left-0 top-0 z-50 
                     md:flex 
-                    ${isSidebarOpen ? 'flex' : 'hidden'} // 簡單的手機版顯示邏輯
+                    ${isSidebarOpen ? 'flex' : 'hidden'}
                 `}
             />
 
-            {/* 手機版遮罩 (可選，提升體驗) */}
             {isSidebarOpen && (
                 <div
                     className="fixed inset-0 bg-black/50 z-40 md:hidden"
@@ -38,18 +56,21 @@ export default function MainJourneyLayout({
                 />
             )}
 
-            {/* 2. 右側內容區域 */}
-            <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
-
-                {/* Header 通常也需要控制 Sidebar 開關 */}
+            <div className="flex-1 md:ml-56 flex flex-col min-h-screen content-container">
                 <Header
                     onMenuClick={() => setSidebarOpen(true)}
-                // 如果 Header 需要登入功能，也可以在這裡補上 onLoginClick
+                    onLoginClick={() => setLoginModalOpen(true)}
                 />
 
                 <main className="flex-1 p-6 overflow-y-auto">
                     {children}
                 </main>
+
+                <LoginModal
+                    isOpen={isLoginModalOpen}
+                    onClose={() => setLoginModalOpen(false)}
+                    onMockLogin={handleMockLogin}
+                />
             </div>
         </div>
     );

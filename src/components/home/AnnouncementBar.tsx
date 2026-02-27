@@ -7,12 +7,14 @@ export default function AnnouncementBar({ data }: { data: Announcement }) {
       <div className="text-slate-200 text-sm md:text-base font-medium text-center md:text-left">
         {data.message}
       </div>
-      <Link
-        href={data.linkHref}
-        className="px-6 py-1.5 bg-yellow-400 hover:bg-yellow-500 text-slate-900 text-sm font-bold rounded transition-colors whitespace-nowrap"
-      >
-        {data.linkText}
-      </Link>
+      {data.linkHref && (
+        <Link
+          href={data.linkHref}
+          className="px-6 py-1.5 bg-yellow-400 hover:bg-yellow-500 text-slate-900 text-sm font-bold rounded transition-colors whitespace-nowrap"
+        >
+          {data.linkText || "了解詳情"}
+        </Link>
+      )}
     </div>
   );
 }

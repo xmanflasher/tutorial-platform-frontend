@@ -25,7 +25,11 @@ export default function UserMenu() {
   if (!user) return null;
 
   // 計算經驗值百分比 (避免超過 100%)
-  const expPercentage = Math.min((user.currentExp / user.maxExp) * 100, 100);
+  const exp = user.exp || 0;
+  const nextLevelExp = user.nextLevelExp || 100;
+  const expPercentage = Math.min((exp / nextLevelExp) * 100, 100);
+
+  const displayAvatar = user.avatar || user.pictureUrl;
 
   return (
     <div className="relative" ref={menuRef}>
@@ -34,9 +38,8 @@ export default function UserMenu() {
         onClick={() => setIsOpen(!isOpen)}
         className="w-10 h-10 rounded-full overflow-hidden border-2 border-slate-700 hover:border-slate-500 transition-colors focus:outline-none focus:border-slate-400"
       >
-        {user.avatar ? (
-          /* 建議使用 next/image，這裡依您提供的 img 標籤實作 */
-          <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+        {displayAvatar ? (
+          <img src={displayAvatar} alt={user.name} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full bg-slate-600 flex items-center justify-center text-white font-bold">
             {user.name.charAt(0).toUpperCase()}
@@ -54,7 +57,7 @@ export default function UserMenu() {
 
             <div className="flex justify-between text-sm font-bold text-slate-200 mb-1">
               <span>Lv. {user.level}</span>
-              <span className="text-slate-400">({user.currentExp}/{user.maxExp})</span>
+              <span className="text-slate-400">({exp}/{nextLevelExp})</span>
             </div>
 
             {/* 進度條 */}
