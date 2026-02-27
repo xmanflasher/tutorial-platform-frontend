@@ -8,18 +8,32 @@ import MarketingBanner from "@/components/MarketingBanner";
 import { Loader2 } from "lucide-react";
 import { userService } from "@/services/userService"; // 匯入 Service
 import { UserProfile } from "@/types/User";
+import { useAuth } from "@/context/AuthContext"; // ★ 新增
 
 
 
 export default function PortfolioPage({ params }: { params: Promise<{ userId: string }> }) {
+    const { user: authUser } = useAuth(); // ★ 引入登入資訊
     const [userId, setUserId] = useState<string>("");
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
+    const [hasRecords, setHasRecords] = useState<boolean>(true); // ★ 新增
 
     useEffect(() => {
         const init = async () => {
             const resolvedParams = await params;
-            const uid = resolvedParams.userId;
+            let uid = resolvedParams.userId;
+
+            // 如果路徑是 /users/me/portfolio，解析出真正的 ID
+            if (uid === 'me' && authUser?.id) {
+                uid = authUser.id.toString();
+            } else if (uid === 'me') {
+                // 如果未登入或 user.id 為空，無法解析 'me'
+                console.warn("[PortfolioPage] Cannot resolve 'me' without authenticated user id");
+                setLoading(false);
+                return;
+            }
+
             setUserId(uid);
 
             const data = await userService.getUserProfile(uid);
@@ -27,7 +41,7 @@ export default function PortfolioPage({ params }: { params: Promise<{ userId: st
             setLoading(false);
         };
         init();
-    }, [params]);
+    }, [params, authUser]);
 
     if (loading) {
         return (
@@ -45,10 +59,15 @@ export default function PortfolioPage({ params }: { params: Promise<{ userId: st
             <MarketingBanner />
 
             {/* 2. 個人檔案頭部 (Header + Stats) */}
-            <PortfolioHeader profile={profile} />
+            <PortfolioHeader profile={profile} isEmpty={!hasRecords} />
 
             {/* 3. 挑戰歷程 (Timeline) */}
-            {userId && <ChallengePortfolio targetUserId={userId} />}
+            {userId && (
+                <ChallengePortfolio
+                    targetUserId={userId}
+                    onRecordsLoaded={(count) => setHasRecords(count > 0)}
+                />
+            )}
 
         </div>
     );

@@ -42,6 +42,7 @@ interface GymData {
 
 interface ChallengePortfolioProps {
     targetUserId: string;
+    onRecordsLoaded?: (count: number) => void; // ★ 新增
 }
 
 // --- Helper & ZoomableImage & SubmissionGallery ---
@@ -330,7 +331,7 @@ const FeedbackCard = ({ feedback, title, isCollapsed, onToggleCollapse }: {
 
 // --- Main Page Component ---
 // ... (保持不變，請複製你原本的 Main Page Component)
-export default function ChallengePortfolio({ targetUserId }: ChallengePortfolioProps) {
+export default function ChallengePortfolio({ targetUserId, onRecordsLoaded }: ChallengePortfolioProps) {
     const [records, setRecords] = useState<ChallengeRecord[]>([]);
     const [selectedRecord, setSelectedRecord] = useState<ChallengeRecord | null>(null);
     const [loading, setLoading] = useState(true);
@@ -369,10 +370,16 @@ export default function ChallengePortfolio({ targetUserId }: ChallengePortfolioP
                         .filter((r: ChallengeRecord) => r.reviewedAt != null || r.status === 'SUCCESS')
                         .sort((a, b) => b.createdAt - a.createdAt);
 
-                    setRecords(filtered);
-                    if (filtered.length > 0) setSelectedRecord(filtered[0]);
+                    if (filtered.length > 0) {
+                        setSelectedRecord(filtered[0]);
+                    } else {
+                        setSelectedRecord(null);
+                    }
+                    onRecordsLoaded?.(filtered.length); // ★ 通知數量
                 } else {
                     setRecords([]);
+                    setSelectedRecord(null);
+                    onRecordsLoaded?.(0); // ★ 通知數量
                 }
             } catch (error) { console.error("Fetch Error:", error); }
             finally { setLoading(false); }

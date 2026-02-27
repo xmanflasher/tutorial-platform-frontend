@@ -1,8 +1,19 @@
 'use client';
 
 import { Github, Disc, Link2, Info, Receipt } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 export default function ProfilePage() {
+  const { user } = useAuth();
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center p-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
 
@@ -18,15 +29,15 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12 text-sm">
           <div>
             <label className="block text-gray-500 mb-1">暱稱</label>
-            <div className="text-white font-medium text-base">再一次就掛機</div>
+            <div className="text-white font-medium text-base">{user.nickName || user.name || '未設定'}</div>
           </div>
           <div>
             <label className="block text-gray-500 mb-1">職業</label>
-            <div className="text-white font-medium text-base">-</div>
+            <div className="text-white font-medium text-base">{user.region || '尚未設定'}</div>
           </div>
           <div>
             <label className="block text-gray-500 mb-1">等級</label>
-            <div className="text-white font-medium text-base">1</div>
+            <div className="text-white font-medium text-base">{user.level}</div>
           </div>
           <div>
             <label className="block text-gray-500 mb-1">突破道館數</label>
@@ -34,7 +45,7 @@ export default function ProfilePage() {
           </div>
           <div>
             <label className="block text-gray-500 mb-1">Email</label>
-            <div className="text-white font-medium text-base">xmanflasher@gmail.com</div>
+            <div className="text-white font-medium text-base">{user.email || '未提供'}</div>
           </div>
           <div>
             <label className="block text-gray-500 mb-1">生日</label>
@@ -46,11 +57,11 @@ export default function ProfilePage() {
           </div>
           <div>
             <label className="block text-gray-500 mb-1">地區</label>
-            <div className="text-white font-medium text-base">尚未設定</div>
+            <div className="text-white font-medium text-base">{user.region || '尚未設定'}</div>
           </div>
           <div className="md:col-span-2">
             <label className="block text-gray-500 mb-1">Github 連結</label>
-            <div className="text-white font-medium text-base">...</div>
+            <div className="text-white font-medium text-base">{user.githubUrl || '...'}</div>
           </div>
         </div>
       </section>
@@ -67,14 +78,14 @@ export default function ProfilePage() {
             <p className="text-gray-400 text-xs mb-2">沒有獲得學號或身份組嗎？ <span className="underline cursor-pointer hover:text-white">點此登入存取</span></p>
             <button className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-2 bg-yellow-400 text-slate-900 font-bold rounded hover:bg-yellow-500 transition-colors">
               <Link2 size={18} />
-              綁定 Discord
+              {user.discordId ? '重新連接 Discord' : '綁定 Discord'}
             </button>
           </div>
         </div>
 
         <div className="flex items-center gap-3 bg-[#111827] p-4 rounded border border-gray-700">
           <Disc className="text-indigo-400" size={28} />
-          <span className="text-gray-400">尚未綁定 Discord 帳號</span>
+          <span className="text-gray-400">{user.discordId || '尚未綁定 Discord 帳號'}</span>
         </div>
       </section>
 
@@ -87,16 +98,16 @@ export default function ProfilePage() {
           </div>
           <button className="flex items-center gap-2 px-6 py-2 bg-yellow-400 text-slate-900 font-bold rounded hover:bg-yellow-500 transition-colors">
             <Link2 size={18} />
-            綁定 GitHub
+            {user.githubUrl ? '重新連接 GitHub' : '綁定 GitHub'}
           </button>
         </div>
         <div className="flex items-center gap-3 bg-[#111827] p-4 rounded border border-gray-700">
           <Github className="text-white" size={28} />
-          <span className="text-gray-400">尚未綁定 GitHub 帳號</span>
+          <span className="text-gray-400">{user.githubUrl ? `已綁定: ${user.githubUrl.split('/').pop()}` : '尚未綁定 GitHub 帳號'}</span>
         </div>
       </section>
 
-      {/* 4. GitHub Repos (參考截圖) */}
+      {/* 4. GitHub Repos */}
       <section className="bg-[#1e1f24] border border-gray-800 rounded-lg p-6">
         <h2 className="text-lg font-bold text-white mb-4">課程 GitHub Repos</h2>
         <div className="border border-gray-700 bg-[#111827] p-4 rounded mb-4 flex gap-3 items-center">

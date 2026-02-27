@@ -20,8 +20,18 @@ const MOCK_STATS = [
     { label: "游刃有餘的開發能力", value: "SSS" },
 ];
 
-export default function PortfolioHeader({ profile }: { profile: UserProfile | null }) {
+export default function PortfolioHeader({ profile, isEmpty }: { profile: UserProfile | null, isEmpty?: boolean }) {
     if (!profile) return null;
+
+    // 如果沒有紀錄，顯示 F- (參考圖四)
+    const stats = isEmpty ? [
+        { label: "需求結構化分析", value: "F-" },
+        { label: "區分結構與行為", value: "F-" },
+        { label: "抽象/萃取能力", value: "F-" },
+        { label: "建立 Well-Defined Context", value: "F-" },
+        { label: "熟悉設計模式的 Form", value: "F-" },
+        { label: "游刃有餘的開發能力", value: "F-" },
+    ] : MOCK_STATS;
 
     return (
         <div className="relative w-full mb-12">
@@ -80,9 +90,11 @@ export default function PortfolioHeader({ profile }: { profile: UserProfile | nu
 
             {/* 下半部：六維能力值 Grid */}
             <div className="grid grid-cols-2 gap-px bg-gray-800 border-x border-b border-gray-800 sm:grid-cols-6 rounded-b-lg overflow-hidden">
-                {MOCK_STATS.map((stat, index) => (
+                {stats.map((stat, index) => (
                     <div key={index} className="p-4 text-center bg-[#161b22] hover:bg-[#1c2128] transition-colors group cursor-default">
-                        <div className="text-xl font-bold text-yellow-500 mb-1 group-hover:scale-110 transition-transform duration-300">
+                        <div className={`text-xl font-bold mb-1 group-hover:scale-110 transition-transform duration-300
+                            ${stat.value === 'F-' ? 'text-gray-600' : 'text-yellow-500'}
+                        `}>
                             {stat.value}
                         </div>
                         <div className="text-xs text-gray-500 group-hover:text-gray-300 transition-colors">
