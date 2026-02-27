@@ -7,6 +7,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
 interface RequestOptions extends RequestInit {
   // 選項：是否要安靜模式 (不跳錯誤視窗)
   silent?: boolean;
+  // 內部標記：是否為重試請求
+  _isRetry?: boolean;
 }
 
 /**
@@ -16,13 +18,14 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
   // 1. 處理網址
   const url = `${BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
-  // 2. 自動取得 Token (假設存在 localStorage)
+  // 2. 自動取得 Token (增加判斷，避免抓到 "null" 或 "undefined" 字串)
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+  const hasToken = token && token !== 'null' && token !== 'undefined' && token.length > 5;
 
   // 3. 設定預設 Headers
   const headers = {
     'Content-Type': 'application/json',
-    ...(token && { Authorization: `Bearer ${token}` }),
+    ...(hasToken && { Authorization: `Bearer ${token}` }),
     ...options.headers,
   };
 
@@ -30,24 +33,32 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
     const response = await fetch(url, {
       ...options,
       headers,
+      credentials: 'include', // ★ 重要：允許發送 Cookie (Session)
     });
 
     // 4. 統一錯誤處理 (Interceptor)
     if (!response.ok) {
       // 處理 401 (Token 過期/未登入)
       if (response.status === 401) {
-        console.error('登入過期');
+        // 如果原本有送 Token 卻失敗了，嘗試清除 Token 並重試一次 (可能是 Token 髒了，但路徑其實是公開的)
+        if (hasToken && !options._isRetry) {
+          console.warn('Token 驗證失敗，嘗試清除並重試...');
+          localStorage.removeItem('accessToken');
+          return await apiRequest<T>(endpoint, { ...options, _isRetry: true });
+        }
+
+        if (!options.silent) {
+          console.error('登入過期');
+        }
+        
         if (typeof window !== 'undefined') {
-          // 防止重複跳出多個 401 提示，可以加個簡單的檢查或直接跳轉
+          // 防止重複清除
           localStorage.removeItem('accessToken');
 
           // 使用 Sonner 的 error 樣式
-          toast.error('登入已過期，請重新登入');
-
-          // 延遲一下再跳轉，讓使用者看得到訊息 (可選)
-          setTimeout(() => {
-            // window.location.href = '/login'; 
-          }, 1000);
+          if (!options.silent) {
+            toast.error('登入已過期，請重新登入');
+          }
         }
         throw new Error('Unauthorized');
       }
@@ -74,10 +85,18 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
       throw new Error(`API Error: ${response.status}`);
     }
 
-    // 5. 解析回應資料 (處理 204 No Content)
+    // 5. 解析回應資料 (處理 204 No Content 或空內容)
     if (response.status === 204) return null as T;
 
-    return await response.json();
+    const text = await response.text();
+    if (!text) return null as T;
+    
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      console.warn('解析 JSON 失敗，回傳原始文字:', text);
+      return text as unknown as T;
+    }
 
   } catch (error) {
     // 網路斷線或其他 fetch 錯誤

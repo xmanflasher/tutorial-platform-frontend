@@ -10,7 +10,7 @@ export const userService = {
     async getUserProfile(userId: string): Promise<UserProfile | null> {
         if (USE_MOCK_DATA) {
             await delay(200);
-            return null; // 建議在此回傳一個 MockUser 物件
+            return null;
         }
 
         try {
@@ -19,13 +19,21 @@ export const userService = {
 
             if (Array.isArray(data) && data.length > 0) {
                 const user = data[0];
-                // 進行資料清洗 (Adapter 邏輯)
                 return {
                     id: user.id,
                     name: user.name,
                     nickName: user.nickName,
                     jobTitle: user.jobTitle,
-                    avatar: user.pictureUrl || user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`
+                    occupation: user.occupation,
+                    level: user.level,
+                    exp: user.exp,
+                    nextLevelExp: user.nextLevelExp,
+                    avatar: user.pictureUrl || user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`,
+                    region: user.region,
+                    githubUrl: user.githubUrl,
+                    discordId: user.discordId,
+                    sex: user.sex,
+                    birthDate: user.birthDate
                 };
             }
             return null;
@@ -33,5 +41,28 @@ export const userService = {
             console.error("[userService] Failed to fetch profile", error);
             return null;
         }
+    },
+
+    /**
+     * 更新使用者資料
+     */
+    async updateProfile(userId: string, data: any): Promise<boolean> {
+        try {
+            await apiRequest(`/users/${userId}`, {
+                method: 'PATCH',
+                body: JSON.stringify(data)
+            });
+            return true;
+        } catch (error) {
+            console.error("[userService] Failed to update profile", error);
+            return false;
+        }
+    },
+
+    /**
+     * 更新使用者身份 (保留舊的相容性)
+     */
+    async updateUserRole(userId: string, role: string): Promise<boolean> {
+        return this.updateProfile(userId, { jobTitle: role, occupation: role });
     }
 };
