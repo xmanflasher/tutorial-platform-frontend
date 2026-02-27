@@ -8,6 +8,13 @@ export interface UserProfile {
     avatar: string;
     level?: number;
     exp?: number;
+    occupation?: string;
+    region?: string;
+    githubUrl?: string;
+    discordId?: string;
+    sex?: string;
+    birthDate?: string;
+    nextLevelExp?: number;
 }
 
 export interface LeaderboardMember {
