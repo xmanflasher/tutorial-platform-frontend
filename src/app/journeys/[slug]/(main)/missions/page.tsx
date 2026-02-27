@@ -2,10 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Clock, Gift, Lock, CheckCircle2, Swords, Loader2, Calendar } from "lucide-react";
+import { Clock, Gift, Lock, CheckCircle2, Swords, Loader2, Calendar, X } from "lucide-react";
 // ★ 請確認 @/types 裡的 MemberMission 介面已經包含 duration: number
 import { MemberMission } from "@/types";
 import { missionService } from "@/services/missionService";
+import LoadingRunner from "@/components/ui/LoadingRunner";
 
 export default function MissionsPage() {
     const params = useParams();
@@ -14,6 +15,7 @@ export default function MissionsPage() {
     const [missions, setMissions] = useState<MemberMission[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<"AVAILABLE" | "IN_PROGRESS" | "PAST">("AVAILABLE");
+    const [selectedMission, setSelectedMission] = useState<MemberMission | null>(null);
 
     useEffect(() => {
         if (journeySlug) {
@@ -44,7 +46,7 @@ export default function MissionsPage() {
     if (loading) {
         return (
             <div className="min-h-screen bg-[#0d0e11] flex items-center justify-center text-white">
-                <Loader2 className="w-8 h-8 animate-spin text-yellow-400" />
+                <LoadingRunner />
             </div>
         );
     }
@@ -76,8 +78,42 @@ export default function MissionsPage() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                     {displayMissions.map((mission) => (
-                        <MissionCard key={mission.missionId} mission={mission} />
+                        <MissionCard key={mission.missionId} mission={mission} setSelectedMission={setSelectedMission} />
                     ))}
+                </div>
+            )}
+
+            {/* Mission Detail Modal */}
+            {selectedMission && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+                    <div className="relative w-full max-w-2xl bg-[#1e1f24] rounded-xl border border-gray-700 shadow-2xl p-8">
+                        <button onClick={() => setSelectedMission(null)} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                            <X className="w-6 h-6" />
+                        </button>
+                        <h2 className="text-2xl font-bold text-yellow-400 mb-4">{selectedMission.name}</h2>
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-sm font-semibold text-gray-400 mb-2 uppercase tracking-wider">任務說明</h3>
+                                <div className="bg-[#15171b] p-4 rounded-lg border border-gray-800 text-gray-200">
+                                    {selectedMission.description}
+                                </div>
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-semibold text-gray-400 mb-2 uppercase tracking-wider">完成條件</h3>
+                                <div className="bg-[#15171b] p-4 rounded-lg border border-gray-800">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-yellow-400" />
+                                        <span className="text-gray-200">{selectedMission.unlockConditionDescription}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="mt-8 flex justify-end">
+                            <button onClick={() => setSelectedMission(null)} className="px-6 py-2 bg-gray-700 text-white rounded font-bold hover:bg-gray-600 transition-colors">
+                                關閉
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
@@ -96,7 +132,7 @@ function TabButton({ label, active, onClick }: { label: string; active: boolean;
 }
 
 // ★ 修正後的 MissionCard
-function MissionCard({ mission }: { mission: MemberMission }) {
+function MissionCard({ mission, setSelectedMission }: { mission: MemberMission, setSelectedMission: (m: MemberMission) => void }) {
     const isLocked = mission.status === "LOCKED";
     const isInProgress = mission.status === "IN_PROGRESS";
     const isCompleted = mission.status === "COMPLETED";
@@ -165,21 +201,52 @@ function MissionCard({ mission }: { mission: MemberMission }) {
                 )}
             </div>
 
-            <div className="mt-4">
+            <div className="mt-4 flex gap-2">
                 {isLocked ? (
-                    <button disabled className="w-full py-3 rounded bg-[#2d333b] text-gray-500 font-bold cursor-not-allowed border border-gray-700">
+                    <button disabled className="flex-1 py-3 rounded bg-[#2d333b] text-gray-500 font-bold cursor-not-allowed border border-gray-700">
                         尚未達成開啟條件
                     </button>
                 ) : isInProgress ? (
-                    <button className="w-full py-3 rounded bg-blue-600 text-white font-bold hover:bg-blue-500 transition-colors">
-                        繼續任務
-                    </button>
+                    <>
+                        <button
+                            onClick={() => {
+                                if (confirm("確定要延長任務期限嗎？將消耗一次機會卡並延長 15 天的時間。")) {
+                                    missionService.extendMission(mission.missionId)
+                                        .then(() => window.location.reload())
+                                        .catch((err: any) => alert(err.message));
+                                }
+                            }}
+                            className="flex-1 py-3 rounded bg-gray-800 text-white font-bold hover:bg-gray-700 transition-colors border border-gray-600"
+                        >
+                            延長期限
+                        </button>
+                        <button
+                            onClick={() => setSelectedMission(mission)}
+                            className="flex-1 py-3 rounded bg-yellow-400 text-black font-bold hover:bg-yellow-300 transition-colors"
+                        >
+                            查看詳情
+                        </button>
+                    </>
                 ) : isCompleted ? (
-                    <button className="w-full py-3 rounded bg-green-600 text-white font-bold hover:bg-green-500 transition-colors animate-bounce">
+                    <button
+                        onClick={() => {
+                            missionService.claimReward(mission.missionId)
+                                .then(() => window.location.reload())
+                                .catch((err: any) => alert(err.message));
+                        }}
+                        className="w-full py-3 rounded bg-green-600 text-white font-bold hover:bg-green-500 transition-colors animate-bounce"
+                    >
                         領取獎勵
                     </button>
                 ) : (
-                    <button className="w-full py-3 rounded bg-yellow-400 text-black font-bold hover:bg-yellow-300 transition-colors shadow-lg shadow-yellow-400/10">
+                    <button
+                        onClick={() => {
+                            missionService.acceptMission(mission.missionId)
+                                .then(() => window.location.reload())
+                                .catch((err: any) => alert(err.message));
+                        }}
+                        className="w-full py-3 rounded bg-yellow-400 text-black font-bold hover:bg-yellow-300 transition-colors shadow-lg shadow-yellow-400/10"
+                    >
                         接受任務
                     </button>
                 )}
