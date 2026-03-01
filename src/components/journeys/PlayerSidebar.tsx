@@ -51,7 +51,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
 
         journey.chapters.forEach((chapter) => {
             const hasActiveMission = chapter.lessons.some((lesson) =>
-                pathname.includes(`/missions/${lesson.id}`)
+                pathname.includes(`/lessons/${lesson.id}`)
             );
             if (hasActiveMission) {
                 setExpandedChapterIds((prev) =>
@@ -121,7 +121,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
                                 >
                                     {chapter.lessons.map((lesson) => {
                                         // 判斷是否為當前頁面
-                                        const isActive = pathname.includes(`/missions/${lesson.id}`);
+                                        const isActive = pathname.includes(`/lessons/${lesson.id}`);
 
                                         // 這裡先假定還沒有 isCompleted 欄位
                                         const isCompleted = false;
@@ -130,7 +130,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
                                             <Link
                                                 key={lesson.id}
                                                 // 組裝 URL：這裡使用 props 傳進來的 journey.slug
-                                                href={`/journeys/${safeSlug}/chapters/${chapter.id}/missions/${lesson.id}`}
+                                                href={`/journeys/${safeSlug}/chapters/${chapter.id}/lessons/${lesson.id}`}
                                                 className={cn(
                                                     "flex items-center gap-3 px-4 py-3 text-sm transition-colors border-l-[3px]",
                                                     isActive

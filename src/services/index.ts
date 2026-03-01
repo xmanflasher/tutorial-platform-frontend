@@ -6,3 +6,4 @@ export * from './missionService';
 export * from './lessonService';
 export * from './recordService';
 export * from './userService';
+export * from './orderService';

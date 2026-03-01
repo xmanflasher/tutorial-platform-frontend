@@ -109,7 +109,7 @@ export default function RoadmapView() {
             try {
                 setLoading(true);
                 // 直接使用封裝好的 Service 方法
-                const mergedData = await gymService.getMergedGyms(activeJourney.gyms);
+                const mergedData = await gymService.getMergedGyms(activeJourney.gyms, activeJourney.slug);
                 setGymsWithProgress(mergedData);
             } catch (error) {
                 console.error("載入 Roadmap 失敗:", error);

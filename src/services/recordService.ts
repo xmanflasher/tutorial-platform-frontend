@@ -14,8 +14,9 @@ export const recordService = {
         }
 
         try {
-            // 假設 API 路由為 /gym-challenge-records/me
-            return await apiRequest('/gym-challenge-records/me');
+            // 修正：路徑需符合後端新定義的 /api/gym-challenge-records/me
+            // 加上 silent: true，避免他在沒登入時一直跳 Toast
+            return await apiRequest('/gym-challenge-records/me', { silent: true });
         } catch (error) {
             // ★ 降級防呆：連線失敗 (ECONNREFUSED) 時回傳空陣列
             // 這樣 gymService 的 Map 才不會崩潰，且能正常顯示地圖 (只是會鎖定)
