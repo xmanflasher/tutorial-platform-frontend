@@ -1,6 +1,6 @@
 import { homeService } from '@/services';
 import CourseCard from '@/components/courses/CourseCard';
-import { Receipt } from 'lucide-react';
+import OrderHistory from '@/components/courses/OrderHistory';
 
 export const metadata = {
   title: '所有課程 - 水球軟體學院',
@@ -26,16 +26,7 @@ export default async function CoursesPage() {
       </div>
 
       {/* 2. 訂單紀錄區塊 */}
-      <section className="border border-slate-700 rounded-xl bg-[#111827] p-8 min-h-[300px] flex flex-col">
-        <div className="flex items-center gap-3 mb-8">
-          <Receipt className="text-white" size={28} />
-          <h2 className="text-2xl font-bold text-yellow-400">訂單紀錄</h2>
-        </div>
-
-        <div className="flex-1 flex items-center justify-center text-slate-500">
-          目前沒有訂單紀錄
-        </div>
-      </section>
+      <OrderHistory />
 
     </div>
   );

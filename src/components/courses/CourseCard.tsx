@@ -1,6 +1,10 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Course } from '@/types';
-import { Image as ImageIcon } from 'lucide-react'; // 引入圖示
+import { Image as ImageIcon } from 'lucide-react';
+import { orderStore } from '@/lib/orderStore';
 
 const getButtonStyle = (style: 'solid' | 'outline' | 'disabled') => {
   switch (style) {
@@ -16,29 +20,56 @@ const getButtonStyle = (style: 'solid' | 'outline' | 'disabled') => {
 };
 
 export default function CourseCard({ course }: { course: Course }) {
+  const [isOwned, setIsOwned] = useState(false);
+
+  useEffect(() => {
+    const checkOwnership = () => {
+      setIsOwned(orderStore.isCourseOwned(course.slug));
+    };
+
+    checkOwnership();
+
+    window.addEventListener('storage', checkOwnership);
+    // Also listen for custom events if we are in the same tab
+    window.addEventListener('order-completed', checkOwnership);
+
+    return () => {
+      window.removeEventListener('storage', checkOwnership);
+      window.removeEventListener('order-completed', checkOwnership);
+    };
+  }, [course.slug]);
+
+  // Override labels and buttons if owned
+  const displayStatusLabel = isOwned ? '已擁有' : course.statusLabel;
+  const primaryAction = isOwned
+    ? { text: '開始上課', href: `/journeys/${course.slug}`, style: 'solid' as const }
+    : course.primaryAction;
+
   return (
     <div className="flex flex-col bg-[#111827] border border-slate-700/50 rounded-xl overflow-hidden hover:border-yellow-400/50 transition-all duration-300 shadow-lg relative group h-full">
-      
+
       {/* 1. 圖片區域 */}
       <div className="h-48 w-full bg-slate-800 relative overflow-hidden group">
         {course.image ? (
-          <img 
-            src={course.image} 
-            alt={course.title} 
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+          <img
+            src={course.image}
+            alt={course.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900">
-             {/* 修正：改用 Icon，避免長文字撐爆寬度 */}
-             <ImageIcon size={48} className="text-slate-600 mb-2 opacity-50" />
-             <span className="text-xs text-slate-600 font-mono tracking-widest uppercase opacity-50">NO IMAGE</span>
+            <ImageIcon size={48} className="text-slate-600 mb-2 opacity-50" />
+            <span className="text-xs text-slate-600 font-mono tracking-widest uppercase opacity-50">NO IMAGE</span>
           </div>
         )}
-        
+
         {/* 狀態標籤 (懸浮在圖片右上角) */}
-        {course.statusLabel && (
-          <div className="absolute top-3 right-3 px-3 py-1 bg-yellow-400 text-slate-900 text-xs font-bold rounded-full shadow-md z-10">
-            {course.statusLabel}
+        {displayStatusLabel && (
+          <div className={cn(
+            "absolute top-3 right-3 px-3 py-1 text-xs font-bold rounded-full shadow-md z-10",
+            isOwned ? "bg-emerald-500 text-white" : "bg-yellow-400 text-slate-900"
+          )}>
+            {displayStatusLabel}
           </div>
         )}
       </div>
@@ -64,30 +95,30 @@ export default function CourseCard({ course }: { course: Course }) {
 
         {/* 3. 底部區塊 (Coupon + 按鈕) */}
         <div className="mt-auto space-y-3">
-          
+
           {/* 折價券 */}
-          {course.couponText ? (
+          {course.couponText && !isOwned ? (
             <div className="bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-xs font-bold py-2 px-3 rounded text-center truncate">
               {course.couponText}
             </div>
           ) : (
-             // 佔位，保持卡片高度一致
-             <div className="h-[34px]" />
+            // 佔位，保持卡片高度一致 or 顯示已擁有文字
+            <div className="h-[34px]" />
           )}
 
           {/* 按鈕群組 */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className={cn("grid gap-3", isOwned ? "grid-cols-1" : "grid-cols-2")}>
             <Link
-              href={course.primaryAction.href}
-              className={`py-2 text-center text-sm font-bold rounded transition-all flex items-center justify-center truncate px-1 ${getButtonStyle(course.primaryAction.style)}`}
+              href={primaryAction.href}
+              className={`py-2 text-center text-sm font-bold rounded transition-all flex items-center justify-center truncate px-1 ${getButtonStyle(primaryAction.style)}`}
             >
-              {course.primaryAction.text}
+              {primaryAction.text}
             </Link>
 
-            {course.secondaryAction && (
+            {!isOwned && course.secondaryAction && (
               <Link
                 href={course.secondaryAction.href}
-                className={`py-2 text-center text-sm font-bold rounded transition-all flex items-center justify-center truncate px-1 ${getButtonStyle(course.secondaryAction.style)}`}
+                className={`py-2 text-center text-sm font-bold rounded transition-all flex items-center justify-center truncate px-1 bg-yellow-400 text-slate-900 hover:bg-yellow-500`}
               >
                 {course.secondaryAction.text}
               </Link>
@@ -97,4 +128,8 @@ export default function CourseCard({ course }: { course: Course }) {
       </div>
     </div>
   );
+}
+
+function cn(...inputs: any[]) {
+  return inputs.filter(Boolean).join(' ');
 }

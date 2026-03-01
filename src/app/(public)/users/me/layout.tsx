@@ -10,6 +10,7 @@ const TABS = [
   { name: '道館徽章', href: '/users/me/gym-badges' },
   { name: '技能評級', href: '/users/me/skills' },
   { name: '證書', href: '/users/me/certificates' },
+  { name: '訂單紀錄', href: '/users/me/orders' },
 ];
 
 export default function UserProfileLayout({ children }: { children: React.ReactNode }) {
