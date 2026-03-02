@@ -25,7 +25,7 @@ export const MOCK_FEATURED_COURSES: Course[] = [
     statusLabel: '尚未擁有',
     couponText: '你有一張 3,000 折價券',
     primaryAction: { text: '試聽課程', href: '/journeys/software-design-pattern', style: 'solid' },
-    secondaryAction: { text: '立刻購買', href: '/checkout/sdp', style: 'outline' },
+    secondaryAction: { text: '立刻購買', href: '/journeys/software-design-pattern/orders', style: 'outline' },
     tags: ['軟體架構', '設計模式'],
     image: '/images/course_0.png'
   },
@@ -37,8 +37,8 @@ export const MOCK_FEATURED_COURSES: Course[] = [
     description: 'AI Top 1% 工程師必修課，掌握規格驅動的全自動化開發',
     slug: 'ai-bdd',
     statusLabel: '尚未擁有',
-    primaryAction: { text: '僅限付費', href: '#', style: 'disabled' },
-    secondaryAction: { text: '立刻購買', href: '/checkout/ai-bdd', style: 'outline' },
+    primaryAction: { text: '試聽課程', href: '/journeys/ai-bdd', style: 'solid' },
+    secondaryAction: { text: '立刻購買', href: '/journeys/ai-bdd/orders', style: 'outline' },
     tags: ['AI', 'BDD'],
     image: '/images/course_4.png'
   },
