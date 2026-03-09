@@ -49,3 +49,9 @@ export interface GymDetailData {
     createdAt?: number;
 }
 
+export interface GymData {
+    id: number;
+    name: string;
+    // 依據需要可擴充
+}
+

@@ -38,16 +38,16 @@ export const gymService = {
       // 增加防呆：同時檢查 Slug 與 ID (如果之後有傳入 ID 的話)
       const isOwned = slug ? (orderStore.isCourseOwned(slug)) : false;
 
-      return journeyGyms.map(gym => {
+      return journeyGyms.map((gym, index) => {
         const record = recordMap.get(gym.id);
         
         // 核心邏輯：
         // 1. 如果沒購買 (isOwned === false)，則全部鎖定 (isLocked: true)。
-        // 2. 如果已購買，則依序解鎖：第一關預設開啟 (gym.code === "1")，其餘需有過關紀錄。
+        // 2. 如果已購買，則依序解鎖：該分頁的第一關預設開啟 (index === 0)，其餘需有過關紀錄。
         return {
           ...gym,
           currentStars: record?.status === 'PASSED' ? (record?.ratings?.stars || 0) : 0,
-          isLocked: !isOwned || (!record && gym.code !== "1")
+          isLocked: !isOwned || (!record && index !== 0)
         };
       });
     } catch (error) {
@@ -62,9 +62,9 @@ export const gymService = {
   fallbackGymProgress(gyms: Gym[], slug?: string): Gym[] {
     const isOwned = slug ? orderStore.isCourseOwned(slug) : false;
 
-    return gyms.map(gym => ({
+    return gyms.map((gym, index) => ({
       ...gym,
-      isLocked: !isOwned || (gym.code !== "1" && !gym.code.includes('.')), 
+      isLocked: !isOwned || (index !== 0 && !gym.code.includes('.')), 
       currentStars: 0
     }));
   }

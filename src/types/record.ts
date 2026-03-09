@@ -44,3 +44,17 @@ export interface GymChallengeRecord {
     completedAt?: string;      // completed_at, timestamp
     bookingCompletedAt?: string; // booking_completed_at, timestamp
 }
+
+// 挑戰紀錄 (用於個人檔案/作品集導向)
+export interface ChallengeRecord {
+    id: number;
+    gymId: number;
+    gymName?: string;
+    gymChallengeId: number;
+    status: "SUCCESS" | "FAILED" | "SUBMITTED" | "IN_PROGRESS";
+    feedback?: string;
+    ratings?: Record<string, string>;
+    submission?: Record<string, string>;
+    createdAt: number;
+    reviewedAt?: number;
+}

@@ -59,6 +59,11 @@ export const orderStore = {
         return orders.some(o => o.courseSlug === courseSlug && o.status === 'PAID');
     },
 
+    hasPendingOrder(courseSlug: string): boolean {
+        const orders = this.getOrders();
+        return orders.some(o => o.courseSlug === courseSlug && o.status === 'PENDING');
+    },
+
     isCourseOwnedById(journeyId: string | number): boolean {
         const orders = this.getOrders();
         const idStr = String(journeyId);

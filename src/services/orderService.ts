@@ -43,8 +43,6 @@ export const orderService = {
             orderStore.addOrder(newOrder);
 
             return newOrder;
-
-            return newOrder;
         } catch (error) {
             console.error('[orderService] Failed to create order', error);
             throw error;
@@ -95,6 +93,32 @@ export const orderService = {
             return true;
         } catch (error) {
             console.error('[orderService] Failed to mark order as paid', error);
+            return false;
+        }
+    },
+
+    /**
+     * 取消訂單
+     */
+    async cancelOrder(orderNumber: string): Promise<boolean> {
+        try {
+            await apiRequest<any>(`/orders/${orderNumber}/cancel`, { method: 'POST' });
+            // Sync local status 
+            const orders = orderStore.getOrders();
+            const order = orders.find(o => o.orderNumber === orderNumber);
+            if (order) {
+                orderStore.updateOrderStatus(order.id, 'CANCELLED');
+            }
+            return true;
+        } catch (error) {
+            console.error('[orderService] Failed to cancel order', error);
+            // fallback for mock
+            const orders = orderStore.getOrders();
+            const order = orders.find(o => o.orderNumber === orderNumber);
+            if (order && USE_MOCK_DATA) {
+                orderStore.updateOrderStatus(order.id, 'CANCELLED');
+                return true;
+            }
             return false;
         }
     }

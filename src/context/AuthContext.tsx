@@ -21,6 +21,7 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
+  loading: boolean;
   login: (userData: User) => void;
   logout: () => void;
 }
@@ -29,6 +30,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // ★ 1. 初始化 訪客 ID (確保 Cookie 已設定)
@@ -63,6 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           console.log("未在伺服器找到現有 Session");
         }
       }
+      setLoading(false);
     };
 
     checkSession();
@@ -99,7 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

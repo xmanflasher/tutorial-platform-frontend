@@ -40,6 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# IDE specific files
+.idea/
+.vscode/
+
 # IDE & OS Files
 .vscode/
 .idea/
