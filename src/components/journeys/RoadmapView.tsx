@@ -109,7 +109,17 @@ export default function RoadmapView() {
             try {
                 setLoading(true);
                 // 直接使用封裝好的 Service 方法
-                const mergedData = await gymService.getMergedGyms(activeJourney.gyms, activeJourney.slug);
+                let mergedData = await gymService.getMergedGyms(activeJourney.gyms, activeJourney.slug);
+
+                // Demo Mode Override
+                if (localStorage.getItem('demo_all_gyms_passed') === 'true') {
+                    mergedData = mergedData.map(gym => ({
+                        ...gym,
+                        isLocked: false,
+                        currentStars: gym.currentStars || 3 // 賦予預設星數
+                    }));
+                }
+
                 setGymsWithProgress(mergedData);
             } catch (error) {
                 console.error("載入 Roadmap 失敗:", error);

@@ -53,6 +53,18 @@ export default function CheckoutPage() {
             return;
         }
 
+        if (orderStore.isCourseOwned(course.slug)) {
+            alert('您已經擁有此課程，無須重複購買');
+            router.push(`/journeys/${course.slug}`);
+            return;
+        }
+
+        if (orderStore.hasPendingOrder(course.slug)) {
+            alert('您已有一筆待付款的訂單，請直接前往付款');
+            router.push('/users/me/orders'); // Assuming /users/me/orders exists or just route to courses? Wait, in CourseCard it routes to /users/me/orders. OrderHistory is rendered inside courses/page.tsx, right? Wait! CourseCard redirects to `/users/me/orders` but `OrderHistory.tsx` is located at `src/components/courses/OrderHistory.tsx` and usually lives on `/courses` (All Courses page). Wait, is there a `/users/me/orders` route?
+            return;
+        }
+
         try {
             const newOrder = await orderService.createOrder({
                 userId: user.id,

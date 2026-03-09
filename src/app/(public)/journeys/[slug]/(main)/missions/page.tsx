@@ -131,27 +131,35 @@ function TabButton({ label, active, onClick }: { label: string; active: boolean;
     );
 }
 
-// ★ 修正後的 MissionCard
 function MissionCard({ mission, setSelectedMission }: { mission: MemberMission, setSelectedMission: (m: MemberMission) => void }) {
     const isLocked = mission.status === "LOCKED";
     const isInProgress = mission.status === "IN_PROGRESS";
     const isCompleted = mission.status === "COMPLETED";
+    const isClaimed = mission.status === "CLAIMED";
 
     return (
-        <div className={`p-6 rounded-xl border ${isLocked ? 'border-gray-800 bg-[#121418] opacity-70' : 'border-gray-700 bg-[#161b22]'} flex flex-col justify-between h-full`}>
+        <div className={`p-6 rounded-xl border transition-all duration-300 ${isLocked ? 'border-gray-800 bg-[#121418] opacity-70' :
+                isClaimed ? 'border-gray-800 bg-[#0d0e11] opacity-50 grayscale shadow-none' :
+                    'border-gray-700 bg-[#161b22] hover:border-gray-600 hover:shadow-lg'
+            } flex flex-col justify-between h-full`}>
 
             <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                        <Swords className="w-5 h-5 text-gray-400" />
-                        <h3 className="text-xl font-bold text-gray-100">{mission.name}</h3>
+                        {isClaimed ? (
+                            <CheckCircle2 className="w-5 h-5 text-green-500" />
+                        ) : (
+                            <Swords className={`w-5 h-5 ${isLocked ? 'text-gray-600' : 'text-gray-400'}`} />
+                        )}
+                        <h3 className={`text-xl font-bold ${isClaimed ? 'text-gray-500' : 'text-gray-100'}`}>{mission.name}</h3>
                     </div>
                     {/* 顯示狀態標籤 */}
-                    <span className={`text-xs px-2 py-1 rounded ${isLocked ? 'bg-gray-800 text-gray-500' :
-                        isInProgress ? 'bg-blue-900 text-blue-200' :
-                            isCompleted ? 'bg-green-900 text-green-200' : 'bg-gray-700'
+                    <span className={`text-xs px-2 py-1 rounded font-bold uppercase tracking-wider ${isLocked ? 'bg-gray-800 text-gray-500' :
+                            isInProgress ? 'bg-blue-900/40 text-blue-300 border border-blue-800/50' :
+                                isCompleted ? 'bg-green-900/40 text-green-300 border border-green-800/50 animate-pulse' :
+                                    isClaimed ? 'bg-gray-800 text-gray-500' : 'bg-gray-700'
                         }`}>
-                        {mission.status}
+                        {isClaimed ? '已領取' : mission.status}
                     </span>
                 </div>
 
@@ -160,19 +168,17 @@ function MissionCard({ mission, setSelectedMission }: { mission: MemberMission, 
                     <div className="flex items-center gap-2">
                         <span className="text-gray-500">開啟條件:</span>
                         {isLocked ? <Lock className="w-3 h-3" /> : <CheckCircle2 className="w-3 h-3 text-green-500" />}
-                        {/* 加入 || "無" 避免空值 */}
                         <span>{mission.unlockConditionDescription || "無"}</span>
                     </div>
 
                     {/* 2. 時限 (顯示 duration) */}
                     <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4 text-gray-500" />
-                        {/* 判斷 duration 是否有值 (大於0) */}
                         <span>時限: {mission.duration ? `${mission.duration} 天` : "無限制"}</span>
                     </div>
 
                     {/* 截止日期 (僅在進行中且有設定時顯示) */}
-                    {mission.deadline && (
+                    {mission.deadline && !isClaimed && (
                         <div className="flex items-center gap-2 text-yellow-500">
                             <Calendar className="w-4 h-4" />
                             <span>截止: {new Date(mission.deadline).toLocaleDateString()}</span>
@@ -182,7 +188,6 @@ function MissionCard({ mission, setSelectedMission }: { mission: MemberMission, 
                     {/* 3. 獎勵 */}
                     <div className="flex items-center gap-2">
                         <Gift className="w-4 h-4 text-gray-500" />
-                        {/* 加入 || "無" 避免空值 */}
                         <span>獎勵: {mission.rewardDescription || "無"}</span>
                     </div>
                 </div>
@@ -205,6 +210,11 @@ function MissionCard({ mission, setSelectedMission }: { mission: MemberMission, 
                 {isLocked ? (
                     <button disabled className="flex-1 py-3 rounded bg-[#2d333b] text-gray-500 font-bold cursor-not-allowed border border-gray-700">
                         尚未達成開啟條件
+                    </button>
+                ) : isClaimed ? (
+                    <button disabled className="w-full py-3 rounded bg-[#3e442d] text-[#8c9c6c] font-bold cursor-not-allowed flex items-center justify-center gap-2">
+                        <Gift className="w-4 h-4" />
+                        已領取獎勵
                     </button>
                 ) : isInProgress ? (
                     <>
@@ -234,7 +244,7 @@ function MissionCard({ mission, setSelectedMission }: { mission: MemberMission, 
                                 .then(() => window.location.reload())
                                 .catch((err: any) => alert(err.message));
                         }}
-                        className="w-full py-3 rounded bg-green-600 text-white font-bold hover:bg-green-500 transition-colors animate-bounce"
+                        className="w-full py-3 rounded bg-green-600 text-white font-bold hover:bg-green-500 transition-colors animate-bounce shadow-lg shadow-green-600/20"
                     >
                         領取獎勵
                     </button>

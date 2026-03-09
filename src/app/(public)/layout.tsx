@@ -41,6 +41,23 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
     }
   };
 
+  const isFullScreenPage = pathname.includes('/roadmap') || pathname.includes('/lessons') || pathname.includes('/gyms') || pathname.includes('/missions') || pathname.includes('/sop');
+
+  if (isFullScreenPage) {
+    return (
+      <div className="min-h-screen bg-black text-white flex flex-col">
+        <main className="flex-1 w-full h-full">
+          {children}
+        </main>
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setLoginModalOpen(false)}
+          onMockLogin={handleMockLogin}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#0d0e11] text-white flex">
       {/* 全站 Sidebar */}

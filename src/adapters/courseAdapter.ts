@@ -16,7 +16,7 @@ export const toFeaturedCourse = (journey: JourneyDetail): Course => {
         image: journey.slug.includes('ai') ? '/images/course_4.png' : '/images/course_0.png',
         tags: journey.tags || [],
         statusLabel: '尚未擁有',
-        couponText: 'ALWAYS SHOW',
+        //couponText: 'ALWAYS SHOW',
         primaryAction: {
             text: '試聽課程',
             href: `/journeys/${journey.slug}`,

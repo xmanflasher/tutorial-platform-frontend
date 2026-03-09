@@ -12,11 +12,13 @@ import {
 import { usePathname } from "next/navigation";
 // ★ 1. 刪除 mock 引用：我們不再需要它了！
 // import { ALL_JOURNEYS } from "@/mock"; 
-import { JourneyDetail } from "@/types";
+import { JourneyDetail, Course } from "@/types";
 import { createEmptyJourney } from "@/lib/factories";
+import { homeService } from "@/services";
 
 interface JourneyContextType {
   activeJourney: JourneyDetail;
+  allJourneys: Course[];
   setActiveSlug: (slug: string) => void;
   setJourneyData: (data: JourneyDetail) => void;
   fetchUserProgress: (slug: string) => Promise<void>;
@@ -34,6 +36,7 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [manualSlug, setManualSlug] = useState<string>(DEFAULT_SLUG);
   const [apiJourneyData, setApiJourneyData] = useState<JourneyDetail | null>(null);
+  const [allJourneys, setAllJourneys] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -44,6 +47,15 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
   // split('/') 後： ["", "journeys", "slug", ...]
   const pathSegments = pathname?.split("/") || [];
   const urlSlug = pathSegments[1] === "journeys" ? pathSegments[2] : undefined;
+
+  useEffect(() => {
+    // 取得所有對外開放的旅程，供 Header 等全域元件使用
+    let isMounted = true;
+    homeService.getFeaturedCourses().then(courses => {
+      if (isMounted) setAllJourneys(courses);
+    });
+    return () => { isMounted = false; };
+  }, []);
 
   useEffect(() => {
     // 如果網址沒有 slug，才去讀 localStorage
@@ -146,6 +158,7 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
     <JourneyContext.Provider
       value={{
         activeJourney,
+        allJourneys,
         setActiveSlug: handleSetActiveSlug,
         setJourneyData: setApiJourneyData,
         fetchUserProgress: () => fetchUserProgress(targetSlug),
