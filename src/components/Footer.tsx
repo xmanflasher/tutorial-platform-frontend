@@ -6,7 +6,7 @@ import Link from 'next/link';
 // 假設這就是您的網站名稱
 const SITE_NAME = '水球軟體學院';
 
-const Footer = () => {
+const Footer: React.FC = () => {
     const currentYear = new Date().getFullYear();
 
     return (

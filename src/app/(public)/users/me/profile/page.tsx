@@ -2,6 +2,7 @@
 
 import { Github, Disc, Link2, Info, Receipt } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import OrderHistory from '@/components/courses/OrderHistory';
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -41,7 +42,7 @@ export default function ProfilePage() {
           </div>
           <div>
             <label className="block text-gray-500 mb-1">突破道館數</label>
-            <div className="text-white font-medium text-base">0</div>
+            <div className="text-white font-medium text-base">{(user as any).passedGymCount || 0}</div>
           </div>
           <div>
             <label className="block text-gray-500 mb-1">Email</label>
@@ -136,14 +137,7 @@ export default function ProfilePage() {
       </section>
 
       {/* 5. 訂單紀錄 */}
-      <section className="bg-[#1e1f24] border border-gray-800 rounded-lg p-6 min-h-[200px] flex flex-col">
-        <h2 className="text-xl font-bold text-yellow-400 mb-4 flex items-center gap-2">
-          <Receipt size={24} /> 訂單紀錄
-        </h2>
-        <div className="flex-1 flex items-center justify-center text-gray-500">
-          目前沒有訂單記錄
-        </div>
-      </section>
+      <OrderHistory />
     </div>
   );
 }

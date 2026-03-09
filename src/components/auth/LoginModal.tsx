@@ -177,6 +177,21 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
                 onClick={async () => {
                   try {
                     await logVisitorIdentity('GUEST');
+                    onMockLogin('god@waterballsa.tw');
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+                className="bg-yellow-500 hover:bg-yellow-400 text-black text-sm py-2.5 rounded border border-yellow-600 transition-all flex flex-col items-center gap-1 shadow-lg shadow-yellow-500/20"
+              >
+                <span className="font-black">👑 登入大神驗收帳號</span>
+                <span className="text-[10px] text-black/70 font-bold">(最高進度/權限)</span>
+              </button>
+
+              <button
+                onClick={async () => {
+                  try {
+                    await logVisitorIdentity('GUEST');
                     onMockLogin('xmanflasher@gmail.com');
                   } catch (err) {
                     console.error(err);
@@ -185,7 +200,7 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
                 className="bg-gray-800 hover:bg-gray-700 text-yellow-400 text-sm py-2.5 rounded border border-gray-700 transition-all flex flex-col items-center gap-1"
               >
                 <span className="font-bold">⚡ 登入通關帳號</span>
-                <span className="text-[10px] text-gray-500 opacity-80">(最高權限)</span>
+                <span className="text-[10px] text-gray-500 opacity-80">(標準通關)</span>
               </button>
 
               <button

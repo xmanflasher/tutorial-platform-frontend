@@ -1,11 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { X, ChevronRight, ChevronLeft, User, Briefcase, Rocket, Info, HelpCircle } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, User, Briefcase, Rocket, Info, HelpCircle, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { apiRequest } from '@/lib/api';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useAuth } from '@/context/AuthContext';
-import { userService } from '@/services';
+import { userService, orderService } from '@/services';
+import { announcementService } from '@/services/announcementService';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -59,6 +62,7 @@ export default function OnboardingOverlay() {
     const [step, setStep] = useState<Step>('role-selection');
     const [guideIndex, setGuideIndex] = useState(0);
     const [selectedRole, setSelectedRole] = useState<string | null>(null);
+    const [isSimulating, setIsSimulating] = useState(false);
 
     useEffect(() => {
         const completed = localStorage.getItem('onboarding_completed');
@@ -143,20 +147,173 @@ export default function OnboardingOverlay() {
     // 桌面精靈 (縮小狀態)
     if (isMinimized) {
         return (
-            <button
-                onClick={openGuide}
-                className="fixed bottom-6 right-6 z-[9999] group flex items-center gap-3 bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-full shadow-2xl transition-all hover:scale-105 active:scale-95"
-                title="閱讀導覽"
-            >
-                <div className="flex flex-col items-end mr-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    <span className="text-xs font-bold bg-black/20 px-2 py-0.5 rounded">水球精靈</span>
-                    <span className="text-[10px] text-blue-100">點我閱讀導覽</span>
+            <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end gap-3">
+                {/* 快捷操作面板 (當滑鼠移到精靈圖示上時顯示) */}
+                <div className="group relative">
+                    {/* 面板主體 */}
+                    <div className="absolute bottom-16 right-0 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 mb-2 flex flex-col gap-2 scale-95 group-hover:scale-100 origin-bottom-right">
+                        <div className="bg-[#1a1c1e] border border-white/20 rounded-xl p-4 shadow-2xl w-64 backdrop-blur-md">
+                            <div className="text-white font-bold text-sm mb-3 flex items-center gap-2 border-b border-white/10 pb-2">
+                                <Rocket className="w-4 h-4 text-yellow-500" />
+                                體驗助手 (Demo Mode)
+                            </div>
+                            {user ? (
+                                <div className="grid grid-cols-1 gap-2">
+                                    <button
+                                        onClick={() => {
+                                            localStorage.setItem('onboarding_completed', 'false');
+                                            window.location.reload();
+                                        }}
+                                        className="text-[11px] bg-blue-600/20 hover:bg-blue-600 text-blue-100 py-2 px-3 rounded-lg text-left transition-colors flex items-center justify-between"
+                                    >
+                                        <span>重啟功能導覽</span>
+                                        <ChevronRight className="w-3 h-3" />
+                                    </button>
+                                    <button
+                                        onClick={async () => {
+                                            setIsSimulating(true);
+
+                                            if (!user) {
+                                                toast.error('請先登入');
+                                                setIsSimulating(false);
+                                                return;
+                                            }
+
+                                            const toastId = toast.loading('正在觸發大批量完成訂單流程...');
+                                            try {
+                                                const freshOrders = await orderService.getUserOrders(user.id);
+                                                const pendingOrders = freshOrders.filter((o: any) => o.status === 'PENDING');
+
+                                                if (pendingOrders.length === 0) {
+                                                    toast.info('沒有待處理的訂單', { id: toastId });
+                                                    return;
+                                                }
+
+                                                for (const order of pendingOrders) {
+                                                    await orderService.markAsPaid(order.orderNumber);
+                                                }
+
+                                                window.dispatchEvent(new CustomEvent('order-completed'));
+                                                toast.success('所有待處理訂單已完成', { id: toastId });
+                                                // announcementService.emit(`✅ 已成功處理 ${pendingOrders.length} 筆訂單！`, '查看地圖', '/roadmap');
+
+                                                setTimeout(() => window.location.reload(), 2000);
+                                            } catch (e) {
+                                                toast.error('訂單處理失敗', { id: toastId });
+                                            } finally {
+                                                setTimeout(() => setIsSimulating(false), 3000);
+                                            }
+                                        }}
+                                        disabled={isSimulating}
+                                        className="text-[11px] bg-yellow-600/20 hover:bg-yellow-600 text-yellow-100 py-2 px-3 rounded-lg text-left transition-colors flex items-center justify-between disabled:opacity-50"
+                                    >
+                                        <span className="flex items-center gap-2">
+                                            {isSimulating ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+                                            立即完成所有訂單 (Simulate)
+                                        </span>
+                                        <ChevronRight className="w-3 h-3" />
+                                    </button>
+                                    <button
+                                        onClick={async () => {
+                                            setIsSimulating(true);
+                                            const toastId = toast.loading('正在請求後端完成當前道館...');
+                                            try {
+                                                // 1. 嘗試請求後端
+                                                const res = await apiRequest('/demo/complete-current-gym', { method: 'POST' });
+                                                toast.success(typeof res === 'string' ? res : '道館已成功模擬完成', { id: toastId });
+                                                setTimeout(() => window.location.reload(), 1500);
+                                            } catch (error: any) {
+                                                // 2. 如果失敗 (可能是沒部署後端)，則進行前端保底模擬
+                                                console.warn("Backend demo failed, falling back to local simulation", error);
+                                                toast.info('偵測到後端介面未就緒，切換至「前端模擬模式」', { id: toastId });
+
+                                                localStorage.setItem('demo_all_gyms_passed', 'true');
+                                                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                                                toast.success('已完成前端模擬：已將地圖解鎖', { id: toastId });
+                                                setTimeout(() => window.location.reload(), 1500);
+                                            } finally {
+                                                setIsSimulating(false);
+                                            }
+                                        }}
+                                        disabled={isSimulating}
+                                        className="text-[11px] bg-purple-600/20 hover:bg-purple-600 text-purple-100 py-2 px-3 rounded-lg text-left transition-colors flex items-center justify-between disabled:opacity-50"
+                                    >
+                                        <span className="flex items-center gap-2">
+                                            {isSimulating ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+                                            完成當前道館 (Simulation)
+                                        </span>
+                                        <ChevronRight className="w-3 h-3" />
+                                    </button>
+                                    <button
+                                        onClick={async () => {
+                                            setIsSimulating(true);
+                                            const toastId = toast.loading('正在請求後端完成獎勵任務...');
+                                            try {
+                                                // 1. 嘗試請求後端
+                                                const res = await apiRequest('/demo/complete-current-mission', { method: 'POST' });
+                                                toast.success(typeof res === 'string' ? res : '任務已成功模擬完成', { id: toastId });
+                                                setTimeout(() => window.location.reload(), 1500);
+                                            } catch (error: any) {
+                                                // 2. 如果失敗，則進行前端保底提示
+                                                console.warn("Backend demo failed, falling back to alert", error);
+                                                toast.error('後端模擬功能未就緒，獎勵任務需後端支援才能完成', { id: toastId });
+
+                                                // 單純提示，不重新整理
+                                                alert('提示：獎勵任務的完成邏輯強烈依賴後端資料庫，目前前端模擬僅能解鎖地圖，無法真正完成任務。');
+                                            } finally {
+                                                setIsSimulating(false);
+                                            }
+                                        }}
+                                        disabled={isSimulating}
+                                        className="text-[11px] bg-green-600/20 hover:bg-green-600 text-green-100 py-2 px-3 rounded-lg text-left transition-colors flex items-center justify-between disabled:opacity-50"
+                                    >
+                                        <span className="flex items-center gap-2">
+                                            {isSimulating ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+                                            完成當前獎勵任務
+                                        </span>
+                                        <ChevronRight className="w-3 h-3" />
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            localStorage.removeItem('demo_all_gyms_passed');
+                                            localStorage.removeItem('onboarding_completed');
+                                            alert('已重置範例狀態');
+                                            window.location.reload();
+                                        }}
+                                        className="text-[11px] bg-red-600/20 hover:bg-red-600 text-red-100 py-2 px-3 rounded-lg text-left transition-colors flex items-center justify-between"
+                                    >
+                                        <span>還原初始狀態</span>
+                                        <ChevronRight className="w-3 h-3" />
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="text-xs text-gray-400 text-center py-4 bg-white/5 rounded-lg border border-white/5">
+                                    體驗助手需登入後才可使用
+                                </div>
+                            )}
+                            <div className="mt-3 pt-2 border-t border-white/10 text-[10px] text-gray-400">
+                                {user ? '點擊按鈕可快速切換開發/演示狀態' : '請先登入以解鎖體驗助手功能'}
+                            </div>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={openGuide}
+                        className="flex items-center gap-3 bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-full shadow-2xl transition-all hover:scale-105 active:scale-95 relative"
+                        title="閱讀導覽"
+                    >
+                        <div className="flex flex-col items-end mr-2 transition-all duration-300">
+                            <span className="text-xs font-black bg-yellow-500 text-black px-2 py-0.5 rounded shadow-sm animate-bounce">水球精靈</span>
+                            <span className="text-[10px] text-blue-100 font-bold drop-shadow-md">點我閱讀導覽</span>
+                        </div>
+                        <div className="relative">
+                            <HelpCircle className="w-8 h-8" />
+                            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-pulse" />
+                        </div>
+                    </button>
                 </div>
-                <div className="relative">
-                    <HelpCircle className="w-8 h-8" />
-                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-pulse" />
-                </div>
-            </button>
+            </div>
         );
     }
 

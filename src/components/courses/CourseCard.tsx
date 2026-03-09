@@ -21,10 +21,12 @@ const getButtonStyle = (style: 'solid' | 'outline' | 'disabled') => {
 
 export default function CourseCard({ course }: { course: Course }) {
   const [isOwned, setIsOwned] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
     const checkOwnership = () => {
       setIsOwned(orderStore.isCourseOwned(course.slug));
+      setIsPending(orderStore.hasPendingOrder(course.slug));
     };
 
     checkOwnership();
@@ -115,13 +117,22 @@ export default function CourseCard({ course }: { course: Course }) {
               {primaryAction.text}
             </Link>
 
-            {!isOwned && course.secondaryAction && (
-              <Link
-                href={course.secondaryAction.href}
-                className={`py-2 text-center text-sm font-bold rounded transition-all flex items-center justify-center truncate px-1 bg-yellow-400 text-slate-900 hover:bg-yellow-500`}
-              >
-                {course.secondaryAction.text}
-              </Link>
+            {!isOwned && (
+              isPending ? (
+                <Link
+                  href="/users/me/orders"
+                  className={`py-2 text-center text-sm font-bold rounded transition-all flex items-center justify-center truncate px-1 bg-amber-500 text-slate-900 hover:bg-amber-600`}
+                >
+                  前往付款
+                </Link>
+              ) : course.secondaryAction ? (
+                <Link
+                  href={course.secondaryAction.href}
+                  className={`py-2 text-center text-sm font-bold rounded transition-all flex items-center justify-center truncate px-1 bg-yellow-400 text-slate-900 hover:bg-yellow-500`}
+                >
+                  {course.secondaryAction.text}
+                </Link>
+              ) : null
             )}
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Receipt, AlertCircle, Clock, CheckCircle2, XCircle } from 'lucide-react';
+import { toast } from 'sonner';
 import { orderStore, Order } from '@/lib/orderStore';
 import { orderService } from '@/services/orderService';
 import { announcementService } from '@/services/announcementService';
@@ -36,9 +37,12 @@ export default function OrderHistory() {
     useEffect(() => {
         loadOrders();
 
-        // Listen for storage changes (if user completes order in another tab)
         window.addEventListener('storage', loadOrders);
-        return () => window.removeEventListener('storage', loadOrders);
+        window.addEventListener('order-completed', loadOrders);
+        return () => {
+            window.removeEventListener('storage', loadOrders);
+            window.removeEventListener('order-completed', loadOrders);
+        };
     }, []);
 
     const handleCompleteOrder = async (order: Order) => {
@@ -47,9 +51,22 @@ export default function OrderHistory() {
             await loadOrders();
             // Notify other components in the same tab
             window.dispatchEvent(new CustomEvent('order-completed'));
-            announcementService.emit(`✅ 訂單 ${order.orderNumber} 已支付成功！快去開始你的學習旅程吧。`, '前往挑戰地圖', `/journeys/${order.courseSlug || 'software-design-pattern'}/map`);
+            announcementService.emit(`✅ 訂單 ${order.orderNumber} 已支付成功！快去開始你的學習旅程吧。`, '前往挑戰地圖', `/journeys/${order.courseSlug || 'software-design-pattern'}/roadmap`);
         } else {
             alert('支付失敗，請確認後端是否連線正確');
+        }
+    };
+
+    const handleCancelOrder = async (order: Order) => {
+        if (!confirm(`確定要取消課程「${order.courseName}」的訂單嗎？`)) return;
+
+        const success = await orderService.cancelOrder(order.orderNumber);
+        if (success) {
+            await loadOrders();
+            window.dispatchEvent(new CustomEvent('order-completed'));
+            toast.success(`訂單 ${order.orderNumber} 已取消`);
+        } else {
+            alert('取消失敗，請確認後端是否連線正確');
         }
     };
 
@@ -151,12 +168,20 @@ export default function OrderHistory() {
                                         </div>
 
                                         {order.status === 'PENDING' && (
-                                            <button
-                                                onClick={() => handleCompleteOrder(order)}
-                                                className="w-full md:w-auto self-end bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold py-2 px-6 rounded-lg transition-all shadow-lg shadow-yellow-400/10 mt-4"
-                                            >
-                                                立即完成訂單
-                                            </button>
+                                            <div className="flex flex-col gap-2 mt-4 md:items-end w-full md:w-auto">
+                                                <button
+                                                    onClick={() => handleCompleteOrder(order)}
+                                                    className="w-full md:w-auto bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold py-2 px-6 rounded-lg transition-all shadow-lg shadow-yellow-400/10"
+                                                >
+                                                    立即完成訂單
+                                                </button>
+                                                <button
+                                                    onClick={() => handleCancelOrder(order)}
+                                                    className="w-full md:w-auto bg-transparent border border-rose-500/50 text-rose-500 hover:bg-rose-500/10 font-bold py-2 px-6 rounded-lg transition-all"
+                                                >
+                                                    取消訂單
+                                                </button>
+                                            </div>
                                         )}
 
                                         {order.status === 'CANCELLED' && (

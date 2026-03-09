@@ -3,8 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { ChevronDown, Check } from 'lucide-react';
-import { useJourney } from '@/context/JourneyContext'; // 1. 引入 Context
-import { ALL_JOURNEYS } from '@/mock'; // 引入旅程資料
+import { useJourney } from '@/context/JourneyContext';
 
 export default function DesktopNav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,17 +11,17 @@ export default function DesktopNav() {
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // 2. 改用 Context 取得當前激活的旅程與設定方法
-  const { activeJourney, setActiveSlug } = useJourney();
+  // 2. 改用 Context 取得當前激活的旅程與設定方法，以及全部旅程資料
+  const { activeJourney, setActiveSlug, allJourneys } = useJourney();
 
   // 判斷當前 URL 是否在某個旅程內
-  const matchedJourney = ALL_JOURNEYS.find(j => pathname.startsWith(`/journeys/${j.slug}`));
+  const matchedJourney = allJourneys.find(j => pathname.startsWith(`/journeys/${j.slug}`));
 
   const handleSelect = (targetSlug: string) => {
     setIsOpen(false);
 
     // 找出目標旅程的 path
-    const targetJourney = ALL_JOURNEYS.find(j => j.slug === targetSlug);
+    const targetJourney = allJourneys.find(j => j.slug === targetSlug);
     const targetPath = `/journeys/${targetSlug}`;
 
     // 情境 A：當前「不在」任何旅程內 (例如：首頁、個人檔案)
@@ -77,7 +76,7 @@ export default function DesktopNav() {
 
       {isOpen && (
         <div className="absolute top-full left-0 mt-2 w-72 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-          {ALL_JOURNEYS.map((journey) => (
+          {allJourneys.map((journey) => (
             <button
               key={journey.slug}
               onClick={() => handleSelect(journey.slug)} // 傳入 slug

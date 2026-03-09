@@ -11,24 +11,65 @@ import { UserProfile } from "@/types/User";
 import { useAuth } from "@/context/AuthContext"; // ★ 新增
 
 
+import { apiRequest } from "@/lib/api"; // ★ 修正路徑
 
 export default function PortfolioPage({ params }: { params: Promise<{ userId: string }> }) {
     const { user: authUser } = useAuth(); // ★ 引入登入資訊
     const [userId, setUserId] = useState<string>("");
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
-    const [hasRecords, setHasRecords] = useState<boolean>(true); // ★ 新增
+    const [stats, setStats] = useState<any[]>([]);
+
+    const RATING_ORDER = ["SSS", "SS+", "SS", "S+", "S", "A+", "A", "B+", "B", "C+", "C", "D+", "D", "E+", "E", "F+", "F", "F-"];
+    const SKILL_LABELS: Record<string, string> = {
+        "1": "需求結構化分析",
+        "2": "區分結構與行為",
+        "3": "抽象/萃取能力",
+        "4": "建立 Well-Defined Context",
+        "5": "熟悉設計模式的 Form",
+        "6": "游刃有餘的開發能力"
+    };
+
+    const calculateMaxStats = (records: any[]) => {
+        const maxRatings: Record<string, string> = {};
+
+        // 初始化為 F-
+        Object.keys(SKILL_LABELS).forEach(key => {
+            maxRatings[key] = "F-";
+        });
+
+        records.forEach(record => {
+            if (record.ratings) {
+                Object.entries(record.ratings).forEach(([skillId, rating]) => {
+                    const currentRating = rating as string;
+                    const bestSoFar = maxRatings[skillId];
+
+                    // 比較等級 (索引越小等級越高)
+                    const currentIndex = RATING_ORDER.indexOf(currentRating);
+                    const bestIndex = RATING_ORDER.indexOf(bestSoFar);
+
+                    if (currentIndex !== -1 && (bestIndex === -1 || currentIndex < bestIndex)) {
+                        maxRatings[skillId] = currentRating;
+                    }
+                });
+            }
+        });
+
+        return Object.entries(SKILL_LABELS).map(([id, label]) => ({
+            label,
+            value: maxRatings[id] || "F-"
+        }));
+    };
 
     useEffect(() => {
         const init = async () => {
+            setLoading(true); // Ensure loading is true at the start of init
             const resolvedParams = await params;
             let uid = resolvedParams.userId;
 
-            // 如果路徑是 /users/me/portfolio，解析出真正的 ID
             if (uid === 'me' && authUser?.id) {
                 uid = authUser.id.toString();
             } else if (uid === 'me') {
-                // 如果未登入或 user.id 為空，無法解析 'me'
                 console.warn("[PortfolioPage] Cannot resolve 'me' without authenticated user id");
                 setLoading(false);
                 return;
@@ -36,9 +77,24 @@ export default function PortfolioPage({ params }: { params: Promise<{ userId: st
 
             setUserId(uid);
 
-            const data = await userService.getUserProfile(uid);
-            setProfile(data);
-            setLoading(false);
+            try {
+                const [profileData, recordsData] = await Promise.all([
+                    userService.getUserProfile(uid),
+                    apiRequest<any[]>(`/gym-challenge-records/user/${uid}`)
+                ]);
+
+                setProfile(profileData);
+
+                if (Array.isArray(recordsData)) {
+                    const filteredRecords = recordsData.filter(r => r.reviewedAt != null || r.status === 'SUCCESS');
+                    setStats(calculateMaxStats(filteredRecords));
+                    // setHasRecords(filteredRecords.length > 0); // This state is no longer used directly
+                }
+            } catch (error) {
+                console.error("Error loading portfolio data:", error);
+            } finally {
+                setLoading(false);
+            }
         };
         init();
     }, [params, authUser]);
@@ -59,13 +115,13 @@ export default function PortfolioPage({ params }: { params: Promise<{ userId: st
             <MarketingBanner />
 
             {/* 2. 個人檔案頭部 (Header + Stats) */}
-            <PortfolioHeader profile={profile} isEmpty={!hasRecords} />
+            <PortfolioHeader profile={profile} stats={stats} />
 
             {/* 3. 挑戰歷程 (Timeline) */}
             {userId && (
                 <ChallengePortfolio
                     targetUserId={userId}
-                    onRecordsLoaded={(count) => setHasRecords(count > 0)}
+                    onRecordsLoaded={(count) => { /* setHasRecords(count > 0) */ }} // This callback is still here but the state is not used
                 />
             )}
 
