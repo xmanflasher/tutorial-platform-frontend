@@ -3,8 +3,10 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { apiRequest } from '@/lib/api';
 import { getVisitorId } from '@/lib/visitorUtils'; // ★ 新增
+import { orderService } from '@/services/orderService'; // ★ 新增
 
 export interface User {
+// ... (rest of the interface)
   id: number;
   name: string;
   email?: string;
@@ -22,7 +24,7 @@ export interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (userData: User) => void;
+  login: (userData: User, token?: string) => void;
   logout: () => void;
 }
 
@@ -33,37 +35,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // ★ 1. 初始化 訪客 ID (確保 Cookie 已設定)
     getVisitorId();
 
     const checkSession = async () => {
-      const storedUser = localStorage.getItem('waterball_user');
-      if (storedUser) {
-        try {
-          const parsed = JSON.parse(storedUser);
-          setUser(parsed);
+      if (typeof window === 'undefined') return;
 
-          if (!parsed.avatar) {
-            const remoteUser = await apiRequest<User>('/me');
-            if (remoteUser && remoteUser.avatar) {
-              setUser(remoteUser);
-              localStorage.setItem('waterball_user', JSON.stringify(remoteUser));
-            }
-          }
-        } catch (e) {
-          console.error("解析使用者資料失敗", e);
-          localStorage.removeItem('waterball_user');
-        }
-      } else {
+      // 1. 從 URL 捕捉 Token (OAuth2 或 Dev Login 重定向)
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlToken = urlParams.get('token');
+      
+      if (urlToken) {
+        console.log("從 URL 捕捉到 Token");
+        localStorage.setItem('accessToken', urlToken);
+        // 清理 URL
+        const cleanUrl = window.location.pathname + window.location.hash;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+
+      // 2. 取得當前有效的 Token
+      const token = localStorage.getItem('accessToken');
+      const hasToken = token && token !== 'null' && token !== 'undefined' && token.length > 10;
+
+      if (hasToken) {
         try {
-          const remoteUser = await apiRequest<User>('/me', { silent: true });
-          if (remoteUser) {
-            setUser(remoteUser);
-            localStorage.setItem('waterball_user', JSON.stringify(remoteUser));
+          // 嘗試同步後端資料
+          const dbUser = await apiRequest<User>('/me', { silent: true });
+          if (dbUser) {
+            setUser(dbUser);
+            localStorage.setItem('waterball_user', JSON.stringify(dbUser));
+            // ★ 新增：同步訂單以更新首頁擁有狀態
+            orderService.getUserOrders(dbUser.id);
+          } else {
+            // Token 無效，徹底清除
+            console.warn("Token 無效，清除身分");
+            logoutLocal();
           }
         } catch (error) {
-          console.log("未在伺服器找到現有 Session");
+          console.error("同步使用者資料失敗:", error);
+          logoutLocal();
         }
+      } else {
+        // 完全沒有 Token，確保狀態為登出
+        logoutLocal();
       }
       setLoading(false);
     };
@@ -71,9 +84,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkSession();
   }, []);
 
-  const login = (userData: User) => {
+  // 輔助函式：僅清除本地狀態而不調用後端登出
+  const logoutLocal = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('waterball_user');
+    setUser(null);
+  };
+
+  const login = (userData: User, token?: string) => {
     setUser(userData);
     localStorage.setItem('waterball_user', JSON.stringify(userData));
+    if (token) {
+      localStorage.setItem('accessToken', token);
+    }
+    // ★ 新增：登入成功後立刻同步訂單
+    orderService.getUserOrders(userData.id);
   };
 
   const logout = async () => {

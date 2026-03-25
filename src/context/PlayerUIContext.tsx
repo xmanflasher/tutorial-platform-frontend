@@ -1,27 +1,55 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { apiRequest } from '@/lib/api';
 
 // 定義 UI 的狀態介面
 interface PlayerUIContextType {
     isSidebarOpen: boolean;
     toggleSidebar: () => void;
-    closeSidebar: () => void; // 手機版點擊連結後自動關閉用
+    closeSidebar: () => void;
     openSidebar: () => void;
+    
+    // 進度管理
+    finishedLessonIds: number[];
+    setFinishedLessonIds: (ids: number[]) => void;
+    addFinishedId: (id: number) => void;
+    refreshFinishedIds: () => Promise<void>;
 }
 
 const PlayerUIContext = createContext<PlayerUIContextType | undefined>(undefined);
 
 export function PlayerUIProvider({ children }: { children: ReactNode }) {
-    // 預設側邊欄是打開的
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [finishedLessonIds, setFinishedLessonIds] = useState<number[]>([]);
 
     const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
     const closeSidebar = () => setIsSidebarOpen(false);
     const openSidebar = () => setIsSidebarOpen(true);
 
+    const refreshFinishedIds = async () => {
+        try {
+            const ids = await apiRequest<number[]>('/learning-records/me/finished-lessons', { silent: true });
+            setFinishedLessonIds(Array.isArray(ids) ? ids : []);
+        } catch (err) {
+            console.warn('[PlayerUIContext] 載入進度失敗', err);
+        }
+    };
+
+    const addFinishedId = (id: number) => {
+        setFinishedLessonIds(prev => prev.includes(id) ? prev : [...prev, id]);
+    };
+
+    // 初始化載入
+    useEffect(() => {
+        refreshFinishedIds();
+    }, []);
+
     return (
-        <PlayerUIContext.Provider value={{ isSidebarOpen, toggleSidebar, closeSidebar, openSidebar }}>
+        <PlayerUIContext.Provider value={{ 
+            isSidebarOpen, toggleSidebar, closeSidebar, openSidebar,
+            finishedLessonIds, setFinishedLessonIds, addFinishedId, refreshFinishedIds
+        }}>
             {children}
         </PlayerUIContext.Provider>
     );

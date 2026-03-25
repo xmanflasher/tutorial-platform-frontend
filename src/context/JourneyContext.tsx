@@ -12,6 +12,7 @@ import {
 import { usePathname } from "next/navigation";
 // ★ 1. 刪除 mock 引用：我們不再需要它了！
 // import { ALL_JOURNEYS } from "@/mock"; 
+import { useAuth } from "@/context/AuthContext";
 import { JourneyDetail, Course } from "@/types";
 import { createEmptyJourney } from "@/lib/factories";
 import { homeService } from "@/services";
@@ -33,6 +34,7 @@ const STORAGE_KEY = "waterballsa_last_journey_slug";
 const DEFAULT_SLUG = "software-design-pattern";
 
 export function JourneyProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
   const pathname = usePathname();
   const [manualSlug, setManualSlug] = useState<string>(DEFAULT_SLUG);
   const [apiJourneyData, setApiJourneyData] = useState<JourneyDetail | null>(null);
@@ -52,7 +54,15 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
     // 取得所有對外開放的旅程，供 Header 等全域元件使用
     let isMounted = true;
     homeService.getFeaturedCourses().then(courses => {
-      if (isMounted) setAllJourneys(courses);
+      if (isMounted) {
+        setAllJourneys(courses);
+        // ★ 若當前網址沒有 slug 且正好是預設值，則自動跳到第一個可用的課程
+        if (courses.length > 0 && !urlSlug && (manualSlug === DEFAULT_SLUG || !manualSlug)) {
+           const firstSlug = courses[0].slug;
+           setManualSlug(firstSlug);
+           localStorage.setItem(STORAGE_KEY, firstSlug);
+        }
+      }
     });
     return () => { isMounted = false; };
   }, []);
@@ -82,15 +92,17 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
   };
 
   const fetchUserProgress = useCallback(async (slugToFetch: string) => {
-    // 防呆：如果是 undefined 或空字串就不發請求
-    if (!slugToFetch) return;
+    if (!slugToFetch || !user?.id) {
+      setApiJourneyData(null);
+      return;
+    }
 
     lastRequestedSlugRef.current = slugToFetch;
     setIsLoading(true);
     setIsError(false);
     setApiJourneyData(null);
 
-    const userId = 1;
+    const userId = user.id;
 
     try {
       const res = await fetch(
@@ -123,13 +135,15 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
       }
     }
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
-    if (targetSlug) {
+    if (targetSlug && user?.id) {
       fetchUserProgress(targetSlug);
+    } else if (!user?.id) {
+      setApiJourneyData(null);
     }
-  }, [targetSlug, fetchUserProgress]);
+  }, [targetSlug, fetchUserProgress, user?.id]);
 
   const clearProgress = useCallback(() => {
     setApiJourneyData(null);
@@ -148,10 +162,12 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
   }
   else {
     // 錯誤狀態：無論是 slug 不存在 (404) 還是網路錯，都顯示錯誤
-    const errorTitle = isError ? "無法載入旅程" : "暫無資料";
+    // ★ 優化：若 api 無資料，嘗試從 allJourneys 找回課程名稱，避免顯示「暫無資料」
+    const courseInList = allJourneys.find(c => c.slug === targetSlug);
+    const fallbackTitle = courseInList ? courseInList.title : (isError ? "無法載入旅程" : "暫無資料");
     const errorDesc = isError ? "找不到此旅程或網路異常" : "";
 
-    activeJourney = createEmptyJourney(targetSlug, errorTitle, errorDesc);
+    activeJourney = createEmptyJourney(targetSlug, fallbackTitle, errorDesc);
   }
 
   return (
