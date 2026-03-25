@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import VideoPlayer from '@/components/VideoPlayer';
 import ChallengeModal from './ChallengeModal';
-import { FileText, PlayCircle, CheckCircle, Lock } from 'lucide-react';
+import { apiRequest } from '@/lib/api';
+import { FileText, PlayCircle, CheckCircle, Lock, ArrowLeft } from 'lucide-react';
 import { GymDetailData, LessonDetail } from '@/types';
 
 interface GymDetailViewProps {
@@ -11,6 +13,7 @@ interface GymDetailViewProps {
 }
 
 export default function GymDetailView({ gymData }: GymDetailViewProps) {
+    const router = useRouter();
     // 1. 初始化狀態，使用傳入的實體 Lesson 列表
     const [lessons, setLessons] = useState<(LessonDetail & { isFinished?: boolean })[]>(
         gymData.lessons || []
@@ -18,21 +21,82 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
     const [selectedLesson, setSelectedLesson] = useState<(LessonDetail & { isFinished?: boolean }) | null>(
         lessons[0] || null
     );
+    const [fullLessonContent, setFullLessonContent] = useState<LessonDetail | null>(null);
     const [isChallengeModalOpen, setIsChallengeModalOpen] = useState(false);
 
     // 邏輯判斷：是否完成所有課程
     const allLessonsFinished = lessons.length === 0 || lessons.every(l => l.isFinished);
 
-    const handleVideoEnded = (lessonId: number) => {
+    // 載入時從後端抓取已完成的課程
+    React.useEffect(() => {
+        const fetchFinishedLessons = async () => {
+            try {
+                // 回傳的會是 [lessonId1, lessonId2, ...]
+                const finishedIds: number[] = await apiRequest('/learning-records/me/finished-lessons', { silent: true });
+                if (finishedIds && finishedIds.length > 0) {
+                    setLessons(prev => prev.map(l => 
+                        finishedIds.includes(Number(l.id)) ? { ...l, isFinished: true } : l
+                    ));
+                }
+            } catch (error) {
+                console.warn('無法載入課程學習進度', error);
+            }
+        };
+        fetchFinishedLessons();
+    }, []);
+
+    // 當選擇的課程改變時，如果是第一次點擊，向後端取得完整的課程內容 (含 url 或 markdown)
+    React.useEffect(() => {
+        if (!selectedLesson) return;
+        
+        // 如果原本的 lesson 裡就自帶 content，就直接用
+        if (selectedLesson.content && selectedLesson.content.length > 0) {
+            setFullLessonContent(selectedLesson);
+            return;
+        }
+
+        const loadFullLesson = async () => {
+            try {
+                // 這裡我們需要引入 lessonService，等一下在檔案最上方加入 import { lessonService } from '@/services'
+                const { lessonService } = await import('@/services');
+                const fullData = await lessonService.getLessonDetail(selectedLesson.id.toString());
+                if (fullData) {
+                    setFullLessonContent(fullData);
+                }
+            } catch (error) {
+                console.error("無法載入單元完整內容", error);
+            }
+        };
+        loadFullLesson();
+    }, [selectedLesson?.id]);
+
+    const markLessonAsComplete = async (lessonId: number) => {
+        // 先樂觀更新 UI
         setLessons(prev =>
             prev.map(l => l.id === lessonId ? { ...l, isFinished: true } : l)
         );
+
+        // 背景發送請求記錄到資料庫
+        try {
+            await apiRequest(`/learning-records/lessons/${lessonId}/complete`, {
+                method: 'POST',
+                silent: true
+            });
+        } catch (error: any) {
+            if (error.message === 'Unauthorized') {
+                console.warn('訪客模式：尚未登入，無法把課程進度記錄到資料庫中。請重新登入。');
+            } else {
+                console.error('儲存課程進度失敗', error);
+            }
+        }
+    };
+
+    const handleVideoEnded = (lessonId: number) => {
+        markLessonAsComplete(lessonId);
     };
 
     const handleArticleFinished = (lessonId: number) => {
-        setLessons(prev =>
-            prev.map(l => l.id === lessonId ? { ...l, isFinished: true } : l)
-        );
+        markLessonAsComplete(lessonId);
     };
 
     // 輔助函式：從 LessonDetail 的 content 陣列中解析資料
@@ -46,12 +110,21 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
         };
     };
 
-    const currentContent = getLessonContent(selectedLesson);
+    const currentContent = getLessonContent(fullLessonContent || selectedLesson);
 
     return (
         <div className="min-h-screen bg-[#0d0e11] text-white p-6 flex gap-6">
             {/* 左側：道館資訊 & 列表 */}
             <div className="w-1/3 flex flex-col gap-6">
+                {/* 增加返回按鈕 */}
+                <button
+                    onClick={() => router.back()}
+                    className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors self-start mb-2"
+                >
+                    <ArrowLeft size={20} />
+                    <span>返回</span>
+                </button>
+
                 <div className="bg-yellow-400 text-black p-6 rounded-lg shadow-lg">
                     <div className="text-xs font-bold bg-black/20 w-fit px-2 py-1 rounded mb-2">
                         {gymData.code} 道館
@@ -121,13 +194,17 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
                                 <span className="text-xs text-gray-500 font-mono">{selectedLesson.videoLength}</span>
                             )}
                         </div>
-                        <div className="flex-1 bg-black flex items-center justify-center relative overflow-hidden">
+                        <div className="flex-1 bg-black w-full overflow-hidden">
                             {currentContent.type === 'video' ? (
-                                <VideoPlayer
-                                    url={currentContent.url || ""}
-                                    onEnded={() => handleVideoEnded(selectedLesson.id)}
-                                    onProgress={() => { }}
-                                />
+                                <div className="w-full max-w-4xl mx-auto h-full flex items-center justify-center p-4">
+                                     <div className="w-full">
+                                         <VideoPlayer
+                                             url={currentContent.url || ""}
+                                             onEnded={() => handleVideoEnded(selectedLesson.id)}
+                                             onProgress={() => { }}
+                                         />
+                                     </div>
+                                </div>
                             ) : (
                                 <div className="w-full h-full p-10 overflow-y-auto custom-scrollbar bg-[#161b22]">
                                     <article className="prose prose-invert max-w-none prose-yellow">
@@ -159,6 +236,7 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
             {/* 挑戰視窗 */}
             {isChallengeModalOpen && (
                 <ChallengeModal
+                    gymId={gymData.id}
                     challenges={gymData.challenges}
                     onClose={() => setIsChallengeModalOpen(false)}
                 />
