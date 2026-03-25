@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { Course } from '@/types';
 import { Image as ImageIcon } from 'lucide-react';
 import { orderStore } from '@/lib/orderStore';
+import { useAuth } from '@/context/AuthContext';
+
 
 const getButtonStyle = (style: 'solid' | 'outline' | 'disabled') => {
   switch (style) {
@@ -20,11 +22,18 @@ const getButtonStyle = (style: 'solid' | 'outline' | 'disabled') => {
 };
 
 export default function CourseCard({ course }: { course: Course }) {
+  const { user } = useAuth();
   const [isOwned, setIsOwned] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
     const checkOwnership = () => {
+      // 只有登入後才讀取擁有權狀態，防止訪客看到殘留的 localStorage 資料
+      if (!user) {
+        setIsOwned(false);
+        setIsPending(false);
+        return;
+      }
       setIsOwned(orderStore.isCourseOwned(course.slug));
       setIsPending(orderStore.hasPendingOrder(course.slug));
     };
@@ -39,7 +48,7 @@ export default function CourseCard({ course }: { course: Course }) {
       window.removeEventListener('storage', checkOwnership);
       window.removeEventListener('order-completed', checkOwnership);
     };
-  }, [course.slug]);
+  }, [course.slug, user]);
 
   // Override labels and buttons if owned
   const displayStatusLabel = isOwned ? '已擁有' : course.statusLabel;

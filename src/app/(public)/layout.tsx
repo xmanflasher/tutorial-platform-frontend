@@ -29,8 +29,9 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       });
 
       if (res.ok) {
-        const dbUser = await res.json();
-        login(dbUser);
+        const data = await res.json();
+        const { user: dbUser, token } = data;
+        login(dbUser, token);
         setLoginModalOpen(false);
       } else {
         alert("登入失敗，請確認後端是否啟動");

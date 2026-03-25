@@ -16,7 +16,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePlayerUI } from "@/context/PlayerUIContext";
-// import { useJourney } from "@/context/JourneyContext"; // 移除：不再依賴 Context
+import { orderStore } from "@/lib/orderStore";
+import { apiRequest } from "@/lib/api";
 import { JourneyDetail } from "@/types"; // 引入型別
 
 // 根據單元類型回傳對應 Icon
@@ -39,11 +40,23 @@ interface PlayerSidebarProps {
 // ★ 2. 接收 journey prop
 export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
     const pathname = usePathname();
-    const { isSidebarOpen } = usePlayerUI();
+    const { isSidebarOpen, finishedLessonIds } = usePlayerUI();
     // const { activeJourney } = useJourney(); // 移除
     const safeSlug = journey?.slug || "software-design-pattern";
+    
+    // 狀態：是否擁有該課程
+    const [isOwned, setIsOwned] = useState(false);
+    
     // 控制哪些章節是展開的
     const [expandedChapterIds, setExpandedChapterIds] = useState<number[]>([]);
+
+    // 初始化：檢查購買狀態
+    useEffect(() => {
+        if (!journey) return;
+        
+        // 檢查購買
+        setIsOwned(orderStore.isCourseOwned(safeSlug));
+    }, [safeSlug, journey]);
 
     // ★ 自動展開邏輯：依賴傳入的 journey
     useEffect(() => {
@@ -62,8 +75,8 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
     }, [pathname, journey]);
 
     const toggleChapter = (id: number) => {
-        setExpandedChapterIds((prev) =>
-            prev.includes(id) ? prev.filter((cId) => cId !== id) : [...prev, id]
+        setExpandedChapterIds((prev: number[]) =>
+            prev.includes(id) ? prev.filter((cId: number) => cId !== id) : [...prev, id]
         );
     };
 
@@ -90,7 +103,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
 
                 {/* 列表區 (可捲動) */}
                 <div className="flex-1 overflow-y-auto custom-scrollbar pb-20">
-                    {journey.chapters?.map((chapter) => {
+                    {journey.chapters?.map((chapter, idx) => {
                         const isExpanded = expandedChapterIds.includes(chapter.id);
 
                         return (
@@ -103,6 +116,11 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
                                     <div className="text-left">
                                         <div className="font-bold text-sm text-gray-200 group-hover:text-white transition-colors line-clamp-1">
                                             {chapter.name}
+                                            {idx === 0 && (
+                                                <span className="ml-2 text-[10px] bg-green-500/10 text-green-500 px-1 py-0.5 rounded border border-green-500/20 font-bold">
+                                                    試看
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
                                     {isExpanded ? (
@@ -123,8 +141,8 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
                                         // 判斷是否為當前頁面
                                         const isActive = pathname.includes(`/lessons/${lesson.id}`);
 
-                                        // 這裡先假定還沒有 isCompleted 欄位
-                                        const isCompleted = false;
+                                        // 判斷是否完成
+                                        const isCompleted = finishedLessonIds.includes(Number(lesson.id));
 
                                         return (
                                             <Link
@@ -147,9 +165,11 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
                                                     </div>
                                                 </div>
 
-                                                {/* ★ 修正：右側狀態顯示邏輯 (試看 vs 鎖頭) */}
+                                                {/* ★ 修正：右側狀態顯示邏輯 (已完成 > 試看 > 鎖頭) */}
                                                 <div className="text-xs text-slate-500 shrink-0 ml-1">
-                                                    {!lesson.premiumOnly ? (
+                                                    {isCompleted ? (
+                                                        <CheckCircle size={14} className="text-green-500" />
+                                                    ) : (idx === 0 && lesson.premiumOnly !== true) ? (
                                                         <span className="px-1.5 py-0.5 bg-yellow-400/10 text-yellow-400 rounded border border-yellow-400/20 font-bold text-[10px]">
                                                             試看
                                                         </span>
@@ -158,7 +178,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
                                                             {lesson.videoLength && (
                                                                 <span className="text-[11px]">{lesson.videoLength}</span>
                                                             )}
-                                                            {!isActive && <Lock size={12} className="text-gray-500" />}
+                                                            {!isActive && !isOwned && <Lock size={12} className="text-gray-500" />}
                                                         </div>
                                                     )}
                                                 </div>

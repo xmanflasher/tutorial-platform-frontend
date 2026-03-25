@@ -18,12 +18,14 @@ const SubmissionGallery = ({ submission, title }: SubmissionGalleryProps) => {
     const labelMap: Record<string, string> = {
         "ood_uml": "物件導向設計 (OOD)",
         "ooa_uml": "物件導向分析 (OOA)",
-        "ood_sequence_diagram": "循序圖 (Sequence Diagram)"
+        "ood_sequence_diagram": "循序圖 (Sequence Diagram)",
+        "architecture_image": "邏輯/架構分析圖",
+        "code_screenshot": "核心程式碼截圖"
     };
 
     const images = submission
         ? Object.entries(submission)
-            .filter(([key, val]) => val && val.startsWith("http") && key !== "code_files")
+            .filter(([key, val]) => val && (val.startsWith("http") || val.startsWith("data:")) && key !== "code_files")
             .map(([key, val]) => ({ key, url: val, label: labelMap[key] || key }))
         : [];
 

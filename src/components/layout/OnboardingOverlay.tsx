@@ -8,7 +8,6 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useAuth } from '@/context/AuthContext';
 import { userService, orderService } from '@/services';
-import { announcementService } from '@/services/announcementService';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -79,7 +78,6 @@ export default function OnboardingOverlay() {
         }
     }, []);
 
-    // 當使用者登入且有選擇角色但尚未同步時，進行同步
     useEffect(() => {
         if (user && user.id && selectedRole) {
             const isSynced = localStorage.getItem(`role_synced_${user.id}`);
@@ -134,7 +132,6 @@ export default function OnboardingOverlay() {
         if (guideIndex > 0) {
             setGuideIndex(prev => prev - 1);
         } else {
-            // 如果是從精靈打開的，不回退到角色選擇
             const completed = localStorage.getItem('onboarding_completed');
             if (completed) {
                 handleComplete();
@@ -144,13 +141,10 @@ export default function OnboardingOverlay() {
         }
     };
 
-    // 桌面精靈 (縮小狀態)
     if (isMinimized) {
         return (
             <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end gap-3">
-                {/* 快捷操作面板 (當滑鼠移到精靈圖示上時顯示) */}
                 <div className="group relative">
-                    {/* 面板主體 */}
                     <div className="absolute bottom-16 right-0 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 mb-2 flex flex-col gap-2 scale-95 group-hover:scale-100 origin-bottom-right">
                         <div className="bg-[#1a1c1e] border border-white/20 rounded-xl p-4 shadow-2xl w-64 backdrop-blur-md">
                             <div className="text-white font-bold text-sm mb-3 flex items-center gap-2 border-b border-white/10 pb-2">
@@ -172,36 +166,24 @@ export default function OnboardingOverlay() {
                                     <button
                                         onClick={async () => {
                                             setIsSimulating(true);
-
-                                            if (!user) {
-                                                toast.error('請先登入');
-                                                setIsSimulating(false);
-                                                return;
-                                            }
-
                                             const toastId = toast.loading('正在觸發大批量完成訂單流程...');
                                             try {
                                                 const freshOrders = await orderService.getUserOrders(user.id);
                                                 const pendingOrders = freshOrders.filter((o: any) => o.status === 'PENDING');
-
                                                 if (pendingOrders.length === 0) {
                                                     toast.info('沒有待處理的訂單', { id: toastId });
                                                     return;
                                                 }
-
                                                 for (const order of pendingOrders) {
                                                     await orderService.markAsPaid(order.orderNumber);
                                                 }
-
                                                 window.dispatchEvent(new CustomEvent('order-completed'));
                                                 toast.success('所有待處理訂單已完成', { id: toastId });
-                                                // announcementService.emit(`✅ 已成功處理 ${pendingOrders.length} 筆訂單！`, '查看地圖', '/roadmap');
-
                                                 setTimeout(() => window.location.reload(), 2000);
                                             } catch (e) {
                                                 toast.error('訂單處理失敗', { id: toastId });
                                             } finally {
-                                                setTimeout(() => setIsSimulating(false), 3000);
+                                                setIsSimulating(false);
                                             }
                                         }}
                                         disabled={isSimulating}
@@ -216,22 +198,67 @@ export default function OnboardingOverlay() {
                                     <button
                                         onClick={async () => {
                                             setIsSimulating(true);
-                                            const toastId = toast.loading('正在請求後端完成當前道館...');
+                                            const toastId = toast.loading('正在啟動「水球精靈」分析您的作品...');
+                                            
                                             try {
-                                                // 1. 嘗試請求後端
-                                                const res = await apiRequest('/demo/complete-current-gym', { method: 'POST' });
-                                                toast.success(typeof res === 'string' ? res : '道館已成功模擬完成', { id: toastId });
-                                                setTimeout(() => window.location.reload(), 1500);
+                                                // 1. 偵測當前道館 ID (從網址或預設)
+                                                const gymIdMatch = window.location.pathname.match(/\/gyms\/(\d+)/);
+                                                const currentGymId = gymIdMatch ? parseInt(gymIdMatch[1]) : 0;
+                                                
+                                                if (!currentGymId) {
+                                                    toast.error('請先進入特定道館頁面再執行精靈批改', { id: toastId });
+                                                    return;
+                                                }
+
+                                                // 2. 優先嘗試後端模擬 API
+                                                try {
+                                                    const res = await apiRequest(`/gym-challenge-records/demo/simulate-correction/${currentGymId}`, { method: 'POST', silent: true });
+                                                    if (res) {
+                                                        toast.success('精靈已從雲端完成批改！請前往挑戰歷程查看。', { id: toastId });
+                                                        setTimeout(() => window.location.reload(), 1500);
+                                                        return;
+                                                    }
+                                                } catch (e) {
+                                                    console.warn("[Simulation] Backend logic skipped or failed, falling back to local storage detection");
+                                                }
+
+                                                // 3. 本地暫存備援邏輯
+                                                const localRecords = JSON.parse(localStorage.getItem('local_gym_records') || '[]');
+                                                const targetIdx = localRecords.findLastIndex((r: any) => 
+                                                    r.gymId === currentGymId && (r.status === 'REVIEWING' || r.status === 'SUBMITTED')
+                                                );
+
+                                                if (targetIdx !== -1) {
+                                                    // 模擬隨機評語與評分
+                                                    const templates = [
+                                                        "## 水球導師的評價\n\n您的實作邏輯非常清晰！\n\n### 優點\n1. **結構編排優良**：成功將輸入轉為數字並進行完善檢查。\n2. **OOA 圖檔精準**：邏輯流程圖完整標註了狀態轉換。\n\n### 建議\n- 嘗試導入更多設計模式以增加擴充性。",
+                                                        "## 水球潘的 Code Review\n\n不錯！這份作業展現了您對基礎語法的高度掌握。\n\n### 關鍵點點評\n- **變數命名**：符合語意，易於閱讀。\n- **錯誤處理**：考慮到了非數字輸入的例外狀況。\n\n### 挑戰任務\n- 能否嘗試使用更簡潔的 FP 風格重構這段邏輯？"
+                                                    ];
+                                                    const grades = ["SSS", "S", "A", "B"];
+                                                    const rand = Math.floor(Math.random() * templates.length);
+                                                    
+                                                    localRecords[targetIdx] = {
+                                                        ...localRecords[targetIdx],
+                                                        status: 'SUCCESS',
+                                                        feedback: templates[rand],
+                                                        ratings: {
+                                                            "1": grades[Math.floor(Math.random() * grades.length)],
+                                                            "2": grades[Math.floor(Math.random() * grades.length)],
+                                                            "3": grades[Math.floor(Math.random() * grades.length)],
+                                                            "4": grades[Math.floor(Math.random() * grades.length)]
+                                                        },
+                                                        reviewedAt: Date.now()
+                                                    };
+                                                    
+                                                    localStorage.setItem('local_gym_records', JSON.stringify(localRecords));
+                                                    toast.success('精靈已針對您的「暫存作品」完成批改！', { id: toastId });
+                                                    setTimeout(() => window.location.reload(), 2000);
+                                                } else {
+                                                    toast.error('找不到該道館待批改的紀錄。請先點擊「前往挑戰」並提交作品。', { id: toastId });
+                                                }
                                             } catch (error: any) {
-                                                // 2. 如果失敗 (可能是沒部署後端)，則進行前端保底模擬
-                                                console.warn("Backend demo failed, falling back to local simulation", error);
-                                                toast.info('偵測到後端介面未就緒，切換至「前端模擬模式」', { id: toastId });
-
-                                                localStorage.setItem('demo_all_gyms_passed', 'true');
-                                                await new Promise(resolve => setTimeout(resolve, 1000));
-
-                                                toast.success('已完成前端模擬：已將地圖解鎖', { id: toastId });
-                                                setTimeout(() => window.location.reload(), 1500);
+                                                console.error(error);
+                                                toast.error('模擬失敗：' + error.message, { id: toastId });
                                             } finally {
                                                 setIsSimulating(false);
                                             }
@@ -241,7 +268,7 @@ export default function OnboardingOverlay() {
                                     >
                                         <span className="flex items-center gap-2">
                                             {isSimulating ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
-                                            完成當前道館 (Simulation)
+                                            水球精靈：快速批改 (Simulate Correction)
                                         </span>
                                         <ChevronRight className="w-3 h-3" />
                                     </button>
@@ -250,17 +277,12 @@ export default function OnboardingOverlay() {
                                             setIsSimulating(true);
                                             const toastId = toast.loading('正在請求後端完成獎勵任務...');
                                             try {
-                                                // 1. 嘗試請求後端
                                                 const res = await apiRequest('/demo/complete-current-mission', { method: 'POST' });
                                                 toast.success(typeof res === 'string' ? res : '任務已成功模擬完成', { id: toastId });
                                                 setTimeout(() => window.location.reload(), 1500);
                                             } catch (error: any) {
-                                                // 2. 如果失敗，則進行前端保底提示
-                                                console.warn("Backend demo failed, falling back to alert", error);
-                                                toast.error('後端模擬功能未就緒，獎勵任務需後端支援才能完成', { id: toastId });
-
-                                                // 單純提示，不重新整理
-                                                alert('提示：獎勵任務的完成邏輯強烈依賴後端資料庫，目前前端模擬僅能解鎖地圖，無法真正完成任務。');
+                                                toast.error('後端模擬功能未就緒', { id: toastId });
+                                                alert('提示：獎勵任務的完成邏輯強烈依賴後端資料庫。');
                                             } finally {
                                                 setIsSimulating(false);
                                             }
@@ -276,14 +298,14 @@ export default function OnboardingOverlay() {
                                     </button>
                                     <button
                                         onClick={() => {
-                                            localStorage.removeItem('demo_all_gyms_passed');
-                                            localStorage.removeItem('onboarding_completed');
-                                            alert('已重置範例狀態');
-                                            window.location.reload();
+                                            if (confirm('確定要還原初始狀態嗎？這將清除所有本地紀錄。')) {
+                                                localStorage.clear();
+                                                window.location.reload();
+                                            }
                                         }}
                                         className="text-[11px] bg-red-600/20 hover:bg-red-600 text-red-100 py-2 px-3 rounded-lg text-left transition-colors flex items-center justify-between"
                                     >
-                                        <span>還原初始狀態</span>
+                                        <span className="flex items-center gap-2">還原初始狀態</span>
                                         <ChevronRight className="w-3 h-3" />
                                     </button>
                                 </div>
@@ -322,7 +344,6 @@ export default function OnboardingOverlay() {
     return (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
             <div className="bg-[#1a1c1e] border border-white/10 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl relative">
-                {/* 關閉按鈕，僅在已完成過導覽時顯示，或是角色選擇後 */}
                 <button
                     onClick={handleComplete}
                     className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors z-10"
@@ -419,3 +440,4 @@ export default function OnboardingOverlay() {
         </div>
     );
 }
+

@@ -5,8 +5,11 @@ import { Loader2, ScrollText, Calendar, MousePointerClick } from "lucide-react";
 import { apiRequest } from "@/lib/api";
 import { ChallengeRecord } from "@/types/Record";
 import { GymData } from "@/types/Gym";
+import { recordService } from "@/services/recordService";
 import SubmissionGallery from "./portfolio/SubmissionGallery";
 import FeedbackCard from "./portfolio/Feedback/FeedbackCard";
+import { useJourney } from "@/context/JourneyContext";
+import { gymService } from "@/services/gymService";
 
 interface ChallengePortfolioProps {
     targetUserId: string;
@@ -31,12 +34,14 @@ const formatDate = (timestamp: number) => {
 };
 
 export default function ChallengePortfolio({ targetUserId, onRecordsLoaded }: ChallengePortfolioProps) {
+    const { activeJourney } = useJourney();
     const [records, setRecords] = useState<ChallengeRecord[]>([]);
     const [selectedRecord, setSelectedRecord] = useState<ChallengeRecord | null>(null);
     const [loading, setLoading] = useState(true);
-    const [gymMap, setGymMap] = useState<Record<number, string>>({});
     const [isFeedbackCollapsed, setIsFeedbackCollapsed] = useState(false);
+    const [gymMap, setGymMap] = useState<Record<number, string>>({});
 
+    // 1. 取得道館對照表
     useEffect(() => {
         const fetchGyms = async () => {
             try {
@@ -51,25 +56,81 @@ export default function ChallengePortfolio({ targetUserId, onRecordsLoaded }: Ch
         fetchGyms();
     }, []);
 
+    // 2. 取得並過濾挑戰紀錄
     useEffect(() => {
         const fetchData = async () => {
             if (!targetUserId) return;
             try {
                 setLoading(true);
-                const data = await apiRequest<ChallengeRecord[]>(`/gym-challenge-records/user/${targetUserId}`);
+                // 使用 recordService 統整後的介面 (支援本地暫存)
+                const data = await recordService.getUserGymRecords();
 
                 if (Array.isArray(data)) {
+                    // 1. 正規化與過濾
                     const filtered = data
-                        .filter((r: ChallengeRecord) => r.reviewedAt != null || r.status === 'SUCCESS')
-                        .sort((a, b) => b.createdAt - a.createdAt);
+                        .filter((r) => {
+                            // 1. 僅顯示實作挑戰 (PRACTICAL_CHALLENGE)，排除快速測試
+                            if (r.challengeType && r.challengeType !== 'PRACTICAL_CHALLENGE') {
+                                return false;
+                            }
 
-                    setRecords(filtered);
-                    if (filtered.length > 0) {
-                        setSelectedRecord(filtered[0]);
-                    } else {
+                            // 2. 必須是有效狀態
+                            const status = r.status as string;
+                            const isValidStatus = r.reviewedAt != null || 
+                                ['SUCCESS', 'PASSED', 'SUBMITTED', 'REVIEWING', 'COMPLETED'].includes(status);
+                            if (!isValidStatus) return false;
+
+                            // 3. 必須屬於當前選擇的課程 (activeJourney)
+                            if (r.journeyId && activeJourney?.id) {
+                                return Number(r.journeyId) === Number(activeJourney.id);
+                            }
+                            return activeJourney?.gyms?.some((g: any) => Number(g.id) === Number(r.gymId));
+                        });
+
+                    // 2. 分組去重：每個 (gymId, gymChallengeId) 僅保留最新的一筆
+                    const latestMap = new Map<string, any>();
+                    filtered.forEach(r => {
+                        const key = `${r.gymId}_${r.gymChallengeId}`;
+                        const existing = latestMap.get(key);
+                        if (!existing || (r.createdAt || 0) > (existing.createdAt || 0)) {
+                            latestMap.set(key, r);
+                        }
+                    });
+
+                    // 3. 映射到 UI 格式
+                    const normalized: ChallengeRecord[] = Array.from(latestMap.values())
+                        .map(r => {
+                            const status = r.status as string;
+                            let mappedStatus: "SUCCESS" | "FAILED" | "SUBMITTED" | "IN_PROGRESS" | "PASSED" | "REVIEWING" = "IN_PROGRESS";
+                            
+                            if (status === 'SUCCESS' || status === 'PASSED' || status === 'COMPLETED') mappedStatus = 'SUCCESS';
+                            else if (status === 'FAILED') mappedStatus = 'FAILED';
+                            else if (status === 'REVIEWING' || status === 'SUBMITTED') mappedStatus = 'REVIEWING';
+
+                            return {
+                                id: r.id,
+                                gymId: r.gymId,
+                                gymName: r.gymName || gymMap[r.gymId] || `挑戰 #${r.gymId}`,
+                                gymChallengeId: r.gymChallengeId,
+                                challengeType: r.challengeType,
+                                status: mappedStatus,
+                                feedback: r.feedback,
+                                submission: typeof r.submission === 'object' ? r.submission : {},
+                                ratings: typeof r.ratings === 'object' ? r.ratings : {},
+                                createdAt: r.createdAt,
+                                reviewedAt: r.reviewedAt
+                            };
+                        })
+                        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                    setRecords(normalized);
+                    // 如果目前沒選，或原本選的已經不在清單中，則選第一筆
+                    if (normalized.length > 0 && (!selectedRecord || !normalized.find(r => r.id === selectedRecord.id))) {
+                        setSelectedRecord(normalized[0]);
+                    } else if (normalized.length === 0) {
                         setSelectedRecord(null);
                     }
-                    onRecordsLoaded?.(filtered.length);
+                    onRecordsLoaded?.(normalized.length);
                 } else {
                     setRecords([]);
                     setSelectedRecord(null);
@@ -83,8 +144,9 @@ export default function ChallengePortfolio({ targetUserId, onRecordsLoaded }: Ch
             }
             finally { setLoading(false); }
         };
+        
         fetchData();
-    }, [targetUserId]);
+    }, [targetUserId, activeJourney?.id, gymMap, onRecordsLoaded]);
 
     if (loading) return <div className="h-96 flex items-center justify-center text-white"><Loader2 className="animate-spin w-10 h-10 text-yellow-500" /></div>;
 
@@ -122,7 +184,7 @@ export default function ChallengePortfolio({ targetUserId, onRecordsLoaded }: Ch
                     </div>
                 ) : (
                     <div className="h-[500px] flex flex-col items-center justify-center border border-gray-800 border-dashed rounded-xl bg-[#161b22]/50">
-                        <p className="text-gray-500 text-lg">目前沒有已批改的挑戰紀錄</p>
+                        <p className="text-gray-500 text-lg">目前沒有挑戰紀錄</p>
                     </div>
                 )}
             </div>
