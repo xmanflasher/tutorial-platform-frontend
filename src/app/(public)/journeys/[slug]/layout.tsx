@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { journeyService } from '@/services';
 export default async function JourneyLayout({
     children,

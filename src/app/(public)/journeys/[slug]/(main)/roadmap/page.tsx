@@ -1,5 +1,4 @@
-// src/app/journeys/[slug]/roadmap/page.tsx
-
+export const dynamic = 'force-dynamic';
 import RoadmapView from "@/components/journeys/RoadmapView";
 
 export default async function RoadmapPage({

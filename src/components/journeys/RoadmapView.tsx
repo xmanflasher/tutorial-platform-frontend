@@ -134,10 +134,30 @@ export default function RoadmapView() {
     // 使用 useMemo 優化計算統計資料
     const stats = useMemo(() => {
         const completed = gymsWithProgress.filter(g => (g.currentStars || 0) > 0);
+        const now = Date.now();
+        
+        // 找出正在進行中且有時限的挑戰 (尚未獲得星數且截止日在未來)
+        const activeGyms = gymsWithProgress.filter(g => 
+            g.bookingCompletedAt && g.bookingCompletedAt > now && (g.currentStars || 0) === 0
+        );
+
+        let status = (completed.length === gymsWithProgress.length && gymsWithProgress.length > 0) 
+            ? "已達成" 
+            : (activeGyms.length > 0 ? "挑戰中" : "未開始");
+        let daysLeft = "∞";
+
+        if (activeGyms.length > 0) {
+            const minDeadline = Math.min(...activeGyms.map(g => g.bookingCompletedAt!));
+            const diffMs = minDeadline - now;
+            daysLeft = Math.ceil(diffMs / (1000 * 60 * 60 * 24)).toString();
+        }
+
         return {
             total: gymsWithProgress.length,
             cleared: completed.length,
-            exp: completed.reduce((acc, g) => acc + (g.reward?.exp || 0), 0)
+            exp: completed.reduce((acc, g) => acc + (g.reward?.exp || 0), 0),
+            status,
+            daysLeft
         };
     }, [gymsWithProgress]);
 
@@ -181,8 +201,9 @@ export default function RoadmapView() {
             <div className="max-w-4xl mx-auto pb-20">
                 <div className="text-center mb-10 pt-6">
                     <h1 className="text-3xl md:text-4xl font-bold text-yellow-500 mb-6">{activeJourney?.title}</h1>
-                    <div className="grid grid-cols-3 gap-4 bg-[#161b22] border border-gray-800 rounded-xl p-4 max-w-2xl mx-auto">
-                        <StatItem label="DAYS LEFT" value="∞" icon={<Clock size={12} />} />
+                    <div className="grid grid-cols-4 gap-4 bg-[#161b22] border border-gray-800 rounded-xl p-4 max-w-3xl mx-auto">
+                        <StatItem label="STATUS" value={stats.status} icon={<Clock size={12} />} />
+                        <StatItem label="DAYS LEFT" value={stats.daysLeft} icon={<Clock size={12} />} color={stats.daysLeft !== '∞' ? 'text-blue-400' : 'text-white'} />
                         <StatItem label="CLEARED" value={`${stats.cleared} / ${stats.total}`} icon={<Trophy size={12} />} />
                         <StatItem label="XP EARNED" value={`${stats.exp} XP`} icon={<TrendingUp size={12} />} color="text-yellow-500" />
                     </div>
