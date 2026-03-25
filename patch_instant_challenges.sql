@@ -1,0 +1,16 @@
+INSERT INTO challenges (type, name, recommend_duration, max_duration, submission_fields, gym_id) VALUES
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 601),
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 602),
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 603),
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 604),
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 605),
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 606),
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 607),
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 608),
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 609),
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 610),
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 611),
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 612),
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 613),
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 614),
+('INSTANT_CHALLENGE', '快速測試', 1, 3, '[{"name": "answer", "type": "text"}]', 615);
