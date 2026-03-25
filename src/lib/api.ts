@@ -38,26 +38,28 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
 
     // 4. 統一錯誤處理 (Interceptor)
     if (!response.ok) {
-      // 處理 401 (Token 過期/未登入)
+      // 處理 401 (Token 過期/未登入/Session 失效)
       if (response.status === 401) {
-        // 如果原本有送 Token 卻失敗了，嘗試清除 Token 並重試一次 (可能是 Token 髒了，但路徑其實是公開的)
+        // 如果原本有送 Token 卻失敗了，嘗試清除 Token 並重試一次 (可能是 Token 髒了，但 Session 其實還在)
         if (hasToken && !options._isRetry) {
-          console.warn('Token 驗證失敗，嘗試清除並重試...');
+          console.warn('Token 驗證失敗，嘗試清除並重試一次 (Session 備援)...');
           localStorage.removeItem('accessToken');
           return await apiRequest<T>(endpoint, { ...options, _isRetry: true });
         }
 
         if (!options.silent) {
-          console.error('登入過期');
+          console.error(`登入過期或未授權 (401). 端點: ${endpoint}, 有送 Token: ${hasToken}`);
         }
         
         if (typeof window !== 'undefined') {
-          // 防止重複清除
-          localStorage.removeItem('accessToken');
+          // 只在「原本有 Token 但伺服器不收」的情況下徹底清除
+          if (hasToken) {
+            localStorage.removeItem('accessToken');
+          }
 
-          // 使用 Sonner 的 error 樣式
+          // 如果不是靜默請求且非重試失敗，則跳出提示
           if (!options.silent) {
-            toast.error('登入已過期，請重新登入');
+            toast.error('登入已過期或未授權，請重新登入');
           }
         }
         throw new Error('Unauthorized');
@@ -77,7 +79,7 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
         });
       }
 
-      // 其他 API 錯誤
+      // 其他 API 錯誤 (忽略 401/403 因為上面處理過了)
       if (!options.silent && response.status !== 401 && response.status !== 403 && response.status < 500) {
         toast.error(`請求失敗 (${response.status})`);
       }
@@ -94,16 +96,22 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
     try {
       return JSON.parse(text);
     } catch (e) {
-      console.warn('解析 JSON 失敗，回傳原始文字:', text);
+      console.error('解析 JSON 失敗!', {
+        error: e,
+        endpoint,
+        rawText: text.length > 500 ? text.substring(0, 500) + '...' : text
+      });
       return text as unknown as T;
     }
 
   } catch (error) {
     // 網路斷線或其他 fetch 錯誤
     if (!options.silent) {
-      console.error('API Request Failed:', error);
       // 避免在 401 已經拋出錯誤後重複跳 toast
-      if (error instanceof Error && error.message !== 'Unauthorized') {
+      if (error instanceof Error && error.message === 'Unauthorized') {
+        // 401 已經在上面處理過報錯了
+      } else {
+        console.error('API Request Failed:', error);
         toast.error('連線失敗', {
           description: '請檢查您的網路連線或聯繫管理員'
         });

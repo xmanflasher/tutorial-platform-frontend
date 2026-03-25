@@ -15,28 +15,82 @@ export const recordService = {
 
         try {
             // 修正：路徑需符合後端新定義的 /api/gym-challenge-records/me
-            // 加上 silent: true，避免他在沒登入時一直跳 Toast
-            return await apiRequest('/gym-challenge-records/me', { silent: true });
+            const remoteRecords = await apiRequest<GymChallengeRecord[]>('/gym-challenge-records/me', { silent: true }) || [];
+            
+            // ★ 合併本地暫存的紀錄 (Demo 用)
+            const localRecordsJson = localStorage.getItem('local_gym_records');
+            if (localRecordsJson) {
+                const localRecords = JSON.parse(localRecordsJson) as GymChallengeRecord[];
+                
+                // 以遠端為主，若本地有則補上/覆蓋
+                const merged = [...remoteRecords];
+                localRecords.forEach((lr: GymChallengeRecord) => {
+                    // 同時檢查 gymId 與 gymChallengeId 以區分不同的挑戰
+                    if (!merged.find(r => r.gymId === lr.gymId && r.gymChallengeId === lr.gymChallengeId)) {
+                        merged.push(lr);
+                    }
+                });
+                return merged;
+            }
+
+            return remoteRecords;
         } catch (error) {
-            // ★ 降級防呆：連線失敗 (ECONNREFUSED) 時回傳空陣列
-            // 這樣 gymService 的 Map 才不會崩潰，且能正常顯示地圖 (只是會鎖定)
-            console.warn('[recordService] 無法取得挑戰紀錄，回傳空陣列作為保底', error);
-            return [];
+            console.warn('[recordService] 無法取得挑戰紀錄，嘗試讀取本地暫存', error);
+            const localRecordsJson = localStorage.getItem('local_gym_records');
+            return localRecordsJson ? JSON.parse(localRecordsJson) : [];
         }
     },
 
     /**
      * 提交新的挑戰紀錄
      */
-    async submitChallenge(gymId: number, submission: any) {
+    async submitChallenge(params: {
+        userId: number;
+        journeyId: number;
+        chapterId: number;
+        gymId: number;
+        gymChallengeId: number;
+        submission: Record<string, string>;
+    }): Promise<GymChallengeRecord> {
         try {
             return await apiRequest(`/gym-challenge-records`, {
                 method: 'POST',
-                body: JSON.stringify({ gymId, ...submission })
+                body: JSON.stringify(params)
             });
         } catch (error) {
-            console.error('[recordService] 提交挑戰失敗', error);
-            throw error; // 提交失敗通常需要讓 UI 顯示錯誤訊息，所以拋出
+            console.warn('[recordService] 提交挑戰失敗，嘗試進入 Demo 備援模式', error);
+            
+            // 如果是 404 或其他連線問題，且 submission 內含有資料，則存入本地
+            if (params.submission) {
+                const localRecords = JSON.parse(localStorage.getItem('local_gym_records') || '[]');
+            const newRecord: GymChallengeRecord = {
+                id: Date.now(),
+                userId: params.userId,
+                journeyId: params.journeyId,
+                chapterId: params.chapterId,
+                gymId: params.gymId,
+                gymChallengeId: params.gymChallengeId,
+                status: 'REVIEWING', // 暫存流程一律先設為審核中
+                submission: params.submission,
+                createdAt: Date.now()
+            };
+                localStorage.setItem('local_gym_records', JSON.stringify([...localRecords, newRecord]));
+            }
+            
+            throw error; // 仍然拋出錯誤，讓 UI (如 ChallengeModal) 可以根據錯誤顯示特定提示
         }
+    },
+    
+    /**
+     * 預約挑戰 (設定預約截止時間)
+     */
+    async bookChallenge(params: {
+        gymId: number;
+        gymChallengeId: number;
+    }): Promise<GymChallengeRecord> {
+        return await apiRequest(`/gym-challenge-records/book`, {
+            method: 'POST',
+            body: JSON.stringify(params)
+        });
     }
 };

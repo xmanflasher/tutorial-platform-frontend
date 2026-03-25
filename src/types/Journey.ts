@@ -96,4 +96,5 @@ export interface LessonDetail {
   content: LessonContent[];
   reward: Reward;
   videoLength?: string;
+  premiumOnly?: boolean;
 }

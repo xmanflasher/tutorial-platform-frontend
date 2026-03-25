@@ -70,6 +70,12 @@ export const orderService = {
             
             // Sync local store
             orderStore.saveOrders(orders);
+            
+            // 重要：發送事件通知其他組件 (例如首頁 CourseCard) 重新檢查擁有狀態
+            if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('order-completed'));
+            }
+            
             return orders;
         } catch (error) {
             console.error('[orderService] Failed to fetch orders', error);

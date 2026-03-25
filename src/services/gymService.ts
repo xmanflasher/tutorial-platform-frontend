@@ -33,21 +33,32 @@ export const gymService = {
     try {
       const records = await recordService.getUserGymRecords();
       const recordMap = new Map(records.map(r => [r.gymId, r]));
-      
-      // 檢查是否擁有該旅程
-      // 增加防呆：同時檢查 Slug 與 ID (如果之後有傳入 ID 的話)
       const isOwned = slug ? (orderStore.isCourseOwned(slug)) : false;
+
+      // 輔助函式：判斷是否成功通過
+      const isSuccess = (status?: string) => 
+        status === 'SUCCESS' || status === 'PASSED' || status === 'COMPLETED';
+
+      let previousCompleted = true; // 第一個關卡預設前一關已完成
 
       return journeyGyms.map((gym, index) => {
         const record = recordMap.get(gym.id);
+        const passed = isSuccess(record?.status);
         
-        // 核心邏輯：
-        // 1. 如果沒購買 (isOwned === false)，則全部鎖定 (isLocked: true)。
-        // 2. 如果已購買，則依序解鎖：該分頁的第一關預設開啟 (index === 0)，其餘需有過關紀錄。
+        // 取得星數：有紀錄則優先讀取 ratings.stars，若沒給則預設 3 (因 status 為成功)
+        const stars = passed ? (record?.ratings?.stars || 3) : 0;
+        
+        // 解鎖邏輯：已購買 且 (是第一關 或 前一關已通過)
+        const isLocked = !isOwned || !previousCompleted;
+
+        // 更新下一關的判斷依據
+        previousCompleted = passed;
+
         return {
           ...gym,
-          currentStars: record?.status === 'PASSED' ? (record?.ratings?.stars || 0) : 0,
-          isLocked: !isOwned || (!record && index !== 0)
+          currentStars: stars,
+          isLocked: isLocked,
+          bookingCompletedAt: record?.bookingCompletedAt
         };
       });
     } catch (error) {

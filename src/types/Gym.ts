@@ -32,6 +32,7 @@ export interface Gym {
     // 前端 UI 擴充欄位
     currentStars?: number;
     isLocked?: boolean;
+    bookingCompletedAt?: number;
 }
 
 // 修正後的 GymDetailData

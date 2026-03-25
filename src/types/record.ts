@@ -31,6 +31,7 @@ export interface GymChallengeRecord {
     gymId: number;             // gym_id, int8
     gymChallengeId: number;    // gym_challenge_id, int8
     status: GymStatus;         // status, varchar(255)
+    gymName?: string;          // 道館名稱
 
     // JSONB 類型在前端通常對應物件或 any
     submission?: any;          // submission, jsonb (存放學員提交的內容)
@@ -38,11 +39,12 @@ export interface GymChallengeRecord {
     feedback?: string;         // feedback, text (老師的回饋)
 
     // 時間戳記
-    createdAt: string;         // created_at, timestamp
-    updatedAt?: string;
-    reviewedAt?: string;       // reviewed_at, timestamp
-    completedAt?: string;      // completed_at, timestamp
-    bookingCompletedAt?: string; // booking_completed_at, timestamp
+    createdAt: number;         // created_at, timestamp (long)
+    updatedAt?: number;
+    reviewedAt?: number;       // reviewed_at, timestamp (long)
+    completedAt?: number;      // completed_at, timestamp (long)
+    bookingCompletedAt?: number; // booking_completed_at, timestamp (long)
+    challengeType?: 'PRACTICAL_CHALLENGE' | 'INSTANT_CHALLENGE';
 }
 
 // 挑戰紀錄 (用於個人檔案/作品集導向)
@@ -51,7 +53,8 @@ export interface ChallengeRecord {
     gymId: number;
     gymName?: string;
     gymChallengeId: number;
-    status: "SUCCESS" | "FAILED" | "SUBMITTED" | "IN_PROGRESS";
+    challengeType?: 'PRACTICAL_CHALLENGE' | 'INSTANT_CHALLENGE';
+    status: "SUCCESS" | "FAILED" | "SUBMITTED" | "IN_PROGRESS" | "PASSED" | "REVIEWING";
     feedback?: string;
     ratings?: Record<string, string>;
     submission?: Record<string, string>;
