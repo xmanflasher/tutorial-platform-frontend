@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import React from "react";
 
 // 這裡不需要 fetch 資料了，因為 Header 已經交給 page.tsx 處理

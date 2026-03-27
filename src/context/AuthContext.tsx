@@ -66,12 +66,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // ★ 新增：同步訂單以更新首頁擁有狀態
             orderService.getUserOrders(dbUser.id);
           } else {
-            // Token 無效，徹底清除
-            console.warn("Token 無效，清除身分");
+            // Token 無效或為空，徹底清除並以訪客模式繼續
+            console.info("👣 訪客瀏覽模式 (未登入或 Token 無效)");
             logoutLocal();
           }
         } catch (error) {
-          console.error("同步使用者資料失敗:", error);
+          if (error instanceof Error && error.message === 'Unauthorized') {
+            console.info("👣 訪客瀏覽模式 (未登入)");
+          } else {
+            console.warn("同步使用者資料狀態異常 (API Exception):", error);
+          }
           logoutLocal();
         }
       } else {

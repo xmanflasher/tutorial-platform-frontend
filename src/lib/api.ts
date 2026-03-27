@@ -62,6 +62,11 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
             toast.error('登入已過期或未授權，請重新登入');
           }
         }
+        
+        // 若為靜默判斷 (例如檢查 Session)，直接平滑回傳 null，避免紅字 Error 噴在頁面上
+        if (options.silent) {
+          return null as unknown as T;
+        }
         throw new Error('Unauthorized');
       }
 
