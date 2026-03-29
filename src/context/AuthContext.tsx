@@ -17,6 +17,7 @@ export interface User {
   nextLevelExp: number;
   nickName?: string;
   region?: string;
+  jobTitle?: string;
   githubUrl?: string;
   discordId?: string;
 }
@@ -26,6 +27,7 @@ interface AuthContextType {
   loading: boolean;
   login: (userData: User, token?: string) => void;
   logout: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -130,8 +132,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const refreshUser = async () => {
+    try {
+      const dbUser = await apiRequest<User>('/me', { silent: true });
+      if (dbUser) {
+        setUser(dbUser);
+        localStorage.setItem('waterball_user', JSON.stringify(dbUser));
+      }
+    } catch (error) {
+      console.warn("Refresh user failed", error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

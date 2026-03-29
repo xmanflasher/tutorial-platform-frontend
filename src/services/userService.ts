@@ -44,7 +44,23 @@ export const userService = {
     },
 
     /**
-     * 更新使用者資料
+     * 更新使用者資料 (對應身份與權限隔離，僅能修改本人)
+     */
+    async updateCurrentProfile(data: any): Promise<boolean> {
+        try {
+            await apiRequest('/members/me', {
+                method: 'PUT',
+                body: JSON.stringify(data)
+            });
+            return true;
+        } catch (error) {
+            console.error("[userService] Failed to update current profile", error);
+            return false;
+        }
+    },
+
+    /**
+     * 更新使用者資料 (特定 ID)
      */
     async updateProfile(userId: string, data: any): Promise<boolean> {
         try {
