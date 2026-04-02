@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import MobileNav from './MobileNav';
 import DesktopNav from './DesktopNav';
 import UserMenu from './UserMenu';
 import { useAuth } from '@/context/AuthContext';
+import { useNotification } from '@/context/NotificationContext';
 import { Map, Bell } from 'lucide-react';
-import { announcementService, AnnouncementData } from '@/services/announcementService';
 import NotificationDropdown from './NotificationDropdown';
 
 interface HeaderProps {
@@ -15,38 +15,30 @@ interface HeaderProps {
 
 export default function Header({ onMenuClick, onLoginClick }: HeaderProps) {
   const { user } = useAuth();
-  const [hasUnread, setHasUnread] = useState(false);
+  const { unreadCount, notifications, markAsRead, markAllAsRead } = useNotification();
   const [showNotifications, setShowNotifications] = useState(false);
-  const [notifications, setNotifications] = useState<AnnouncementData[]>([]);
-  const [latestAnnouncement, setLatestAnnouncement] = useState<any>(null);
-
-  useEffect(() => {
-    const unsubscribe = announcementService.subscribe((ann) => {
-      if (ann) {
-        setHasUnread(true);
-        setLatestAnnouncement(ann);
-      } else {
-        setHasUnread(false);
-      }
-    });
-    return () => { unsubscribe(); };
-  }, []);
 
   const handleBellClick = async () => {
-    if (!showNotifications) {
-      // 開啟時抓取全部
-      const all = await announcementService.fetchAll();
-      setNotifications(all);
-      setHasUnread(false);
-    }
     setShowNotifications(!showNotifications);
   };
 
-  const handleNotificationClick = (notification: AnnouncementData) => {
-    setShowNotifications(false);
-    if (notification.linkHref) {
-      window.location.href = notification.linkHref;
+  const handleNotificationClick = async (notif: any) => {
+    // 1. 如果是未讀，先標記為已讀
+    if (!notif.isRead) {
+      await markAsRead(notif.id);
     }
+    
+    // 2. 關閉下拉選單
+    setShowNotifications(false);
+    
+    // 3. 跳轉連結
+    if (notif.linkHref) {
+      window.location.href = notif.linkHref;
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    await markAllAsRead();
   };
 
   return (
@@ -76,8 +68,12 @@ export default function Header({ onMenuClick, onLoginClick }: HeaderProps) {
                   }`}
               >
                 <Bell size={20} />
-                {hasUnread && (
-                  <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#111827]"></span>
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center bg-red-600 rounded-full border-2 border-[#111827] animate-in zoom-in duration-300">
+                    <span className="text-[10px] font-bold text-white">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  </span>
                 )}
               </button>
 
@@ -86,6 +82,7 @@ export default function Header({ onMenuClick, onLoginClick }: HeaderProps) {
                   notifications={notifications}
                   onClose={() => setShowNotifications(false)}
                   onItemClick={handleNotificationClick}
+                  onMarkAllRead={handleMarkAllRead}
                 />
               )}
             </div>
