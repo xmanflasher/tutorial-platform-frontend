@@ -15,6 +15,9 @@ export interface UserProfile {
     sex?: string;
     birthDate?: string;
     nextLevelExp?: number;
+    role?: string;
+    instructorBio?: string;
+    socialLinks?: string;
 }
 
 export interface LeaderboardMember {

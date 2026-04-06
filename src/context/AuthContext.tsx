@@ -20,6 +20,9 @@ export interface User {
   jobTitle?: string;
   githubUrl?: string;
   discordId?: string;
+  role?: string;
+  instructorBio?: string;
+  socialLinks?: string;
 }
 
 interface AuthContextType {
