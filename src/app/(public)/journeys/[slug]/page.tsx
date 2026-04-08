@@ -17,11 +17,11 @@ export default async function JourneyDetailPage({
     <div className="max-w-7xl mx-auto pb-20 px-4 pt-6">
 
       {/* ... (Banner 區域程式碼省略，保持原樣) ... */}
-      <div className="bg-[#1e1f24] border border-gray-800 rounded-lg p-4 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-black/20">
+      <div className="bg-[#1e1f24] border border-border-ui rounded-lg p-4 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-black/20">
         <p className="text-gray-200 text-sm md:text-base font-medium text-center sm:text-left">
           將軟體設計精通之旅體驗課程的全部影片看完就可以獲得 3000 元課程折價券！
         </p>
-        <button className="bg-yellow-400 text-black font-bold px-6 py-2 rounded hover:bg-yellow-500 transition-colors shrink-0 flex items-center gap-2">
+        <button className="bg-primary text-black font-bold px-6 py-2 rounded hover:bg-primary transition-colors shrink-0 flex items-center gap-2">
           前往 <ArrowRight size={16} />
         </button>
       </div>
@@ -52,10 +52,10 @@ export default async function JourneyDetailPage({
             </div>
 
             <div className="hidden md:flex gap-4">
-              <button className="px-8 py-3 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold rounded-lg shadow-lg shadow-yellow-400/20 transition-all hover:scale-105">
+              <button className="px-8 py-3 bg-primary hover:bg-primary text-black font-bold rounded-lg shadow-lg shadow-yellow-400/20 transition-all hover:scale-105">
                 {journey.actionButtons?.primary || "立即加入"}
               </button>
-              <button className="px-8 py-3 border border-yellow-400 text-yellow-400 hover:bg-yellow-400/10 font-bold rounded-lg transition-all">
+              <button className="px-8 py-3 border border-primary text-primary hover:bg-primary/10 font-bold rounded-lg transition-all">
                 {journey.actionButtons?.secondary || "試聽課程"}
               </button>
             </div>

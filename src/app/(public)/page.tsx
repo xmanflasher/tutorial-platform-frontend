@@ -7,8 +7,8 @@ import ResourceGrid from '@/components/home/ResourceGrid';
 import InstructorSection from '@/components/home/InstructorSection';
 
 export const metadata = {
-  title: '首頁 - 水球軟體學院',
-  description: '軟體設計模式精通之旅，成為硬核的 Coding 實戰高手',
+  title: '首頁 - Σ-Codeatl',
+  description: 'Σ-Codeatl 軟體技術實戰學習地圖，掌握從 JS 到架構設計的硬核開發能力',
 };
 
 const DEFAULT_JOURNEY_SLUG = "software-design-pattern";

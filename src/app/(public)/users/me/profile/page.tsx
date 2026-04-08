@@ -15,13 +15,15 @@ export default function ProfilePage() {
     nickName: user?.nickName || '',
     jobTitle: user?.jobTitle || '',
     region: user?.region || '',
-    avatar: user?.avatar || ''
+    avatar: user?.avatar || '',
+    instructorBio: (user as any)?.instructorBio || '',
+    socialLinks: (user as any)?.socialLinks || ''
   });
 
   if (!user) {
     return (
       <div className="flex items-center justify-center p-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -48,9 +50,9 @@ export default function ProfilePage() {
     <div className="space-y-6">
 
       {/* 1. 基本資料區塊 */}
-      <section className="bg-[#1e1f24] border border-gray-800 rounded-lg p-6">
+      <section className="bg-[#1e1f24] border border-border-ui rounded-lg p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-yellow-400">基本資料</h2>
+          <h2 className="text-xl font-bold text-primary">基本資料</h2>
           {!isEditing ? (
             <button 
               onClick={() => {
@@ -58,11 +60,13 @@ export default function ProfilePage() {
                     nickName: user.nickName || '',
                     jobTitle: user.jobTitle || '',
                     region: user.region || '',
-                    avatar: user.avatar || ''
+                    avatar: user.avatar || '',
+                    instructorBio: (user as any).instructorBio || '',
+                    socialLinks: (user as any).socialLinks || ''
                 });
                 setIsEditing(true);
               }}
-              className="px-4 py-1.5 text-xs font-bold border border-yellow-400 text-yellow-400 rounded hover:bg-yellow-400/10 transition-colors flex items-center gap-2"
+              className="px-4 py-1.5 text-xs font-bold border border-primary text-primary rounded hover:bg-primary/10 transition-colors flex items-center gap-2"
             >
               ✏️ 編輯資料
             </button>
@@ -77,7 +81,7 @@ export default function ProfilePage() {
               <button 
                 onClick={handleSave}
                 disabled={isSaving}
-                className="px-4 py-1.5 text-xs font-bold bg-yellow-400 text-black rounded hover:bg-yellow-500 transition-colors flex items-center gap-2 disabled:opacity-50"
+                className="px-4 py-1.5 text-xs font-bold bg-primary text-black rounded hover:bg-primary transition-colors flex items-center gap-2 disabled:opacity-50"
               >
                 <Save size={14} /> {isSaving ? '儲存中...' : '儲存'}
               </button>
@@ -93,7 +97,7 @@ export default function ProfilePage() {
                 type="text" 
                 value={formData.nickName}
                 onChange={(e) => setFormData({...formData, nickName: e.target.value})}
-                className="w-full bg-[#111827] border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-yellow-400"
+                className="w-full bg-card border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-primary"
               />
             ) : (
               <div className="text-white font-medium text-base">{user.nickName || user.name || '未設定'}</div>
@@ -106,7 +110,7 @@ export default function ProfilePage() {
                 type="text" 
                 value={formData.jobTitle}
                 onChange={(e) => setFormData({...formData, jobTitle: e.target.value})}
-                className="w-full bg-[#111827] border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-yellow-400"
+                className="w-full bg-card border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-primary"
               />
             ) : (
               <div className="text-white font-medium text-base">{user.jobTitle || '尚未設定'}</div>
@@ -120,7 +124,7 @@ export default function ProfilePage() {
                 placeholder="DiceBear Seed or URL"
                 value={formData.avatar}
                 onChange={(e) => setFormData({...formData, avatar: e.target.value})}
-                className="w-full bg-[#111827] border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-yellow-400"
+                className="w-full bg-card border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-primary"
               />
             ) : (
               <div className="text-white font-medium text-base truncate max-w-xs">{user.avatar || '預設'}</div>
@@ -141,7 +145,7 @@ export default function ProfilePage() {
                 type="text" 
                 value={formData.region}
                 onChange={(e) => setFormData({...formData, region: e.target.value})}
-                className="w-full bg-[#111827] border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-yellow-400"
+                className="w-full bg-card border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-primary"
               />
             ) : (
               <div className="text-white font-medium text-base">{user.region || '尚未設定'}</div>
@@ -151,10 +155,10 @@ export default function ProfilePage() {
       </section>
 
       {/* 2. Discord 綁定 (唯讀演示) */}
-      <section className="bg-[#1e1f24] border border-gray-800 rounded-lg p-6 opacity-75">
+      <section className="bg-[#1e1f24] border border-border-ui rounded-lg p-6 opacity-75">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
           <div>
-            <h2 className="text-xl font-bold text-yellow-400 mb-1 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-primary mb-1 flex items-center gap-2">
               Discord 帳號綁定
             </h2>
           </div>
@@ -166,17 +170,17 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 bg-[#111827] p-4 rounded border border-gray-700">
+        <div className="flex items-center gap-3 bg-card p-4 rounded border border-gray-700">
           <Disc className="text-indigo-400" size={28} />
           <span className="text-gray-400">{user.discordId || '尚未綁定 Discord 帳號'}</span>
         </div>
       </section>
 
-      {/* 3. GitHub 綁定 (唯讀演示) */}
-      <section className="bg-[#1e1f24] border border-gray-800 rounded-lg p-6 opacity-75">
+      {/* 4. GitHub 綁定 (唯讀演示) */}
+      <section className="bg-[#1e1f24] border border-border-ui rounded-lg p-6 opacity-75">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
           <div>
-            <h2 className="text-xl font-bold text-yellow-400 mb-1">GitHub 帳號</h2>
+            <h2 className="text-xl font-bold text-primary mb-1">GitHub 帳號</h2>
             <p className="text-gray-400 text-sm">自定義 Github URL 暫時不可修改</p>
           </div>
           <button disabled className="flex items-center gap-2 px-6 py-2 bg-gray-700 text-gray-400 font-bold rounded cursor-not-allowed">
@@ -184,11 +188,79 @@ export default function ProfilePage() {
             暫不開放
           </button>
         </div>
-        <div className="flex items-center gap-3 bg-[#111827] p-4 rounded border border-gray-700">
+        <div className="flex items-center gap-3 bg-card p-4 rounded border border-gray-700">
           <Github className="text-white" size={28} />
           <span className="text-gray-400">{user.githubUrl ? `已綁定: ${user.githubUrl.split('/').pop()}` : '尚未綁定 GitHub 帳號'}</span>
         </div>
       </section>
+
+      {/* ★ Phase 9.1: 講師設定區塊 (僅 INSTRUCTOR 或 ADMIN 可見) */}
+      {(user.role === 'ROLE_INSTRUCTOR' || user.role === 'ROLE_ADMIN' || (user as any).role === 'ADMIN') && (
+        <section className="bg-gradient-to-r from-[#1e1f24] to-[#252015] border border-yellow-900 rounded-lg p-6">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h2 className="text-xl font-bold text-primary mb-1 flex items-center gap-2">
+                🧑‍🏫 講師主頁佈置
+              </h2>
+              <p className="text-xs text-gray-400">在這裡設定您的對外講師形象 <a href={`/instructors/${user.id}`} target="_blank" className="text-blue-400 hover:underline">預覽我的公開主頁</a></p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 gap-y-6 text-sm">
+            <div>
+              <label className="block text-gray-500 mb-2">專業頭銜 (Job Title)</label>
+              <input 
+                type="text" 
+                value={formData.jobTitle}
+                onChange={(e) => setFormData({...formData, jobTitle: e.target.value})}
+                placeholder="例如：資深軟體工程師、XXX 課程創辦人"
+                className="w-full bg-card border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-primary"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-500 mb-2">社群連結 (Social Links - URL)</label>
+              <input 
+                type="text" 
+                value={formData.socialLinks || ''}
+                onChange={(e) => setFormData({...formData, socialLinks: e.target.value})}
+                placeholder="例如您的 YouTube 頻道或 LinkedIn 連結"
+                className="w-full bg-card border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-primary"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-500 mb-2">講師簡介 (Instructor Bio - 支援 Markdown)</label>
+              <textarea 
+                rows={8}
+                value={formData.instructorBio || ''}
+                onChange={(e) => setFormData({...formData, instructorBio: e.target.value})}
+                placeholder="分享您的背景、專長，以及對教學的熱情...可以大膽使用 Markdown 進行排版！"
+                className="w-full bg-card border border-gray-700 rounded px-3 py-2 text-white outline-none focus:border-primary font-mono text-sm leading-relaxed"
+              />
+            </div>
+            
+            <div className="flex justify-end pt-2">
+              <button 
+                onClick={async () => {
+                  const success = await userService.updateInstructorProfile({
+                    jobTitle: formData.jobTitle,
+                    instructorBio: formData.instructorBio,
+                    socialLinks: formData.socialLinks
+                  });
+                  if (success) {
+                    toast.success('講師資料已更新！');
+                    refreshUser();
+                  } else {
+                    toast.error('儲存失敗');
+                  }
+                }}
+                className="px-6 py-2 font-bold bg-primary hover:bg-primary text-black rounded transition-colors"
+              >
+                💾 儲存講師資料
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 5. 訂單紀錄 */}
       <OrderHistory />

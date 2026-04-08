@@ -104,7 +104,7 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="relative w-full max-w-md bg-[#1e1f24] rounded-xl border border-gray-700 shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+      <div className="relative w-full max-w-md bg-card rounded-xl border border-border-ui shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
 
         {/* 關閉按鈕 */}
         <button
@@ -132,11 +132,11 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
 
         {/* LOGO 與標題 */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-blue-500 rounded-full mb-4 flex items-center justify-center text-2xl font-bold text-white shadow-lg shadow-blue-500/20">
-            W
+          <div className="w-16 h-16 bg-primary rounded-full mb-4 flex items-center justify-center text-2xl font-bold text-white shadow-lg shadow-primary/20">
+            Σ
           </div>
-          <h2 className="text-xl font-bold text-white">水球軟體學院</h2>
-          <p className="text-sm text-gray-400">WATERBALLSA.TW</p>
+          <h2 className="text-xl font-bold text-white">Σ-Codeatl</h2>
+          <p className="text-sm text-gray-400">CODEATL.TW</p>
         </div>
 
         {view === 'login' && (
@@ -168,7 +168,7 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
               </button>
 
               <button
-                className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 text-gray-700 font-medium py-3 rounded-lg transition-all active:scale-[0.98] border border-gray-300"
+                className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 text-gray-700 font-medium py-3 rounded-lg transition-all active:scale-[0.98] border border-border-ui"
                 onClick={() => {
                   const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api').replace('/api', '');
                   window.location.href = `${baseUrl}/oauth2/authorization/google`;
@@ -181,10 +181,10 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-700"></div>
+                <div className="w-full border-t border-border-ui"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-2 bg-[#1e1f24] text-gray-500 uppercase tracking-widest">開發測試</span>
+                <span className="px-2 bg-card text-gray-500 uppercase tracking-widest">開發測試</span>
               </div>
             </div>
 
@@ -193,12 +193,12 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
                 onClick={async () => {
                   try {
                     await logVisitorIdentity('GUEST');
-                    onMockLogin('god@waterballsa.tw');
+                    onMockLogin('god@codeatl.tw');
                   } catch (err) {
                     console.error(err);
                   }
                 }}
-                className="bg-yellow-500 hover:bg-yellow-400 text-black text-sm py-2.5 rounded border border-yellow-600 transition-all flex flex-col items-center gap-1 shadow-lg shadow-yellow-500/20"
+                className="bg-primary hover:bg-primary text-black text-sm py-2.5 rounded border border-yellow-600 transition-all flex flex-col items-center gap-1 shadow-lg shadow-yellow-500/20"
               >
                 <span className="font-black">👑 登入大神驗收帳號</span>
                 <span className="text-[10px] text-black/70 font-bold">(最高進度/權限)</span>
@@ -207,7 +207,7 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
 
               <button
                 onClick={handleStartRegistration}
-                className="bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm py-2.5 rounded border border-gray-700 transition-all flex flex-col items-center gap-1"
+                className="bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm py-2.5 rounded border border-border-ui transition-all flex flex-col items-center gap-1"
               >
                 <span className="font-bold">✨ 建立新帳號</span>
                 <span className="text-[10px] text-gray-500 opacity-80">(冒險者註冊)</span>
@@ -221,7 +221,7 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
             <h3 className="text-center text-gray-300 mb-6 font-bold">請選擇您的冒險者身份</h3>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { id: 'hr', label: '人資', icon: Briefcase, color: 'text-blue-400' },
+                { id: 'hr', label: '人資', icon: Briefcase, color: 'text-primary' },
                 { id: 'tech-lead', label: '技術主管', icon: User, color: 'text-purple-400' },
                 { id: 'startup', label: '新創', icon: Rocket, color: 'text-orange-400' },
                 { id: 'other', label: '其他', icon: Info, color: 'text-gray-400' },
@@ -229,7 +229,7 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
                 <button
                   key={role.id}
                   onClick={() => handleRoleSelect(role.label)}
-                  className="flex flex-col items-center justify-center p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-blue-500/50 transition-all group"
+                  className="flex flex-col items-center justify-center p-4 rounded-xl bg-white/5 border border-border-ui hover:bg-white/10 hover:border-primary/50 transition-all group"
                 >
                   <role.icon className={`w-8 h-8 mb-2 group-hover:scale-110 transition-transform ${role.color}`} />
                   <span className="text-white text-sm font-medium">{role.label}</span>
@@ -245,9 +245,9 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
         {view === 'register_options' && (
           <div className="space-y-4 animate-in slide-in-from-right-4 duration-300">
             <h3 className="text-center text-gray-300 mb-2 font-bold uppercase tracking-widest text-xs">冒險準備就緒</h3>
-            <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 mb-6 flex items-center justify-center gap-3">
-              <span className="text-xs text-blue-300 font-medium">當前身份:</span>
-              <span className="text-sm text-white font-bold px-2 py-0.5 bg-blue-600 rounded">{formData.role}</span>
+            <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 mb-6 flex items-center justify-center gap-3">
+              <span className="text-xs text-primary/80 font-medium">當前身份:</span>
+              <span className="text-sm text-white font-bold px-2 py-0.5 bg-primary rounded">{formData.role}</span>
               <button
                 onClick={() => setView('select_role')}
                 className="text-[10px] text-gray-400 hover:text-white underline"
@@ -258,14 +258,14 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
 
             <button
               onClick={() => setView('manual_register')}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-lg transition-all flex items-center justify-center gap-2"
+              className="w-full bg-primary hover:opacity-90 text-white font-medium py-3 rounded-lg transition-all flex items-center justify-center gap-2"
             >
               📝 完整資料建立
             </button>
             <button
               onClick={handleQuickRegister}
               disabled={loading}
-              className="w-full bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 rounded-lg transition-all border border-gray-700 flex items-center justify-center gap-2"
+              className="w-full bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 rounded-lg transition-all border border-border-ui flex items-center justify-center gap-2"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "🏃 快速冒險 (隨機身分)"}
             </button>
@@ -285,7 +285,7 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
                 type="text"
                 value={formData.role}
                 readOnly
-                className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 text-gray-400 text-sm focus:outline-none"
+                className="w-full bg-gray-900 border border-border-ui rounded-lg px-4 py-2.5 text-gray-400 text-sm focus:outline-none"
               />
             </div>
 
@@ -294,10 +294,10 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
               <input
                 type="text"
                 required
-                placeholder="例如: 水球教練"
+                placeholder="例如: Σ-Codeatl 導師"
                 value={formData.name}
                 onChange={e => setFormData({ ...formData, name: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500 transition-colors"
+                className="w-full bg-gray-800 border border-border-ui rounded-lg px-4 py-2.5 text-white text-sm focus:border-primary transition-colors"
               />
             </div>
 
@@ -309,7 +309,7 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
                 placeholder="adventure@example.com"
                 value={formData.email}
                 onChange={e => setFormData({ ...formData, email: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500 transition-colors"
+                className="w-full bg-gray-800 border border-border-ui rounded-lg px-4 py-2.5 text-white text-sm focus:border-primary transition-colors"
               />
             </div>
 
@@ -321,14 +321,14 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
                 placeholder="請輸入密碼"
                 value={formData.password}
                 onChange={e => setFormData({ ...formData, password: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white text-sm focus:border-blue-500 transition-colors"
+                className="w-full bg-gray-800 border border-border-ui rounded-lg px-4 py-2.5 text-white text-sm focus:border-primary transition-colors"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-all mt-6 shadow-lg shadow-blue-500/20 flex items-center justify-center"
+              className="w-full bg-primary hover:opacity-90 text-white font-bold py-3 rounded-lg transition-all mt-6 shadow-lg shadow-primary/20 flex items-center justify-center"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "立即開始冒險"}
             </button>

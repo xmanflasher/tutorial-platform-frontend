@@ -22,8 +22,8 @@ function BadgeCard({ name, imageUrl, unlocked }: { name: string; imageUrl: strin
             className={`
                 relative flex flex-col items-center justify-center p-4 border rounded-lg h-48 transition-all duration-300
                 ${unlocked
-                    ? 'bg-[#111827] border-gray-700 group hover:border-yellow-400/50 hover:-translate-y-1'
-                    : 'bg-[#0f1218] border-gray-800 grayscale opacity-60 cursor-not-allowed'
+                    ? 'bg-card border-gray-700 group hover:border-primary/50 hover:-translate-y-1'
+                    : 'bg-[#0f1218] border-border-ui grayscale opacity-60 cursor-not-allowed'
                 }
             `}
         >
@@ -49,7 +49,7 @@ function BadgeCard({ name, imageUrl, unlocked }: { name: string; imageUrl: strin
             <span className={`
                 px-3 py-1 text-xs font-bold rounded-full text-center transition-colors
                 ${unlocked
-                    ? 'bg-yellow-400 text-slate-900'
+                    ? 'bg-primary text-black'
                     : 'bg-gray-700 text-gray-400'
                 }
             `}>
@@ -92,7 +92,7 @@ export default function GymBadgesPage() {
     if (isJourneyLoading || loading) {
         return (
             <div className="flex h-[50vh] w-full items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-yellow-400" />
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
         );
     }
@@ -100,10 +100,10 @@ export default function GymBadgesPage() {
     return (
         <div className="space-y-12 pb-12">
             <section>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-gray-800 pb-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-border-ui pb-4">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-yellow-400/10 rounded-lg">
-                            <Medal className="text-yellow-400 w-6 h-6" />
+                        <div className="p-2 bg-primary/10 rounded-lg">
+                            <Medal className="text-primary w-6 h-6" />
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-white tracking-tight">{activeJourney.title}</h2>
@@ -114,7 +114,7 @@ export default function GymBadgesPage() {
                     <div className="flex items-center gap-6 text-sm">
                         <div className="text-center">
                             <div className="text-gray-500 mb-1">已解鎖</div>
-                            <div className="text-yellow-400 font-bold text-xl">{badges.filter(b => b.unlocked).length}</div>
+                            <div className="text-primary font-bold text-xl">{badges.filter(b => b.unlocked).length}</div>
                         </div>
                         <div className="w-px h-8 bg-gray-800"></div>
                         <div className="text-center">
@@ -125,7 +125,7 @@ export default function GymBadgesPage() {
                 </div>
 
                 {badges.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center p-20 bg-[#111827]/50 rounded-xl border border-dashed border-gray-800">
+                    <div className="flex flex-col items-center justify-center p-20 bg-card/50 rounded-xl border border-dashed border-border-ui">
                         <Medal size={48} className="text-gray-700 mb-4" />
                         <p className="text-gray-500 italic">此旅程目前尚無設定徽章資料</p>
                     </div>

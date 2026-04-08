@@ -30,6 +30,7 @@ export interface JourneyDetail {
   slug: string;
   title: string;
   subtitle: string;
+  instructorName?: string;
   description: string;
   tags?: string[];
   // 結構面

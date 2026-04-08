@@ -101,7 +101,7 @@ export default function VideoPlayer({ url, onEnded, onProgress }: VideoPlayerPro
     // 防止 SSR Hydration Error
     if (!isMounted) {
         return (
-            <div className="relative pt-[56.25%] bg-black rounded-xl overflow-hidden border border-gray-800">
+            <div className="relative pt-[56.25%] bg-black rounded-xl overflow-hidden border border-border-ui">
                 <div className="absolute inset-0 flex items-center justify-center text-gray-500">
                     載入播放器元件...
                 </div>
@@ -111,7 +111,7 @@ export default function VideoPlayer({ url, onEnded, onProgress }: VideoPlayerPro
 
     if (!videoId) {
         return (
-            <div className="relative pt-[56.25%] bg-black rounded-xl overflow-hidden border border-gray-800 flex items-center justify-center text-red-500">
+            <div className="relative pt-[56.25%] bg-black rounded-xl overflow-hidden border border-border-ui flex items-center justify-center text-red-500">
                 無效的影片 ID
             </div>
         );
@@ -128,7 +128,7 @@ export default function VideoPlayer({ url, onEnded, onProgress }: VideoPlayerPro
     };
 
     return (
-        <div className="relative pt-[56.25%] bg-black rounded-xl overflow-hidden shadow-lg border border-gray-800">
+        <div className="relative pt-[56.25%] bg-black rounded-xl overflow-hidden shadow-lg border border-border-ui">
             <div className="absolute top-0 left-0 w-full h-full">
                 <YouTube
                     videoId={videoId}

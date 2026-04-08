@@ -103,7 +103,7 @@ export default function LessonPage({
     return (
         <div className="max-w-5xl mx-auto w-full pb-20 px-4 pt-6">
             {/* 標題區域 */}
-            <div className="mb-8 border-b border-gray-800 pb-6">
+            <div className="mb-8 border-b border-border-ui pb-6">
                 <div className="flex justify-between items-start">
                     <div className="space-y-2">
                         <div className="flex items-center gap-3">
@@ -126,13 +126,13 @@ export default function LessonPage({
 
             {/* 內容顯示區 */}
             <div className={cn(
-                "bg-[#111827] rounded-2xl overflow-hidden border border-gray-800 shadow-2xl min-h-[500px]",
+                "bg-card rounded-2xl overflow-hidden border border-border-ui shadow-2xl min-h-[500px]",
                 isLocked ? "flex flex-col items-center justify-center" : "block"
             )}>
                 {isLocked ? (
                     <div className="p-12 text-center space-y-6 max-w-md animate-in fade-in zoom-in-95 duration-500">
-                        <div className="w-20 h-20 bg-yellow-400/10 rounded-full flex items-center justify-center mx-auto border border-yellow-400/20">
-                            <Lock className="w-10 h-10 text-yellow-400" />
+                        <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto border border-primary/20">
+                            <Lock className="w-10 h-10 text-primary" />
                         </div>
                         <div className="space-y-2">
                             <h3 className="text-2xl font-bold text-white">尚未購買此課程</h3>
@@ -142,7 +142,7 @@ export default function LessonPage({
                         </div>
                         <Link 
                             href={`/journeys/${slug}`}
-                            className="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-8 py-3 rounded-lg transition-all shadow-lg shadow-yellow-400/20 active:scale-[0.98]"
+                            className="inline-flex items-center gap-2 bg-primary hover:bg-yellow-300 text-black font-bold px-8 py-3 rounded-lg transition-all shadow-lg shadow-yellow-400/20 active:scale-[0.98]"
                         >
                             <ShoppingCart size={20} />
                             立即加入課程

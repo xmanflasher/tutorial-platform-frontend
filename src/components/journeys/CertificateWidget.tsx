@@ -6,11 +6,11 @@ export default function CertificateWidget({ journey }: { journey: JourneyDetail 
     return (
         <div className="space-y-6 sticky top-24">
             {/* 1. 證書卡片 */}
-            <div className="bg-[#1E293B] border border-slate-700 rounded-xl p-6 text-center shadow-lg">
+            <div className="bg-card border border-border-ui rounded-xl p-6 text-center shadow-lg">
                 {/* 證書圖片區 (模擬) */}
                 <div className="bg-white p-2 rounded-lg mb-4 aspect-[4/3] flex items-center justify-center overflow-hidden relative">
                     <div className="absolute inset-0 border-4 border-double border-slate-200 m-2" />
-                    <div className="text-slate-900">
+                    <div className="text-black">
                         <div className="text-2xl font-serif font-bold mb-1">CERTIFICATE</div>
                         <div className="text-[10px] text-slate-500 uppercase tracking-widest mb-4">of Achievement</div>
                         <div className="font-script text-3xl text-blue-900 mb-2">Your Name</div>
@@ -20,7 +20,7 @@ export default function CertificateWidget({ journey }: { journey: JourneyDetail 
 
                 <h3 className="text-xl font-bold text-white mb-4">課程證書</h3>
 
-                <button className="w-full py-3 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold rounded-lg transition-colors">
+                <button className="w-full py-3 bg-primary hover:bg-primary text-black font-bold rounded-lg transition-colors">
                     {journey.actionButtons.primary}
                 </button>
             </div>

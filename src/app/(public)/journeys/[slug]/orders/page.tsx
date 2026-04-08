@@ -89,7 +89,7 @@ export default function CheckoutPage() {
 
     return (
         <div className="min-h-screen bg-[#0F172A] text-white p-4 md:p-8 font-sans">
-            <div className="max-w-4xl mx-auto bg-[#1E293B] rounded-xl shadow-2xl overflow-hidden">
+            <div className="max-w-4xl mx-auto bg-card rounded-xl shadow-2xl overflow-hidden">
                 {/* Header / Stepper */}
                 <div className="bg-[#3B82F6] p-6">
                     <div className="flex justify-between items-center max-w-2xl mx-auto relative">
@@ -119,7 +119,7 @@ export default function CheckoutPage() {
                 {/* Content */}
                 <div className="p-8 space-y-8">
                     {/* Order Info Summary */}
-                    <div className="flex justify-between items-start border-b border-white/10 pb-6">
+                    <div className="flex justify-between items-start border-b border-border-ui pb-6">
                         <div className="space-y-1">
                             <div className="text-gray-400 text-sm">訂單編號:</div>
                             <div className="font-mono text-lg">{orderNumber}</div>
@@ -150,7 +150,7 @@ export default function CheckoutPage() {
                                                     "w-full flex items-center gap-4 p-4 rounded-lg border-2 transition-all text-left",
                                                     selectedPayment === method.id
                                                         ? "bg-white/5 border-[#3B82F6] ring-1 ring-[#3B82F6]"
-                                                        : "bg-transparent border-white/10 hover:border-white/20"
+                                                        : "bg-transparent border-border-ui hover:border-border-ui"
                                                 )}
                                             >
                                                 <div className={cn("p-2 rounded", selectedPayment === method.id ? "bg-[#3B82F6]" : "bg-white/10")}>
@@ -171,7 +171,7 @@ export default function CheckoutPage() {
                                                                     "px-4 py-2 rounded-md border transition-all",
                                                                     selectedInstallment === num
                                                                         ? "bg-[#3B82F6] border-[#3B82F6]"
-                                                                        : "bg-white/5 border-white/10 hover:border-white/20"
+                                                                        : "bg-white/5 border-border-ui hover:border-border-ui"
                                                                 )}
                                                             >
                                                                 {num} 期
@@ -189,7 +189,7 @@ export default function CheckoutPage() {
                             <section className="space-y-4">
                                 <button
                                     onClick={() => setShowInvoiceSection(!showInvoiceSection)}
-                                    className="w-full flex justify-between items-center text-left py-4 border-t border-white/10"
+                                    className="w-full flex justify-between items-center text-left py-4 border-t border-border-ui"
                                 >
                                     <h2 className="text-xl font-bold italic">發票資訊（選填）</h2>
                                     {showInvoiceSection ? <ChevronUp /> : <ChevronDown />}
@@ -208,7 +208,7 @@ export default function CheckoutPage() {
                                                             "px-4 py-2 rounded-md border transition-all text-sm font-medium",
                                                             selectedInvoice === type.id
                                                                 ? "bg-[#3B82F6] border-[#3B82F6] shadow-lg shadow-blue-500/20"
-                                                                : "bg-white/5 border-white/10 hover:border-white/20"
+                                                                : "bg-white/5 border-border-ui hover:border-border-ui"
                                                         )}
                                                     >
                                                         {type.label}
@@ -225,7 +225,7 @@ export default function CheckoutPage() {
                                                         <input
                                                             type="text"
                                                             placeholder="例: 12345678"
-                                                            className="w-full bg-[#0F172A] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-[#3B82F6] transition-colors"
+                                                            className="w-full bg-[#0F172A] border border-border-ui rounded-lg p-3 focus:outline-none focus:border-[#3B82F6] transition-colors"
                                                         />
                                                     </div>
                                                 </div>
@@ -238,7 +238,7 @@ export default function CheckoutPage() {
                                                         <input
                                                             type="text"
                                                             placeholder="例: /AB12-+. (需包含 / 符號)"
-                                                            className="w-full bg-[#0F172A] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-[#3B82F6] transition-colors"
+                                                            className="w-full bg-[#0F172A] border border-border-ui rounded-lg p-3 focus:outline-none focus:border-[#3B82F6] transition-colors"
                                                         />
                                                     </div>
                                                 </div>
@@ -251,7 +251,7 @@ export default function CheckoutPage() {
                                                         <input
                                                             type="text"
                                                             placeholder="例: AB12345678901234 (兩位大寫字母加上 14 位數字)"
-                                                            className="w-full bg-[#0F172A] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-[#3B82F6] transition-colors"
+                                                            className="w-full bg-[#0F172A] border border-border-ui rounded-lg p-3 focus:outline-none focus:border-[#3B82F6] transition-colors"
                                                         />
                                                     </div>
                                                 </div>
@@ -264,7 +264,7 @@ export default function CheckoutPage() {
                                                         <input
                                                             type="text"
                                                             placeholder="例: 123"
-                                                            className="w-full bg-[#0F172A] border border-white/10 rounded-lg p-3 focus:outline-none focus:border-[#3B82F6] transition-colors"
+                                                            className="w-full bg-[#0F172A] border border-border-ui rounded-lg p-3 focus:outline-none focus:border-[#3B82F6] transition-colors"
                                                         />
                                                     </div>
                                                 </div>
@@ -300,7 +300,7 @@ export default function CheckoutPage() {
                             </div>
                             <button
                                 onClick={() => router.push('/courses')}
-                                className="bg-white text-slate-900 font-bold px-8 py-3 rounded-lg hover:bg-gray-100 transition-colors shadow-xl"
+                                className="bg-white text-black font-bold px-8 py-3 rounded-lg hover:bg-gray-100 transition-colors shadow-xl"
                             >
                                 回到課程列表
                             </button>
@@ -319,10 +319,10 @@ export default function CheckoutPage() {
                 </button>
 
                 {showAgreement && (
-                    <div className="mt-4 p-6 bg-[#1E293B] rounded-xl border border-white/10 text-xs text-gray-400 h-64 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-white/10 animate-in slide-in-from-top-4">
+                    <div className="mt-4 p-6 bg-card rounded-xl border border-border-ui text-xs text-gray-400 h-64 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-white/10 animate-in slide-in-from-top-4">
                         <h3 className="text-sm font-bold text-gray-300">網際網路課程購買暨服務契約</h3>
-                        <p>本網際網路課程購買暨服務契約（以下簡稱本契約），指水球球特務有限公司（以下簡稱「水球球」、「我們」、「我們的」，公司基本資料詳列如下）授權您於 waterballsa.tw 網域之網站或 水球球所有之移動裝置平台（以下合稱本平台），使用水球球透過網際網路連線、或移動裝置平台離線進行之教學、評量或其他相關服務...</p>
-                        <p>水球球特務有限公司（ 水球球 ）負責人：潘冠辰<br />客戶服務電子郵件：support＠waterballsa.tw<br />營業所地址：臺北市大安區和安里復興南路一段 352 號 2 樓之 2<br />統一編號：00117764</p>
+                        <p>本網際網路課程購買暨服務契約（以下簡稱本契約），指 Σ-Codeatl 軟體學院（以下簡稱「Σ-Codeatl」、「我們」、「我們的」，公司基本資料詳列如下）授權您於 codeatl.tw 網域之網站或 Σ-Codeatl 所有之移動裝置平台（以下合稱本平台），使用 Σ-Codeatl 透過網際網路連線、或移動裝置平台離線進行之教學、評量或其他相關服務...</p>
+                        <p>Σ-Codeatl 軟體學院 負責人：李立超 (超哥)<br />客戶服務電子郵件：support@codeatl.tw<br />營業所地址：臺北市大安區和安里復興南路一段 352 號 2 樓之 2<br />統一編號：00117764</p>
                     </div>
                 )}
             </div>

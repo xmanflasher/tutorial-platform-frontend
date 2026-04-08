@@ -45,20 +45,20 @@ export default function MissionsPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#0d0e11] flex items-center justify-center text-white">
+            <div className="min-h-screen bg-background flex items-center justify-center text-white">
                 <LoadingRunner />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#0d0e11] text-white p-8">
+        <div className="min-h-screen bg-background text-white p-8">
             {/* Banner (保持不變) */}
-            <div className="mb-8 p-6 rounded-xl border border-gray-700 bg-[#15171b] flex items-center justify-between">
+            <div className="mb-8 p-6 rounded-xl border border-border-ui bg-card flex items-center justify-between">
                 <div className="text-gray-300">
                     將軟體設計精通之旅體驗課程的全部影片看完就可以獲得 <span className="text-white font-bold">3000 元課程折價券！</span>
                 </div>
-                <button className="px-4 py-2 bg-yellow-400 text-black font-bold rounded hover:bg-yellow-300 transition-colors">
+                <button className="px-4 py-2 bg-primary text-black font-bold rounded hover:opacity-90 transition-colors">
                     前往
                 </button>
             </div>
@@ -66,7 +66,7 @@ export default function MissionsPage() {
             <h1 className="text-3xl font-bold mb-6">獎勵任務</h1>
 
             {/* Tabs */}
-            <div className="flex gap-4 mb-8 border-b border-gray-800 pb-4">
+            <div className="flex gap-4 mb-8 border-b border-border-ui pb-4">
                 <TabButton label="可接任務" active={activeTab === "AVAILABLE"} onClick={() => setActiveTab("AVAILABLE")} />
                 <TabButton label="進行中的任務" active={activeTab === "IN_PROGRESS"} onClick={() => setActiveTab("IN_PROGRESS")} />
                 <TabButton label="過去的任務" active={activeTab === "PAST"} onClick={() => setActiveTab("PAST")} />
@@ -86,23 +86,23 @@ export default function MissionsPage() {
             {/* Mission Detail Modal */}
             {selectedMission && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-                    <div className="relative w-full max-w-2xl bg-[#1e1f24] rounded-xl border border-gray-700 shadow-2xl p-8">
+                    <div className="relative w-full max-w-2xl bg-card rounded-xl border border-border-ui shadow-2xl p-8">
                         <button onClick={() => setSelectedMission(null)} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
                             <X className="w-6 h-6" />
                         </button>
-                        <h2 className="text-2xl font-bold text-yellow-400 mb-4">{selectedMission.name}</h2>
+                        <h2 className="text-2xl font-bold text-primary mb-4">{selectedMission.name}</h2>
                         <div className="space-y-6">
                             <div>
                                 <h3 className="text-sm font-semibold text-gray-400 mb-2 uppercase tracking-wider">任務說明</h3>
-                                <div className="bg-[#15171b] p-4 rounded-lg border border-gray-800 text-gray-200">
+                                <div className="bg-card p-4 rounded-lg border border-border-ui text-gray-200">
                                     {selectedMission.description}
                                 </div>
                             </div>
                             <div>
                                 <h3 className="text-sm font-semibold text-gray-400 mb-2 uppercase tracking-wider">完成條件</h3>
-                                <div className="bg-[#15171b] p-4 rounded-lg border border-gray-800">
+                                <div className="bg-card p-4 rounded-lg border border-border-ui">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-yellow-400" />
+                                        <div className="w-2 h-2 rounded-full bg-primary" />
                                         <span className="text-gray-200">{selectedMission.unlockConditionDescription}</span>
                                     </div>
                                 </div>
@@ -124,7 +124,7 @@ function TabButton({ label, active, onClick }: { label: string; active: boolean;
     return (
         <button
             onClick={onClick}
-            className={`px-6 py-2 rounded font-medium transition-all ${active ? "bg-yellow-400 text-black" : "text-gray-400 hover:text-white bg-[#1c1f26]"}`}
+            className={`px-6 py-2 rounded font-medium transition-all ${active ? "bg-primary text-black" : "text-gray-400 hover:text-white bg-background"}`}
         >
             {label}
         </button>
@@ -138,9 +138,9 @@ function MissionCard({ mission, setSelectedMission }: { mission: MemberMission, 
     const isClaimed = mission.status === "CLAIMED";
 
     return (
-        <div className={`p-6 rounded-xl border transition-all duration-300 ${isLocked ? 'border-gray-800 bg-[#121418] opacity-70' :
-                isClaimed ? 'border-gray-800 bg-[#0d0e11] opacity-50 grayscale shadow-none' :
-                    'border-gray-700 bg-[#161b22] hover:border-gray-600 hover:shadow-lg'
+        <div className={`p-6 rounded-xl border transition-all duration-300 ${isLocked ? 'border-border-ui bg-background opacity-70' :
+                isClaimed ? 'border-border-ui bg-background opacity-50 grayscale shadow-none' :
+                    'border-border-ui bg-card hover:border-border-ui hover:shadow-lg'
             } flex flex-col justify-between h-full`}>
 
             <div className="mb-4">
@@ -155,7 +155,7 @@ function MissionCard({ mission, setSelectedMission }: { mission: MemberMission, 
                     </div>
                     {/* 顯示狀態標籤 */}
                     <span className={`text-xs px-2 py-1 rounded font-bold uppercase tracking-wider ${isLocked ? 'bg-gray-800 text-gray-500' :
-                            isInProgress ? 'bg-blue-900/40 text-blue-300 border border-blue-800/50' :
+                            isInProgress ? 'bg-primary/20 text-primary border border-primary/50' :
                                 isCompleted ? 'bg-green-900/40 text-green-300 border border-green-800/50 animate-pulse' :
                                     isClaimed ? 'bg-gray-800 text-gray-500' : 'bg-gray-700'
                         }`}>
@@ -163,7 +163,7 @@ function MissionCard({ mission, setSelectedMission }: { mission: MemberMission, 
                     </span>
                 </div>
 
-                <div className="space-y-2 text-sm text-gray-400 mt-3 border-gray-700 pt-3">
+                <div className="space-y-2 text-sm text-gray-400 mt-3 border-border-ui pt-3">
                     {/* 1. 開啟條件 */}
                     <div className="flex items-center gap-2">
                         <span className="text-gray-500">開啟條件:</span>
@@ -179,7 +179,7 @@ function MissionCard({ mission, setSelectedMission }: { mission: MemberMission, 
 
                     {/* 截止日期 (僅在進行中且有設定時顯示) */}
                     {mission.deadline && !isClaimed && (
-                        <div className="flex items-center gap-2 text-yellow-500">
+                        <div className="flex items-center gap-2 text-primary">
                             <Calendar className="w-4 h-4" />
                             <span>截止: {new Date(mission.deadline).toLocaleDateString()}</span>
                         </div>
@@ -200,7 +200,7 @@ function MissionCard({ mission, setSelectedMission }: { mission: MemberMission, 
                             <span>{mission.currentProgress}%</span>
                         </div>
                         <div className="w-full bg-gray-700 rounded-full h-2">
-                            <div className="bg-blue-500 h-2 rounded-full transition-all" style={{ width: `${mission.currentProgress}%` }}></div>
+                            <div className="bg-primary h-2 rounded-full transition-all" style={{ width: `${mission.currentProgress}%` }}></div>
                         </div>
                     </div>
                 )}
@@ -208,7 +208,7 @@ function MissionCard({ mission, setSelectedMission }: { mission: MemberMission, 
 
             <div className="mt-4 flex gap-2">
                 {isLocked ? (
-                    <button disabled className="flex-1 py-3 rounded bg-[#2d333b] text-gray-500 font-bold cursor-not-allowed border border-gray-700">
+                    <button disabled className="flex-1 py-3 rounded bg-[#2d333b] text-gray-500 font-bold cursor-not-allowed border border-border-ui">
                         尚未達成開啟條件
                     </button>
                 ) : isClaimed ? (
@@ -226,13 +226,13 @@ function MissionCard({ mission, setSelectedMission }: { mission: MemberMission, 
                                         .catch((err: any) => alert(err.message));
                                 }
                             }}
-                            className="flex-1 py-3 rounded bg-gray-800 text-white font-bold hover:bg-gray-700 transition-colors border border-gray-600"
+                            className="flex-1 py-3 rounded bg-gray-800 text-white font-bold hover:bg-gray-700 transition-colors border border-border-ui"
                         >
                             延長期限
                         </button>
                         <button
                             onClick={() => setSelectedMission(mission)}
-                            className="flex-1 py-3 rounded bg-yellow-400 text-black font-bold hover:bg-yellow-300 transition-colors"
+                            className="flex-1 py-3 rounded bg-primary text-black font-bold hover:opacity-90 transition-colors"
                         >
                             查看詳情
                         </button>
@@ -255,7 +255,7 @@ function MissionCard({ mission, setSelectedMission }: { mission: MemberMission, 
                                 .then(() => window.location.reload())
                                 .catch((err: any) => alert(err.message));
                         }}
-                        className="w-full py-3 rounded bg-yellow-400 text-black font-bold hover:bg-yellow-300 transition-colors shadow-lg shadow-yellow-400/10"
+                        className="w-full py-3 rounded bg-primary text-black font-bold hover:opacity-90 transition-colors shadow-lg shadow-primary/10"
                     >
                         接受任務
                     </button>

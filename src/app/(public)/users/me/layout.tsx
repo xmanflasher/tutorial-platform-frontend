@@ -34,7 +34,7 @@ export default function UserProfileLayout({ children }: { children: React.ReactN
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 space-y-8 text-white">
       {/* 頂部個人資訊卡片 (Adventurer Banner) */}
-      <div className="relative overflow-hidden rounded-lg border border-gray-800 bg-[#161b22] shadow-xl">
+      <div className="relative overflow-hidden rounded-lg border border-border-ui bg-[#161b22] shadow-xl">
         {/* 背景特效 */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-black">
           <div className="absolute inset-0 opacity-[0.05]"
@@ -70,7 +70,7 @@ export default function UserProfileLayout({ children }: { children: React.ReactN
 
       {/* 分頁導覽 Tabs - 僅在非作品集頁面顯示 */}
       {pathname !== PORTFOLIO_PATH && (
-        <div className="flex flex-wrap gap-1 border-b border-gray-800 pb-1">
+        <div className="flex flex-wrap gap-1 border-b border-border-ui pb-1">
           {TABS.map((tab) => {
             const isActive = pathname === tab.href;
             return (
@@ -80,7 +80,7 @@ export default function UserProfileLayout({ children }: { children: React.ReactN
                 className={`
                   px-6 py-3 font-bold text-sm transition-all rounded-t-lg relative
                   ${isActive
-                    ? 'bg-yellow-400 text-slate-900 ring-1 ring-yellow-400'
+                    ? 'bg-primary text-black ring-1 ring-yellow-400'
                     : 'bg-transparent text-gray-400 hover:text-white hover:bg-white/5'
                   }
                 `}

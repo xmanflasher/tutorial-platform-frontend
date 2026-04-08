@@ -54,10 +54,10 @@ export default function BadgeCelebrationOverlay({ badgeId, badgeName, imageUrl, 
             stiffness: 100,
             delay: 0.1 
           }}
-          className="relative w-full max-w-md bg-gradient-to-b from-slate-800/50 to-slate-900/80 border border-yellow-400/30 rounded-3xl p-8 text-center shadow-[0_0_50px_rgba(250,204,21,0.2)] overflow-hidden"
+          className="relative w-full max-w-md bg-gradient-to-b from-slate-800/50 to-slate-900/80 border border-primary/30 rounded-3xl p-8 text-center shadow-[0_0_50px_rgba(250,204,21,0.2)] overflow-hidden"
         >
           {/* 光暈特效 */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-yellow-400/20 rounded-full blur-[80px] -z-10" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-primary/20 rounded-full blur-[80px] -z-10" />
           
           <button 
             onClick={() => onClose(badgeId)}
@@ -77,7 +77,7 @@ export default function BadgeCelebrationOverlay({ badgeId, badgeName, imageUrl, 
                 repeat: Infinity,
                 repeatType: "mirror" 
               }}
-              className="relative p-6 bg-yellow-400/10 rounded-full border border-yellow-400/20"
+              className="relative p-6 bg-primary/10 rounded-full border border-primary/20"
             >
               {imageUrl ? (
                 <img 
@@ -86,13 +86,13 @@ export default function BadgeCelebrationOverlay({ badgeId, badgeName, imageUrl, 
                   className="w-32 h-32 object-contain filter drop-shadow-[0_0_20px_rgba(250,204,21,0.5)]"
                 />
               ) : (
-                <Trophy size={80} className="text-yellow-400" />
+                <Trophy size={80} className="text-primary" />
               )}
               
               <motion.div 
                 animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
-                className="absolute -top-2 -right-2 text-yellow-400"
+                className="absolute -top-2 -right-2 text-primary"
               >
                 <Sparkles size={24} />
               </motion.div>
@@ -104,7 +104,7 @@ export default function BadgeCelebrationOverlay({ badgeId, badgeName, imageUrl, 
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <p className="text-yellow-400 font-bold tracking-widest text-sm uppercase mb-2">新的里程碑！</p>
+            <p className="text-primary font-bold tracking-widest text-sm uppercase mb-2">新的里程碑！</p>
             <h2 className="text-3xl font-extrabold text-white mb-4">
                解鎖徽章: {badgeName}
             </h2>
@@ -115,7 +115,7 @@ export default function BadgeCelebrationOverlay({ badgeId, badgeName, imageUrl, 
 
             <button
               onClick={() => onClose(badgeId)}
-              className="px-8 py-3 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold rounded-xl transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-yellow-400/20"
+              className="px-8 py-3 bg-primary hover:bg-primary text-black font-bold rounded-xl transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-yellow-400/20"
             >
               太棒了！
             </button>

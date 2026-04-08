@@ -40,7 +40,7 @@ export default function MainJourneyLayout({
     };
 
     return (
-        <div className="flex min-h-screen bg-[#0d0e11] text-white">
+        <div className="flex min-h-screen bg-background text-white">
             <Sidebar
                 onClose={() => setSidebarOpen(false)}
                 className={`

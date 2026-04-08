@@ -16,7 +16,7 @@ export default function PlayerHeader({ title }: PlayerHeaderProps) {
     const { user } = useAuth();
 
     return (
-        <header className="h-16 bg-[#111827] border-b border-gray-800 flex items-center justify-between px-4 shrink-0 z-40">
+        <header className="h-16 bg-card border-b border-border-ui flex items-center justify-between px-4 shrink-0 z-40">
 
             {/* 左側：控制區 */}
             <div className="flex items-center gap-4 overflow-hidden">

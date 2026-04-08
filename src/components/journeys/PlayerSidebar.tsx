@@ -85,7 +85,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
     return (
         <aside
             className={cn(
-                "bg-[#111827] border-r border-gray-800 h-full flex flex-col transition-all duration-300 ease-in-out overflow-hidden flex-shrink-0",
+                "bg-card border-r border-border-ui h-full flex flex-col transition-all duration-300 ease-in-out overflow-hidden flex-shrink-0",
                 // 根據 Context 決定寬度：開的時候 80 (320px)，關的時候 0
                 isSidebarOpen ? "w-80 translate-x-0 opacity-100" : "w-0 -translate-x-full opacity-0"
             )}
@@ -94,7 +94,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
             <div className="w-80 h-full flex flex-col">
 
                 {/* 標題區 */}
-                <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+                <div className="p-4 border-b border-border-ui flex items-center justify-between">
                     <h2 className="font-bold text-white text-base">課程目錄</h2>
                     <span className="text-xs text-gray-500">
                         {journey.totalVideos ? `共 ${journey.totalVideos} 單元` : ''}
@@ -107,7 +107,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
                         const isExpanded = expandedChapterIds.includes(chapter.id);
 
                         return (
-                            <div key={chapter.id} className="border-b border-gray-800/50">
+                            <div key={chapter.id} className="border-b border-border-ui/50">
                                 {/* 章節標題 */}
                                 <button
                                     onClick={() => toggleChapter(chapter.id)}
@@ -133,7 +133,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
                                 {/* 單元列表 */}
                                 <div
                                     className={cn(
-                                        "bg-[#0b1120] overflow-hidden transition-all duration-300 ease-in-out",
+                                        "bg-background/40 overflow-hidden transition-all duration-300 ease-in-out",
                                         isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
                                     )}
                                 >
@@ -152,7 +152,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
                                                 className={cn(
                                                     "flex items-center gap-3 px-4 py-3 text-sm transition-colors border-l-[3px]",
                                                     isActive
-                                                        ? "border-blue-500 bg-blue-500/10 text-blue-400"
+                                                        ? "border-primary bg-primary/10 text-primary"
                                                         : "border-transparent text-gray-400 hover:bg-gray-800 hover:text-gray-200"
                                                 )}
                                             >
@@ -170,7 +170,7 @@ export default function PlayerSidebar({ journey }: PlayerSidebarProps) {
                                                     {isCompleted ? (
                                                         <CheckCircle size={14} className="text-green-500" />
                                                     ) : (idx === 0 && lesson.premiumOnly !== true) ? (
-                                                        <span className="px-1.5 py-0.5 bg-yellow-400/10 text-yellow-400 rounded border border-yellow-400/20 font-bold text-[10px]">
+                                                        <span className="px-1.5 py-0.5 bg-primary/10 text-primary rounded border border-primary/20 font-bold text-[10px]">
                                                             試看
                                                         </span>
                                                     ) : (

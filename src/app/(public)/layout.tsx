@@ -60,7 +60,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   }
 
   return (
-    <div className="min-h-screen bg-[#0d0e11] text-white flex">
+    <div className="min-h-screen bg-background text-foreground flex transition-colors duration-300">
       {/* 全站 Sidebar */}
       <Sidebar
         onClose={() => setSidebarOpen(false)}

@@ -76,16 +76,16 @@ export default function PortfolioPage() {
 
     if (authLoading || loading) {
         return (
-            <div className="min-h-screen bg-[#0d0e11] flex items-center justify-center">
-                <Loader2 className="w-12 h-12 text-yellow-500 animate-spin" />
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <Loader2 className="w-12 h-12 text-primary animate-spin" />
             </div>
         );
     }
 
     if (!user) {
         return (
-            <div className="min-h-screen bg-[#0d0e11] flex flex-col items-center justify-center p-4">
-                <div className="bg-[#161b22] border border-gray-800 rounded-2xl p-8 max-w-md w-full text-center">
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+                <div className="bg-[#161b22] border border-border-ui rounded-2xl p-8 max-w-md w-full text-center">
                     <User className="w-16 h-16 text-gray-700 mx-auto mb-4" />
                     <h2 className="text-2xl font-bold text-white mb-2">請先登入</h2>
                     <p className="text-gray-400 mb-6">您需要登入後才能查看挑戰歷程作品集</p>

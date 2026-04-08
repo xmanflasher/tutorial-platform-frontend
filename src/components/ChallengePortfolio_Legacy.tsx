@@ -92,7 +92,7 @@ export default function ChallengePortfolioLegacy({ targetUserId, onRecordsLoaded
         fetchData();
     }, [targetUserId]);
 
-    if (loading) return <div className="h-96 flex items-center justify-center text-white"><Loader2 className="animate-spin w-10 h-10 text-yellow-500" /></div>;
+    if (loading) return <div className="h-96 flex items-center justify-center text-white"><Loader2 className="animate-spin w-10 h-10 text-primary" /></div>;
 
     return (
         <div className="mt-8 container mx-auto px-4 lg:px-8 pb-12 flex flex-col">
@@ -127,7 +127,7 @@ export default function ChallengePortfolioLegacy({ targetUserId, onRecordsLoaded
                         </div>
                     </div>
                 ) : (
-                    <div className="h-[500px] flex flex-col items-center justify-center border border-gray-800 border-dashed rounded-xl bg-[#161b22]/50">
+                    <div className="h-[500px] flex flex-col items-center justify-center border border-border-ui border-dashed rounded-xl bg-[#161b22]/50">
                         <p className="text-gray-500 text-lg">目前沒有已批改的挑戰紀錄</p>
                     </div>
                 )}
@@ -135,7 +135,7 @@ export default function ChallengePortfolioLegacy({ targetUserId, onRecordsLoaded
 
             {/* --- Block B: 下方時間軸列表 --- */}
             <div>
-                <h3 className="text-xl font-bold text-white mb-6 pl-4 border-l-4 border-yellow-500 flex items-center gap-3 shrink-0">
+                <h3 className="text-xl font-bold text-white mb-6 pl-4 border-l-4 border-primary flex items-center gap-3 shrink-0">
                     <ScrollText className="w-5 h-5" />
                     挑戰紀錄 (Legacy Backup)
                 </h3>
@@ -161,7 +161,7 @@ export default function ChallengePortfolioLegacy({ targetUserId, onRecordsLoaded
                                     >
                                         {/* 日期區 */}
                                         <div className="hidden md:flex flex-col items-end w-[100px] shrink-0 pt-1 text-right">
-                                            <span className={`text-2xl font-bold leading-none transition-colors ${isSelected ? 'text-yellow-500' : 'text-gray-400 group-hover:text-gray-200'}`}>
+                                            <span className={`text-2xl font-bold leading-none transition-colors ${isSelected ? 'text-primary' : 'text-gray-400 group-hover:text-gray-200'}`}>
                                                 {dateStr}
                                             </span>
                                             <span className="text-sm text-gray-600 font-mono mt-1">{year}</span>
@@ -171,8 +171,8 @@ export default function ChallengePortfolioLegacy({ targetUserId, onRecordsLoaded
                                         <div className="hidden md:flex absolute left-[97px] items-center justify-center mt-2.5">
                                             <div className={`w-3.5 h-3.5 rounded-full border-2 transition-all duration-300 z-10
                                                 ${isSelected
-                                                    ? 'bg-yellow-500 border-yellow-500 shadow-[0_0_10px_rgba(250,204,21,0.6)] scale-125'
-                                                    : 'bg-[#0d0e11] border-gray-600 group-hover:border-gray-400'
+                                                    ? 'bg-primary border-primary shadow-[0_0_10px_rgba(250,204,21,0.6)] scale-125'
+                                                    : 'bg-background border-gray-600 group-hover:border-gray-400'
                                                 }`}>
                                             </div>
                                         </div>
@@ -181,8 +181,8 @@ export default function ChallengePortfolioLegacy({ targetUserId, onRecordsLoaded
                                         <div className={`flex-1 transition-all duration-300 transform ${isSelected ? 'translate-x-2' : 'group-hover:translate-x-1'}`}>
                                             <div className={`bg-[#161b22] border rounded-lg p-4 shadow-md transition-all
                                                 ${isSelected
-                                                    ? 'border-yellow-500/50 ring-1 ring-yellow-500/20 bg-[#1c2128]'
-                                                    : 'border-gray-800 hover:border-gray-600 hover:bg-[#1f242c]'
+                                                    ? 'border-primary/50 ring-1 ring-yellow-500/20 bg-[#1c2128]'
+                                                    : 'border-border-ui hover:border-gray-600 hover:bg-[#1f242c]'
                                                 }`}>
 
                                                 <div className="flex justify-between items-start mb-2">
@@ -207,7 +207,7 @@ export default function ChallengePortfolioLegacy({ targetUserId, onRecordsLoaded
                                                         {Object.entries(record.ratings).map(([key, value]) => (
                                                             <span key={key} className={`text-[10px] px-2 py-0.5 rounded border font-mono
                                                                 ${isSelected
-                                                                    ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-500'
+                                                                    ? 'bg-primary/10 border-primary/30 text-primary'
                                                                     : 'bg-gray-800 border-gray-700 text-gray-400'}`}>
                                                                 {RATING_LABELS[key] || `維度 ${key}`}: {value}
                                                             </span>
@@ -215,7 +215,7 @@ export default function ChallengePortfolioLegacy({ targetUserId, onRecordsLoaded
                                                     </div>
                                                 )}
 
-                                                <div className={`mt-2 text-[10px] flex items-center gap-1 transition-opacity ${isSelected ? 'text-yellow-500' : 'text-gray-600 opacity-0 group-hover:opacity-100'}`}>
+                                                <div className={`mt-2 text-[10px] flex items-center gap-1 transition-opacity ${isSelected ? 'text-primary' : 'text-gray-600 opacity-0 group-hover:opacity-100'}`}>
                                                     <MousePointerClick className="w-3 h-3" />
                                                     {isSelected ? '正在檢視中' : '點擊查看詳情'}
                                                 </div>

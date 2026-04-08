@@ -19,8 +19,8 @@ export default function NotificationDropdown({
     onMarkAllRead 
 }: NotificationDropdownProps) {
     return (
-        <div className="absolute top-14 right-0 w-80 bg-[#1E293B] border border-slate-700 rounded-lg shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-            <div className="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
+        <div className="absolute top-14 right-0 w-80 bg-card border border-border-ui rounded-lg shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="p-4 border-b border-border-ui flex justify-between items-center bg-slate-800/50">
                 <h3 className="text-slate-100 font-bold text-sm tracking-wide flex items-center gap-2">
                     通知
                     {notifications.filter(n => !n.isRead).length > 0 && (
@@ -48,12 +48,12 @@ export default function NotificationDropdown({
                             <div
                                 key={notification.id}
                                 onClick={() => onItemClick(notification)}
-                                className={`p-4 hover:bg-slate-800/80 cursor-pointer border-b border-slate-800 last:border-0 transition-colors group relative ${
-                                    !notification.isRead ? 'bg-blue-500/5 border-l-2 border-l-blue-500' : ''
+                                className={`p-4 hover:bg-slate-800/80 cursor-pointer border-b border-border-ui last:border-0 transition-colors group relative ${
+                                    !notification.isRead ? 'bg-primary/5 border-l-2 border-l-primary' : ''
                                 }`}
                             >
                                 {!notification.isRead && (
-                                    <div className="absolute top-4 right-4 w-2 h-2 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
+                                    <div className="absolute top-4 right-4 w-2 h-2 bg-primary rounded-full shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]"></div>
                                 )}
                                 <div className={`text-sm mb-1.5 leading-relaxed ${
                                     !notification.isRead ? 'text-slate-100 font-medium' : 'text-slate-400'
@@ -81,10 +81,10 @@ export default function NotificationDropdown({
                 )}
             </div>
 
-            <div className="p-3 text-center border-t border-slate-700 bg-slate-800/30">
+            <div className="p-3 text-center border-t border-border-ui bg-slate-800/30">
                 <button 
                     onClick={onMarkAllRead}
-                    className="text-blue-400 hover:text-blue-300 text-xs font-semibold flex items-center justify-center gap-1 w-full"
+                    className="text-primary hover:text-primary/80 text-xs font-semibold flex items-center justify-center gap-1 w-full"
                 >
                     全部標記為已讀
                 </button>

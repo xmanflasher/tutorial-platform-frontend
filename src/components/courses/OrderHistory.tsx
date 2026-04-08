@@ -95,17 +95,17 @@ export default function OrderHistory() {
 
     if (loading) {
         return (
-            <section className="border border-slate-700 rounded-xl bg-[#111827] p-8 min-h-[300px] flex items-center justify-center">
+            <section className="border border-border-ui rounded-xl bg-card p-8 min-h-[300px] flex items-center justify-center transition-colors duration-300">
                 <div className="text-slate-500 animate-pulse">載入中...</div>
             </section>
         );
     }
 
     return (
-        <section className="border border-slate-700 rounded-xl bg-[#111827] p-8 flex flex-col">
+        <section className="border border-border-ui rounded-xl bg-card p-8 flex flex-col transition-colors duration-300">
             <div className="flex items-center gap-3 mb-8">
                 <Receipt className="text-white" size={28} />
-                <h2 className="text-2xl font-bold text-yellow-400">訂單紀錄</h2>
+                <h2 className="text-2xl font-bold text-primary">訂單紀錄</h2>
             </div>
 
             {orders.length === 0 ? (
@@ -119,7 +119,7 @@ export default function OrderHistory() {
                         return (
                             <div
                                 key={order.id}
-                                className="bg-[#1e293b]/50 border border-slate-700/50 rounded-xl p-6 relative group transition-all hover:border-slate-600"
+                                className="bg-background/50 border border-border-ui/50 rounded-xl p-6 relative group transition-all hover:border-primary/50"
                             >
                                 {/* Status Badge */}
                                 <div className={cn(
@@ -171,7 +171,7 @@ export default function OrderHistory() {
                                             <div className="flex flex-col gap-2 mt-4 md:items-end w-full md:w-auto">
                                                 <button
                                                     onClick={() => handleCompleteOrder(order)}
-                                                    className="w-full md:w-auto bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold py-2 px-6 rounded-lg transition-all shadow-lg shadow-yellow-400/10"
+                                                    className="w-full md:w-auto bg-primary hover:opacity-90 text-black font-bold py-2 px-6 rounded-lg transition-all shadow-lg shadow-primary/10"
                                                 >
                                                     立即完成訂單
                                                 </button>

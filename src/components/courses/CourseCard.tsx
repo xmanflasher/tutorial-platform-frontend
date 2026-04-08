@@ -11,9 +11,9 @@ import { useAuth } from '@/context/AuthContext';
 const getButtonStyle = (style: 'solid' | 'outline' | 'disabled') => {
   switch (style) {
     case 'solid':
-      return 'bg-yellow-400 text-slate-900 hover:bg-yellow-500 border border-transparent';
+      return 'bg-primary text-black hover:opacity-90 border border-transparent';
     case 'outline':
-      return 'bg-transparent text-yellow-400 border border-yellow-400 hover:bg-yellow-400/10 hover:text-yellow-300';
+      return 'bg-transparent text-primary border border-primary hover:bg-primary/10';
     case 'disabled':
       return 'bg-slate-700 text-slate-400 cursor-not-allowed border border-transparent';
     default:
@@ -57,10 +57,10 @@ export default function CourseCard({ course }: { course: Course }) {
     : course.primaryAction;
 
   return (
-    <div className="flex flex-col bg-[#111827] border border-slate-700/50 rounded-xl overflow-hidden hover:border-yellow-400/50 transition-all duration-300 shadow-lg relative group h-full">
+    <div className="flex flex-col bg-card border border-border-ui rounded-xl overflow-hidden hover:border-primary/50 transition-colors duration-300 shadow-lg relative group h-full">
 
       {/* 1. 圖片區域 */}
-      <div className="h-48 w-full bg-slate-800 relative overflow-hidden group">
+      <div className="h-48 w-full bg-background/50 relative overflow-hidden group">
         {course.image ? (
           <img
             src={course.image}
@@ -68,7 +68,7 @@ export default function CourseCard({ course }: { course: Course }) {
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900">
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-card to-background">
             <ImageIcon size={48} className="text-slate-600 mb-2 opacity-50" />
             <span className="text-xs text-slate-600 font-mono tracking-widest uppercase opacity-50">NO IMAGE</span>
           </div>
@@ -77,8 +77,7 @@ export default function CourseCard({ course }: { course: Course }) {
         {/* 狀態標籤 (懸浮在圖片右上角) */}
         {displayStatusLabel && (
           <div className={cn(
-            "absolute top-3 right-3 px-3 py-1 text-xs font-bold rounded-full shadow-md z-10",
-            isOwned ? "bg-emerald-500 text-white" : "bg-yellow-400 text-slate-900"
+            isOwned ? "bg-emerald-500 text-white" : "bg-primary text-black"
           )}>
             {displayStatusLabel}
           </div>
@@ -94,7 +93,7 @@ export default function CourseCard({ course }: { course: Course }) {
 
         {/* 作者 */}
         <div className="mb-3">
-          <span className="text-yellow-500 text-sm font-bold">
+          <span className="text-primary text-sm font-bold">
             {course.author}
           </span>
         </div>
@@ -109,7 +108,7 @@ export default function CourseCard({ course }: { course: Course }) {
 
           {/* 折價券 */}
           {course.couponText && !isOwned ? (
-            <div className="bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-xs font-bold py-2 px-3 rounded text-center truncate">
+            <div className="bg-primary/10 border border-primary/20 text-primary text-xs font-bold py-2 px-3 rounded text-center truncate">
               {course.couponText}
             </div>
           ) : (
@@ -130,14 +129,14 @@ export default function CourseCard({ course }: { course: Course }) {
               isPending ? (
                 <Link
                   href="/users/me/orders"
-                  className={`py-2 text-center text-sm font-bold rounded transition-all flex items-center justify-center truncate px-1 bg-amber-500 text-slate-900 hover:bg-amber-600`}
+                  className={`py-2 text-center text-sm font-bold rounded transition-all flex items-center justify-center truncate px-1 bg-amber-500 text-black hover:bg-amber-600`}
                 >
                   前往付款
                 </Link>
               ) : course.secondaryAction ? (
                 <Link
                   href={course.secondaryAction.href}
-                  className={`py-2 text-center text-sm font-bold rounded transition-all flex items-center justify-center truncate px-1 bg-yellow-400 text-slate-900 hover:bg-yellow-500`}
+                  className={`py-2 text-center text-sm font-bold rounded transition-all flex items-center justify-center truncate px-1 bg-primary text-black hover:opacity-90`}
                 >
                   {course.secondaryAction.text}
                 </Link>

@@ -64,7 +64,7 @@ export default function DesktopNav() {
     <div className="relative hidden md:block" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between gap-3 px-4 py-2.5 bg-slate-800 rounded-lg border border-slate-700 text-slate-200 hover:bg-slate-700 hover:border-slate-600 transition-all w-72 shadow-sm group"
+        className="flex items-center justify-between gap-3 px-4 py-2.5 bg-slate-800 rounded-lg border border-border-ui text-slate-200 hover:bg-slate-700 hover:border-slate-600 transition-all w-72 shadow-sm group"
       >
         {/* 3. 顯示 Context 中的 activeJourney */}
         <span className="text-sm font-bold truncate">{activeJourney?.title || '選擇旅程'}</span>
@@ -75,17 +75,17 @@ export default function DesktopNav() {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 w-72 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="absolute top-full left-0 mt-2 w-72 bg-slate-800 border border-border-ui rounded-lg shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
           {allJourneys.map((journey) => (
             <button
               key={journey.slug}
               onClick={() => handleSelect(journey.slug)} // 傳入 slug
-              className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-slate-700 hover:text-white flex items-center justify-between transition-colors border-b border-slate-700/50 last:border-0"
+              className="w-full px-4 py-3 text-left text-sm text-slate-300 hover:bg-slate-700 hover:text-white flex items-center justify-between transition-colors border-b border-border-ui/50 last:border-0"
             >
               <span className="truncate font-medium">{journey.title}</span>
               {/* 4. 比對 Context 中的 slug */}
               {activeJourney?.slug === journey.slug && (
-                <Check size={16} className="text-yellow-400 flex-shrink-0" />
+                <Check size={16} className="text-primary flex-shrink-0" />
               )}
             </button>
           ))}

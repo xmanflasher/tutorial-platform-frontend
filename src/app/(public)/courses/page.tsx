@@ -3,7 +3,7 @@ import CourseCard from '@/components/courses/CourseCard';
 import OrderHistory from '@/components/courses/OrderHistory';
 
 export const metadata = {
-  title: '所有課程 - 水球軟體學院',
+  title: '所有課程 - Σ-Codeatl',
 };
 
 export default async function CoursesPage() {

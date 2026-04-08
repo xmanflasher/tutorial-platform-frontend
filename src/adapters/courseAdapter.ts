@@ -9,8 +9,8 @@ export const toFeaturedCourse = (journey: JourneyDetail): Course => {
         id: journey.id,
         title: journey.title,
         subtitle: journey.subtitle || (journey.description ? journey.description.slice(0, 30) + '...' : ''),
-        author: '水球潘', // 假設後端沒給
-        description: 'DEBUG: BUY - ' + journey.description,
+        author: journey.instructorName || (journey.slug === 'javascript-basics-140' ? '李立超 (超哥)' : 'Σ-Codeatl 導師'),
+        description: journey.description,
         slug: journey.slug,
         // 圖片邏輯封裝在這裡
         image: journey.slug.includes('ai') ? '/images/course_4.png' : '/images/course_0.png',

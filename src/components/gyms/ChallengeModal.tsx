@@ -209,11 +209,11 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
     };
 
     return (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[100] p-4 text-white">
-            <div className="bg-[#161b22] border border-gray-800 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl relative animate-in fade-in zoom-in duration-300">
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[100] p-4 text-foreground">
+            <div className="bg-card border border-border-ui rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl relative animate-in fade-in zoom-in duration-300">
                 <button 
                     onClick={onClose} 
-                    className="absolute top-4 right-4 text-gray-400 hover:text-white hover:bg-white/10 p-2 rounded-full transition-all z-10"
+                    className="absolute top-4 right-4 text-gray-400 hover:text-foreground hover:bg-white/10 p-2 rounded-full transition-all z-10"
                 >
                     <X size={20} />
                 </button>
@@ -223,7 +223,7 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
                     {stage === 'SELECT' && (
                         <div className="space-y-8 animate-in slide-in-from-bottom-4">
                             <div className="text-center">
-                                <h2 className="text-2xl font-black text-yellow-400 mb-2">選擇您的鍛鍊強度</h2>
+                                <h2 className="text-2xl font-black text-primary mb-2">選擇您的鍛鍊強度</h2>
                                 <p className="text-gray-400 text-sm">完成任一挑戰即可通關此道館</p>
                             </div>
 
@@ -231,32 +231,32 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
                                 {/* Instant Mode */}
                                 <div 
                                     onClick={() => { setSelectedType('INSTANT'); setStage('DETAILS'); }}
-                                    className="group relative bg-[#0d1117] border border-gray-800 rounded-xl p-6 hover:border-blue-500 cursor-pointer transition-all hover:bg-[#1c2128]"
+                                    className="group relative bg-background border border-border-ui rounded-xl p-6 hover:border-primary cursor-pointer transition-all hover:bg-card"
                                 >
                                     {hasInstantSubmission && (
-                                        <div className="absolute top-3 right-3 flex items-center gap-1 px-3 py-1 bg-blue-500/90 text-white text-[10px] font-bold rounded-full shadow-lg animate-in fade-in zoom-in">
+                                        <div className="absolute top-3 right-3 flex items-center gap-1 px-3 py-1 bg-primary/90 text-foreground text-[10px] font-bold rounded-full shadow-lg animate-in fade-in zoom-in">
                                             <CheckCircle2 className="w-3 h-3" />
                                             已完成
                                         </div>
                                     )}
                                     <div className="flex items-center justify-between mb-4">
-                                        <div className="p-3 bg-blue-500/10 rounded-lg text-blue-400 group-hover:scale-110 transition-transform">
+                                        <div className="p-3 bg-primary/10 rounded-lg text-primary group-hover:scale-110 transition-transform">
                                             <Zap size={32} />
                                         </div>
-                                        <div className="text-[10px] uppercase tracking-widest bg-blue-500/20 text-blue-400 px-2 py-1 rounded">Quick</div>
+                                        <div className="text-[10px] uppercase tracking-widest bg-primary/20 text-primary px-2 py-1 rounded">Quick</div>
                                     </div>
-                                    <h3 className="text-lg font-bold mb-2 group-hover:text-blue-400 transition-colors uppercase italic">{challengeData.instantTitle}</h3>
+                                    <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors uppercase italic">{challengeData.instantTitle}</h3>
                                     <p className="text-xs text-gray-500 leading-relaxed mb-4">
                                         適合想快速驗證概念的同學。純觀念與邏輯小測試，不需實作程式碼，完成後立即通關。
                                     </p>
                                     
                                     {/* 剩餘天數與開始按鈕區塊 */}
-                                    <div className="mt-auto pt-4 border-t border-gray-800/50 flex items-center justify-between">
-                                        <div className="flex items-center gap-1 text-xs text-blue-400/80 font-bold bg-blue-500/10 px-2 py-1 rounded">
-                                            <Hourglass size={14} className="text-blue-500" /> 
+                                    <div className="mt-auto pt-4 border-t border-border-ui/50 flex items-center justify-between">
+                                        <div className="flex items-center gap-1 text-xs text-primary/80 font-bold bg-primary/10 px-2 py-1 rounded">
+                                            <Hourglass size={14} className="text-primary" /> 
                                             在 {instantDays} 天內完成
                                         </div>
-                                        <div className="flex items-center text-xs text-blue-400 font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex items-center text-xs text-primary font-bold opacity-0 group-hover:opacity-100 transition-opacity">
                                             立即開始 <ChevronRight size={14} />
                                         </div>
                                     </div>
@@ -265,32 +265,32 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
                                 {/* Practical Mode */}
                                 <div 
                                     onClick={() => { setSelectedType('PRACTICAL'); setStage('DETAILS'); }}
-                                    className="group relative bg-[#0d1117] border border-gray-800 rounded-xl p-6 hover:border-yellow-500 cursor-pointer transition-all hover:bg-[#1c2128]"
+                                    className="group relative bg-background border border-border-ui rounded-xl p-6 hover:border-primary cursor-pointer transition-all hover:bg-card"
                                 >
                                     {hasPracticalSubmission && (
-                                        <div className="absolute top-3 right-3 flex items-center gap-1 px-3 py-1 bg-yellow-500/90 text-black text-[10px] font-bold rounded-full shadow-lg animate-in fade-in zoom-in">
+                                        <div className="absolute top-3 right-3 flex items-center gap-1 px-3 py-1 bg-primary/90 text-black text-[10px] font-bold rounded-full shadow-lg animate-in fade-in zoom-in">
                                             <CheckCircle2 className="w-3 h-3" />
                                             已提交
                                         </div>
                                     )}
                                     <div className="flex items-center justify-between mb-4">
-                                        <div className="p-3 bg-yellow-500/10 rounded-lg text-yellow-500 group-hover:scale-110 transition-transform">
+                                        <div className="p-3 bg-primary/10 rounded-lg text-primary group-hover:scale-110 transition-transform">
                                             <Dumbbell size={32} />
                                         </div>
-                                        <div className="text-[10px] uppercase tracking-widest bg-yellow-500/20 text-yellow-500 px-2 py-1 rounded">Practical</div>
+                                        <div className="text-[10px] uppercase tracking-widest bg-primary/20 text-primary px-2 py-1 rounded">Practical</div>
                                     </div>
-                                    <h3 className="text-lg font-bold mb-2 group-hover:text-yellow-400 transition-colors uppercase italic">{challengeData.title}</h3>
+                                    <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors uppercase italic">{challengeData.title}</h3>
                                     <p className="text-xs text-gray-500 leading-relaxed mb-4">
                                         職涯級鍛鍊。需提交作業圖檔，導師親自批改並提供詳細回饋，此挑戰將收錄於您的個人檔案。
                                     </p>
 
                                     {/* 剩餘天數與開始按鈕區塊 */}
-                                    <div className="mt-auto pt-4 border-t border-gray-800/50 flex items-center justify-between">
-                                        <div className="flex items-center gap-1 text-xs text-yellow-500/80 font-bold bg-yellow-500/10 px-2 py-1 rounded">
-                                            <Hourglass size={14} className="text-yellow-500" /> 
+                                    <div className="mt-auto pt-4 border-t border-border-ui/50 flex items-center justify-between">
+                                        <div className="flex items-center gap-1 text-xs text-primary/80 font-bold bg-primary/10 px-2 py-1 rounded">
+                                            <Hourglass size={14} className="text-primary" /> 
                                             在 {practicalDays} 天內完成
                                         </div>
-                                        <div className="flex items-center text-xs text-yellow-400 font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex items-center text-xs text-primary font-bold opacity-0 group-hover:opacity-100 transition-opacity">
                                             查看詳情 <ChevronRight size={14} />
                                         </div>
                                     </div>
@@ -301,19 +301,19 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
 
                     {stage === 'DETAILS' && (
                         <div className="animate-in slide-in-from-right-4">
-                            <button onClick={() => setStage('SELECT')} className="text-xs text-gray-500 hover:text-white mb-6 flex items-center gap-1">
+                            <button onClick={() => setStage('SELECT')} className="text-xs text-gray-500 hover:text-foreground mb-6 flex items-center gap-1">
                                 <ChevronRight size={14} className="rotate-180" /> 返回選擇
                             </button>
 
                             <div className="flex items-start gap-4 mb-6">
-                                <div className={`p-4 rounded-xl ${selectedType === 'INSTANT' ? 'bg-blue-500/10 text-blue-400' : 'bg-yellow-500/10 text-yellow-500'}`}>
+                                <div className={`p-4 rounded-xl ${selectedType === 'INSTANT' ? 'bg-primary/10 text-primary' : 'bg-primary/10 text-primary'}`}>
                                     {selectedType === 'INSTANT' ? <Zap size={40} /> : <Dumbbell size={40} />}
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h2 className="text-2xl font-bold">{selectedType === 'INSTANT' ? challengeData.instantTitle : challengeData.title}</h2>
                                         {selectedType === 'PRACTICAL' && hasPracticalSubmission && (
-                                            <span className="px-2 py-0.5 bg-yellow-500/20 border border-yellow-500/40 text-yellow-500 text-[10px] font-bold rounded uppercase">已提交</span>
+                                            <span className="px-2 py-0.5 bg-primary/20 border border-primary/40 text-primary text-[10px] font-bold rounded uppercase">已提交</span>
                                         )}
                                     </div>
                                     <p className="text-sm text-gray-400">道館挑戰內容說明</p>
@@ -321,8 +321,8 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
                             </div>
 
                             <div className="space-y-6">
-                                <div className="bg-[#0d1117] p-4 rounded-lg border border-gray-800">
-                                    <h4 className="text-sm font-bold text-gray-400 mb-2 border-b border-gray-800 pb-2">挑戰描述</h4>
+                                <div className="bg-background p-4 rounded-lg border border-border-ui">
+                                    <h4 className="text-sm font-bold text-gray-400 mb-2 border-b border-border-ui pb-2">挑戰描述</h4>
                                     <p className="text-sm text-gray-300 leading-relaxed">
                                         {selectedType === 'INSTANT' 
                                             ? "這是一個互動式的邏輯問卷，包含 3-5 個關於 JS 基礎操作的情境題。你需要在不撰寫程式碼的情況下，預測代碼執行的結果。"
@@ -333,12 +333,12 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
 
                                 {selectedType === 'PRACTICAL' && (
                                     <div className="grid grid-cols-1 gap-4">
-                                        <div className="bg-yellow-500/5 p-4 rounded-lg border border-yellow-500/20">
-                                            <h4 className="text-sm font-bold text-yellow-500 mb-3">✅ 通關要求</h4>
+                                        <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
+                                            <h4 className="text-sm font-bold text-primary mb-3">✅ 通關要求</h4>
                                             <ul className="space-y-2">
                                                 {challengeData.requirements.map((req, i) => (
                                                     <li key={i} className="text-xs text-gray-300 flex items-center gap-2">
-                                                        <div className="w-1 h-1 bg-yellow-500 rounded-full" /> {req}
+                                                        <div className="w-1 h-1 bg-primary rounded-full" /> {req}
                                                     </li>
                                                 ))}
                                             </ul>
@@ -364,14 +364,14 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
                                                         toast.error('啟動失敗，請稍後再試。');
                                                     }
                                                 }}
-                                                className="flex-1 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                                                className="flex-1 py-4 bg-primary hover:opacity-90 text-foreground rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
                                             >
                                                 開始挑戰 <ChevronRight size={18} />
                                             </button>
                                         ) : (
                                             <button 
                                                 onClick={handleInstantPassed}
-                                                className="flex-1 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                                                className="flex-1 py-4 bg-primary hover:opacity-90 text-foreground rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
                                             >
                                                 {hasInstantSubmission ? "重新測試" : "立即進入測試"} <ChevronRight size={18} />
                                             </button>
@@ -393,14 +393,14 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
                                                         toast.error('啟動失敗，請稍後再試。');
                                                     }
                                                 }}
-                                                className="flex-1 py-4 bg-yellow-400 hover:bg-yellow-300 text-black rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                                                className="flex-1 py-4 bg-primary hover:bg-yellow-300 text-black rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
                                             >
                                                 開始挑戰 <ChevronRight size={18} />
                                             </button>
                                         ) : (
                                             <button 
                                                 onClick={() => setStage('SUBMISSION')}
-                                                className="flex-1 py-4 bg-yellow-400 hover:bg-yellow-300 text-black rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                                                className="flex-1 py-4 bg-primary hover:bg-yellow-300 text-black rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
                                             >
                                                 {hasPracticalSubmission ? "重新提交作品" : "我已準備好，開始交件"} <ChevronRight size={18} />
                                             </button>
@@ -413,13 +413,13 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
 
                     {stage === 'SUBMISSION' && (
                         <div className="animate-in slide-in-from-right-4">
-                             <button onClick={() => setStage('DETAILS')} className="text-xs text-gray-500 hover:text-white mb-6 flex items-center gap-1">
+                             <button onClick={() => setStage('DETAILS')} className="text-xs text-gray-500 hover:text-foreground mb-6 flex items-center gap-1">
                                 <ChevronRight size={14} className="rotate-180" /> 返回說明
                             </button>
 
                             <div className="mb-6">
                                 <h2 className="text-2xl font-bold flex items-center gap-2">
-                                    <Upload size={24} className="text-yellow-500" /> 
+                                    <Upload size={24} className="text-primary" /> 
                                     提交挑戰作品
                                 </h2>
                                 <p className="text-sm text-gray-500 mt-1">請上傳所需的分析成果與程式碼截圖</p>
@@ -427,7 +427,7 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
 
                             <div className="space-y-4">
                                 {challengeData.submissionFields.map((field) => (
-                                    <div key={field.id} className="bg-[#0d1117] p-5 rounded-xl border border-gray-800">
+                                    <div key={field.id} className="bg-background p-5 rounded-xl border border-border-ui">
                                         <label className="text-sm font-bold text-gray-300 mb-3 block">{field.label}</label>
                                         <div className="relative">
                                             <input 
@@ -449,10 +449,10 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
                                     </div>
                                 ))}
 
-                                <div className="bg-blue-500/5 p-4 rounded-lg border border-blue-500/20 flex gap-3">
-                                    <AlertCircle className="text-blue-400 shrink-0" size={20} />
+                                <div className="bg-primary/5 p-4 rounded-lg border border-primary/20 flex gap-3">
+                                    <AlertCircle className="text-primary shrink-0" size={20} />
                                     <div>
-                                        <p className="text-[11px] text-blue-300 leading-relaxed font-medium">
+                                        <p className="text-[11px] text-primary/80 leading-relaxed font-medium">
                                             作品網站目前處於 Demo 階段。您的圖片將以 Base64 格式儲存於瀏覽器本地空間 (LocalStorage)，在清除快取或登出後紀錄可能會消失。
                                         </p>
                                     </div>
@@ -461,7 +461,7 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
                                 <button 
                                     onClick={handleSubmitPractical}
                                     disabled={uploading || Object.keys(readyFiles).length === 0}
-                                    className="w-full py-4 mt-4 bg-yellow-400 hover:bg-yellow-300 text-black rounded-xl font-bold transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                                    className="w-full py-4 mt-4 bg-primary hover:bg-yellow-300 text-black rounded-xl font-bold transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                                 >
                                     {uploading ? (
                                         <>
@@ -488,7 +488,7 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
                             <div className="mt-8 flex gap-4">
                                 <div className="flex flex-col items-center">
                                     <div className="text-xs text-gray-600 mb-1">XP EARNED</div>
-                                    <div className="text-xl font-black text-yellow-500">+1200</div>
+                                    <div className="text-xl font-black text-primary">+1200</div>
                                 </div>
                             </div>
                         </div>

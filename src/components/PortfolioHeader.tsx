@@ -39,7 +39,7 @@ export default function PortfolioHeader({
         <div className="relative w-full mb-12">
             {/* 上半部：背景與個人資料 (可隱藏) */}
             {!hideBanner && (
-                <div className="relative overflow-hidden rounded-t-lg border border-gray-800 bg-[#161b22] shadow-lg">
+                <div className="relative overflow-hidden rounded-t-lg border border-border-ui bg-[#161b22] shadow-lg">
                     {/* ... (原有橫幅內容) */}
 
 
@@ -95,11 +95,11 @@ export default function PortfolioHeader({
             )}
 
             {/* 下半部：六維能力值 Grid */}
-            <div className={`grid grid-cols-2 gap-px bg-gray-800 border ${hideBanner ? 'rounded-lg' : 'border-t-0 rounded-b-lg'} border-gray-800 sm:grid-cols-6 overflow-hidden`}>
+            <div className={`grid grid-cols-2 gap-px bg-gray-800 border ${hideBanner ? 'rounded-lg' : 'border-t-0 rounded-b-lg'} border-border-ui sm:grid-cols-6 overflow-hidden`}>
                 {stats.map((stat, index) => (
                     <div key={index} className="p-4 text-center bg-[#161b22] hover:bg-[#1c2128] transition-colors group cursor-default">
                         <div className={`text-xl font-bold mb-1 group-hover:scale-110 transition-transform duration-300
-                            ${stat.value === 'F-' ? 'text-gray-600' : 'text-yellow-500'}
+                            ${stat.value === 'F-' ? 'text-gray-600' : 'text-primary'}
                         `}>
                             {stat.value}
                         </div>

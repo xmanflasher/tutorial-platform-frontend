@@ -33,7 +33,10 @@ export const userService = {
                     githubUrl: user.githubUrl,
                     discordId: user.discordId,
                     sex: user.sex,
-                    birthDate: user.birthDate
+                    birthDate: user.birthDate,
+                    role: user.role,
+                    instructorBio: user.instructorBio,
+                    socialLinks: user.socialLinks
                 };
             }
             return null;
@@ -55,6 +58,22 @@ export const userService = {
             return true;
         } catch (error) {
             console.error("[userService] Failed to update current profile", error);
+            return false;
+        }
+    },
+
+    /**
+     * 更新講師專屬版面資料 (Phase 9.1)
+     */
+    async updateInstructorProfile(data: any): Promise<boolean> {
+        try {
+            await apiRequest('/users/me/instructor-profile', {
+                method: 'PUT',
+                body: JSON.stringify(data)
+            });
+            return true;
+        } catch (error) {
+            console.error("[userService] Failed to update instructor profile", error);
             return false;
         }
     },

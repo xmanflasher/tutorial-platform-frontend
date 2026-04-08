@@ -8,20 +8,32 @@ import { Announcement, Course, ResourceCard, Instructor, LeaderboardMember, Jour
 // 廣告條
 export const MOCK_ANNOUNCEMENT: Announcement = {
   id: 1,
-  message: '將軟體設計精通之旅體驗課程的全部影片看完就可以獲得 3000 元課程折價券！',
-  linkText: '前往',
+  message: 'Σ-Codeatl 開幕慶：看完全部影片即可獲得課程折價券！',
+  linkText: '前往修煉',
   linkHref: '/journeys/software-design-pattern',
 };
 
 // 首頁精選課程
 export const MOCK_FEATURED_COURSES: Course[] = [
   {
-    id: 1, // 修正 id 為 1
+    id: 1,
+    title: 'JavaScript 基礎實戰 (140集精通)',
+    subtitle: '尚硅谷經典教程，從零基礎到精通 DOM/BOM',
+    author: '李立超 (超哥)',
+    description: '涵蓋 ES 標準、BOM 與 DOM 核心內容，建立扎實前端開發基礎。',
+    slug: 'javascript-basics-140',
+    statusLabel: '免費課程',
+    primaryAction: { text: '開始學習', href: '/journeys/javascript-basics-140', style: 'solid' },
+    tags: ['JS 基礎', '尚硅谷'],
+    image: '/images/course_js.png'
+  },
+  {
+    id: 2,
     title: '軟體設計模式精通之旅',
     subtitle: '用一趟旅程的時間，成為硬核的 Coding 實戰高手',
     author: '水球潘',
     description: '用一趟旅程的時間，成為硬核的 Coding 實戰高手',
-    slug: 'software-design-pattern', // 修正 slug 與 JourneyDetail 一致
+    slug: 'software-design-pattern',
     statusLabel: '尚未擁有',
     couponText: '你有一張 3,000 折價券',
     primaryAction: { text: '試聽課程', href: '/journeys/software-design-pattern', style: 'solid' },
@@ -30,7 +42,7 @@ export const MOCK_FEATURED_COURSES: Course[] = [
     image: '/images/course_0.png'
   },
   {
-    id: 2,
+    id: 4,
     title: 'AI x BDD：規格驅動全自動開發術',
     subtitle: 'AI Top 1% 工程師必修課，掌握規格驅動的全自動化開發',
     author: '水球潘',
@@ -41,18 +53,6 @@ export const MOCK_FEATURED_COURSES: Course[] = [
     secondaryAction: { text: '立刻購買', href: '/journeys/ai-bdd/orders', style: 'outline' },
     tags: ['AI', 'BDD'],
     image: '/images/course_4.png'
-  },
-  {
-    id: 3,
-    title: 'Clean Architecture 實戰',
-    subtitle: '打造可維護、可測試的架構',
-    author: '水球潘',
-    description: '深入解析 Clean Architecture，並透過實戰專案演練',
-    slug: 'clean-arch',
-    statusLabel: '已擁有',
-    primaryAction: { text: '開始上課', href: '/journeys/clean-arch', style: 'solid' },
-    tags: ['架構'],
-    image: '/images/course_0.png' // 暫用 placeholder
   },
 ];
 
@@ -68,15 +68,15 @@ export const MOCK_RESOURCE_CARDS: ResourceCard[] = [
   {
     id: 2,
     iconName: 'FileText',
-    title: '水球潘的部落格',
-    description: '觀看水球撰寫的軟體工程師職涯、軟體設計模式及架構學問，以及領域驅動設計等公開文章。',
-    primaryAction: { text: '閱讀文章', href: 'https://blog.waterballsa.tw' },
+    title: 'Σ-Codeatl 技術專欄',
+    description: '觀看講師撰寫的軟體工程師職涯、軟體設計模式及架構學問，及領域驅動設計等公開文章。',
+    primaryAction: { text: '閱讀文章', href: 'https://blog.codeatl.tw' },
   },
   {
     id: 3,
     iconName: 'Users',
     title: '直接與老師或是其他工程師交流',
-    description: '加入水球成立的工程師 Discord 社群，與水球以及其他工程師線上交流，培養學習習慣及樂趣。',
+    description: '加入 Σ-Codeatl 成立的工程師 Discord 社群，與講師以及其他工程師線上交流，培養學習習慣及樂趣。',
     primaryAction: { text: '加入 Facebook 社團', href: '#' },
     secondaryAction: { text: '加入 Discord', href: '#' },
   },
@@ -91,16 +91,15 @@ export const MOCK_RESOURCE_CARDS: ResourceCard[] = [
 
 // 導師資訊
 export const MOCK_INSTRUCTOR: Instructor = {
-  name: '水球潘',
-  title: '七年程式教育者 & 軟體設計學講師',
-  description: '致力於將複雜的軟體設計概念轉化為易於理解和實踐的教學內容。',
-  avatar: '/images/instructor-avatar.jpg',
+  name: '李立超 (超哥)',
+  title: '尚硅谷前端高級講師 & 經典 JS 教程作者',
+  description: '具備多年開發與教學經驗。對 JavaScript 基礎、ES 標準、DOM、BOM 擁有深厚造詣。其 140 集實戰教學影片是無數前端開發者的啟蒙經典。',
+  avatar: '/images/li-lichao.jpg',
   achievements: [
-    '主修 Christopher Alexander 設計模式、軟體架構、分散式系統架構、Clean Architecture、領域驅動設計等領域',
-    '過去 40 多場 Talk 平均 93 位觀眾參與',
-    '主辦的學院社群一年內成長超過 6000 位成員',
-    '帶領軟體工程方法論學習組織「GaaS」超過 200 多位成員，引領 30 組自組織團隊',
-    '領域驅動設計社群核心志工 & 講師',
+    '【尚硅谷】JavaScript 教程 140 集實戰教學作者',
+    '累計播放次數超過數百萬次，啟蒙無數前端新人',
+    '精通 ES 標準、BOM、DOM 以及前端全棧技術',
+    '熱衷於開源技術分享與 IT 教育體系建構',
   ],
   socialLinks: {
     facebook: '#',
@@ -276,6 +275,26 @@ export const MOCK_MISSIONS: MemberMission[] = [
 export const JOURNEY_MAP: Record<string, JourneyDetail> = {
   'software-design-pattern': SDP_DATA,
   'ai-bdd': AI_BDD_DATA,
+  'javascript-basics-140': {
+      id: 3,
+      slug: 'javascript-basics-140',
+      title: 'JavaScript 基礎實戰 (140集精通)',
+      subtitle: '從零基礎到精通 DOM/BOM 實戰',
+      description: '本課程涵蓋了 ES 標準、BOM 以及 DOM 的大部分內容，適合有一定 HTML 和 CSS 基礎的同學學習。透過對該課程的学习，可以使同學初步掌握 JavaScript，對面向對象的語言有一個初步的理解。',
+      totalVideos: 140,
+      tags: ['零基礎', '尚硅谷'],
+      price: 0,
+      features: ['免費課程', '尚硅谷出品', '140集精華'],
+      actionButtons: { primary: '立即開始', secondary: '' },
+      chapters: [
+          { id: 1, name: 'JavaScript 基礎語法', lessons: [] },
+          { id: 2, name: 'DOM 操作實戰', lessons: [] },
+          { id: 3, name: 'BOM 與事件處理', lessons: [] }
+      ],
+      menus: [],
+      missions: [],
+      gyms: []
+  }
 };
 
 // 為了方便列表顯示，也可以匯出一個陣列
