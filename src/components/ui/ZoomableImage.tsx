@@ -45,7 +45,7 @@ const ZoomableImage = ({ src, alt }: ZoomableImageProps) => {
     return (
         <div
             ref={containerRef}
-            className="w-full h-full overflow-hidden relative bg-[#0d0e11] cursor-move flex items-center justify-center select-none"
+            className="w-full h-full overflow-hidden relative bg-background cursor-move flex items-center justify-center select-none"
             onWheel={handleWheel}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}

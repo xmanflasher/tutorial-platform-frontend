@@ -47,7 +47,7 @@ export default function ChapterList({ chapters, journeySlug }: ChapterListProps)
         const isOpen = openChapterIds.includes(chapter.id);
 
         return (
-          <div key={chapter.id} className="border border-slate-700 rounded-xl bg-[#111827] overflow-hidden">
+          <div key={chapter.id} className="border border-border-ui rounded-xl bg-card overflow-hidden">
 
             {/* 章節標題 (可點擊) */}
             <button
@@ -73,16 +73,16 @@ export default function ChapterList({ chapters, journeySlug }: ChapterListProps)
 
             {/* 單元列表 (展開內容) */}
             {isOpen && (
-              <div className="border-t border-slate-700/50 bg-[#0B1121]">
+              <div className="border-t border-border-ui/50 bg-[#0B1121]">
                 {chapter.lessons.map((lesson) => (
                   // ★ 3. 將原本的 div 改為 Link，並組裝 href
                   <Link
                     key={lesson.id} // 建議改用 id 當 key
                     href={`/journeys/${journeySlug}/chapters/${chapter.id}/lessons/${lesson.id}`}
-                    className="flex items-center gap-4 p-4 pl-8 hover:bg-slate-800/30 transition-colors cursor-pointer group border-b border-slate-800/50 last:border-0"
+                    className="flex items-center gap-4 p-4 pl-8 hover:bg-slate-800/30 transition-colors cursor-pointer group border-b border-border-ui/50 last:border-0"
                   >
                     {/* Icon: 根據類型顯示不同圖示 */}
-                    <div className="text-slate-400 group-hover:text-yellow-400 transition-colors">
+                    <div className="text-slate-400 group-hover:text-primary transition-colors">
                       {lesson.type === 'video' ? <PlayCircle size={20} /> : <FileText size={20} />}
                     </div>
 
@@ -98,7 +98,7 @@ export default function ChapterList({ chapters, journeySlug }: ChapterListProps)
                       {finishedIds.includes(Number(lesson.id)) ? (
                         <CheckCircle size={18} className="text-green-500" />
                       ) : (idx === 0 && lesson.premiumOnly !== true) ? (
-                        <span className="px-2 py-1 bg-yellow-400/10 text-yellow-400 rounded border border-yellow-400/20 font-bold">
+                        <span className="px-2 py-1 bg-primary/10 text-primary rounded border border-primary/20 font-bold">
                           試看
                         </span>
                       ) : (

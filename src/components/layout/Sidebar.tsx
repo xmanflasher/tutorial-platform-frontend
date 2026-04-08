@@ -43,18 +43,18 @@ export default function Sidebar({ className = "", onClose }: SidebarProps) {
   const currentJourneySlug = activeJourney?.slug || "software-design-pattern";
   const missionsLink = `/journeys/${currentJourneySlug}/missions`;
   return (
-    <aside className={`border-r border-gray-800 bg-[#0d0e11] text-white flex flex-col ${className}`}>
+    <aside className={`border-r border-border-ui bg-background text-foreground flex flex-col transition-colors duration-300 ${className}`}>
 
       {/* Logo 區域 */}
       <div className="p-6 flex justify-between items-center h-16">
         <Link href="/" className="flex items-center gap-3 font-bold text-lg tracking-wider">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center overflow-hidden">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center overflow-hidden">
             <div className="w-full h-full bg-[url('/logo.png')] bg-cover" />
-            {!user && <span className="text-[10px] text-white">WB</span>}
+            {!user && <span className="text-[10px] text-white">Σ</span>}
           </div>
           <div className="flex flex-col leading-none">
-            <span className="text-sm font-bold text-gray-200">水球軟體學院</span>
-            <span className="text-[10px] text-blue-300 font-bold">WATERBALLSA.TW</span>
+            <span className="text-sm font-bold text-gray-200">Σ-Codeatl</span>
+            <span className="text-[10px] text-emerald-400 font-bold">CODEATL.TW</span>
           </div>
         </Link>
 
@@ -121,7 +121,7 @@ export default function Sidebar({ className = "", onClose }: SidebarProps) {
                 href={`/journeys/${activeJourney.slug}`}
                 onClick={onClose}
                 className={`flex items-center gap-3 px-4 py-3 rounded-full transition-all text-sm font-medium ${pathname === `/journeys/${activeJourney.slug}` // 精準比對
-                  ? "bg-yellow-400 text-black font-bold shadow-sm"
+                  ? "bg-primary text-black font-bold shadow-sm"
                   : "text-gray-300 hover:text-white hover:bg-white/10"
                   }`}
               >
@@ -140,7 +140,7 @@ export default function Sidebar({ className = "", onClose }: SidebarProps) {
                     href={menu.href}
                     onClick={onClose}
                     className={`flex items-center gap-3 px-4 py-3 rounded-full transition-all text-sm font-medium ${isActive
-                      ? "bg-yellow-400 text-black font-bold shadow-sm"
+                      ? "bg-primary text-black font-bold shadow-sm"
                       : "text-gray-300 hover:text-white hover:bg-white/10"
                       }`}
                   >
@@ -166,7 +166,7 @@ function NavItem({ href, icon: Icon, label, active, onClick }: { href: string, i
       href={href}
       onClick={onClick}
       className={`flex items-center gap-3 px-4 py-3 rounded-full transition-all text-sm font-medium ${active
-        ? "bg-yellow-400 text-black font-bold shadow-sm"
+        ? "bg-primary text-black font-bold shadow-sm"
         : "text-gray-300 hover:text-white hover:bg-white/10"
         }`}
     >

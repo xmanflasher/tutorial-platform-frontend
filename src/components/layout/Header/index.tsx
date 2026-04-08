@@ -42,7 +42,7 @@ export default function Header({ onMenuClick, onLoginClick }: HeaderProps) {
   };
 
   return (
-    <header className="h-16 bg-[#111827] border-b border-slate-800 flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-40 relative">
+    <header className="h-16 bg-card border-b border-border-ui flex items-center justify-between px-4 md:px-8 flex-shrink-0 z-40 relative transition-colors duration-300">
       <div className="flex items-center gap-4">
         <MobileNav onMenuClick={onMenuClick} />
         <DesktopNav />
@@ -53,7 +53,7 @@ export default function Header({ onMenuClick, onLoginClick }: HeaderProps) {
           <>
             <Link
               href="/challenges"
-              className="hidden md:flex items-center gap-2 px-4 py-1.5 border border-blue-500 text-blue-400 hover:bg-blue-500/10 hover:text-blue-300 font-bold rounded transition-colors"
+              className="hidden md:flex items-center gap-2 px-4 py-1.5 border border-primary text-primary hover:bg-primary/10 hover:text-primary/80 font-bold rounded transition-colors"
             >
               <Map size={18} />
               <span>前往挑戰</span>
@@ -63,8 +63,8 @@ export default function Header({ onMenuClick, onLoginClick }: HeaderProps) {
               <button
                 onClick={handleBellClick}
                 className={`p-2 transition-colors relative border rounded-full ${showNotifications
-                    ? 'bg-yellow-400 text-slate-900 border-yellow-400'
-                    : 'text-yellow-400 border-yellow-400/30 hover:bg-yellow-400/10'
+                    ? 'bg-primary text-black border-primary'
+                    : 'text-primary border-primary/30 hover:bg-primary/10'
                   }`}
               >
                 <Bell size={20} />
@@ -92,7 +92,7 @@ export default function Header({ onMenuClick, onLoginClick }: HeaderProps) {
         ) : (
           <button
             onClick={onLoginClick}
-            className="flex items-center justify-center px-6 py-2 bg-yellow-400 hover:bg-yellow-500 text-slate-900 text-sm font-bold rounded transition-colors shadow-sm"
+            className="flex items-center justify-center px-6 py-2 bg-primary hover:opacity-90 text-black text-sm font-bold rounded transition-colors shadow-sm"
           >
             登入
           </button>

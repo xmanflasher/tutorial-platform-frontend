@@ -7,7 +7,7 @@ export default function LoadingRunner() {
         <div className="flex flex-col items-center justify-center space-y-4">
             <div className="relative w-24 h-24 overflow-hidden border-b-2 border-gray-700">
                 {/* Simple CSS Animated Runner */}
-                <div className="absolute bottom-0 left-0 w-8 h-12 bg-yellow-400 animate-runner-bounce flex items-center justify-center rounded">
+                <div className="absolute bottom-0 left-0 w-8 h-12 bg-primary animate-runner-bounce flex items-center justify-center rounded">
                     <div className="w-2 h-2 bg-black rounded-full mb-4" /> {/* Eye */}
                 </div>
 

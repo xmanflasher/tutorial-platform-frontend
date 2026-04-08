@@ -113,7 +113,7 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
     const currentContent = getLessonContent(fullLessonContent || selectedLesson);
 
     return (
-        <div className="min-h-screen bg-[#0d0e11] text-white p-6 flex gap-6">
+        <div className="min-h-screen bg-background text-white p-6 flex gap-6">
             {/* 左側：道館資訊 & 列表 */}
             <div className="w-1/3 flex flex-col gap-6">
                 {/* 增加返回按鈕 */}
@@ -125,7 +125,7 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
                     <span>返回</span>
                 </button>
 
-                <div className="bg-yellow-400 text-black p-6 rounded-lg shadow-lg">
+                <div className="bg-primary text-black p-6 rounded-lg shadow-lg">
                     <div className="text-xs font-bold bg-black/20 w-fit px-2 py-1 rounded mb-2">
                         {gymData.code} 道館
                     </div>
@@ -133,8 +133,8 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
                     <p className="text-sm opacity-80 line-clamp-3">{gymData.description}</p>
                 </div>
 
-                <div className="bg-[#161b22] p-6 rounded-lg border border-gray-800">
-                    <h2 className="text-xl font-bold text-yellow-400 mb-4 flex items-center">🏆 挑戰說明</h2>
+                <div className="bg-card p-6 rounded-lg border border-border-ui transition-colors duration-300">
+                    <h2 className="text-xl font-bold text-primary mb-4 flex items-center">🏆 挑戰說明</h2>
 
                     <div className="mb-6">
                         <h3 className="text-gray-300 font-bold mb-2">相關課程：</h3>
@@ -144,7 +144,7 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
                                     <li
                                         key={lesson.id}
                                         className={`flex justify-between items-center p-3 rounded cursor-pointer transition-colors
-                                        ${selectedLesson?.id === lesson.id ? 'bg-[#1f242c] border-l-4 border-yellow-400' : 'hover:bg-[#1f242c]'}`}
+                                        ${selectedLesson?.id === lesson.id ? 'bg-primary/10 border-l-4 border-primary' : 'hover:bg-primary/5'}`}
                                         onClick={() => setSelectedLesson(lesson)}
                                     >
                                         <div className="flex items-center gap-3 min-w-0">
@@ -162,7 +162,7 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
                         )}
                     </div>
 
-                    <div className="border-t border-gray-700 pt-4">
+                    <div className="border-t border-border-ui pt-4">
                         <div className="mb-4">
                             <p className="font-bold text-white">通關獎勵</p>
                             <span className="text-xs text-gray-400">+{gymData.reward?.exp || 0} 經驗值</span>
@@ -173,7 +173,7 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
                             disabled={!allLessonsFinished}
                             className={`w-full py-3 rounded-lg font-bold text-lg transition-all flex items-center justify-center gap-2
                                 ${allLessonsFinished
-                                    ? 'bg-yellow-400 text-black hover:bg-yellow-300 shadow-[0_0_15px_rgba(250,204,21,0.3)]'
+                                    ? 'bg-primary text-black hover:opacity-90 shadow-lg shadow-primary/20'
                                     : 'bg-gray-800 text-gray-500 cursor-not-allowed'}
                             `}
                         >
@@ -185,10 +185,10 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
             </div>
 
             {/* 右側：內容渲染區 */}
-            <div className="w-2/3 bg-[#161b22] rounded-lg border border-gray-800 overflow-hidden flex flex-col">
+            <div className="w-2/3 bg-card rounded-lg border border-border-ui overflow-hidden flex flex-col transition-colors duration-300">
                 {selectedLesson && currentContent ? (
                     <>
-                        <div className="p-4 border-b border-gray-800 bg-[#0d0e11] flex justify-between items-center">
+                        <div className="p-4 border-b border-border-ui bg-background flex justify-between items-center">
                             <h2 className="text-xl font-bold">{selectedLesson.name}</h2>
                             {selectedLesson.videoLength && (
                                 <span className="text-xs text-gray-500 font-mono">{selectedLesson.videoLength}</span>
@@ -206,8 +206,8 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
                                      </div>
                                 </div>
                             ) : (
-                                <div className="w-full h-full p-10 overflow-y-auto custom-scrollbar bg-[#161b22]">
-                                    <article className="prose prose-invert max-w-none prose-yellow">
+                                <div className="w-full h-full p-10 overflow-y-auto custom-scrollbar bg-card">
+                                    <article className="prose prose-invert max-w-none prose-primary">
                                         {/* 這裡假設後端傳來的是 Markdown 字串，若已是 HTML 則用 dangerouslySetInnerHTML */}
                                         <div dangerouslySetInnerHTML={{ __html: currentContent.text || "" }} />
                                     </article>

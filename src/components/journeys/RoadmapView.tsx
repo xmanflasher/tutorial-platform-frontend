@@ -25,7 +25,7 @@ const GymNode = ({ gym, isLast, onClick }: { gym: Gym; isLast: boolean; onClick:
             <div
                 className={`
           relative z-10 flex items-center justify-center rounded-full border-4 shadow-xl transition-transform duration-300 group-hover:scale-110 cursor-pointer
-          ${isBoss ? 'w-16 h-16 -ml-2 border-red-900/50 bg-[#1a1111]' : 'w-12 h-12 border-gray-800 bg-[#0d0e11]'}
+          ${isBoss ? 'w-16 h-16 -ml-2 border-red-900/50 bg-[#1a1111]' : 'w-12 h-12 border-border-ui bg-background'}
           ${isLocked ? 'opacity-60 border-gray-700' : ''}
           ${isCompleted ? 'border-green-500/30' : ''}
           ${isUnlocked ? 'animate-pulse-slow ' + (isBoss ? 'border-red-500/50' : 'border-blue-500/50') : ''}
@@ -48,8 +48,8 @@ const GymNode = ({ gym, isLast, onClick }: { gym: Gym; isLast: boolean; onClick:
                 className={`
           flex-1 ml-6 mb-8 p-5 rounded-xl border transition-all duration-200 cursor-pointer
           ${isLocked
-                        ? 'bg-gray-900/30 border-gray-800/50 opacity-50'
-                        : 'bg-gray-900/80 border-gray-800 hover:border-gray-600 hover:shadow-lg hover:shadow-blue-900/10 hover:-translate-y-1'}
+                        ? 'bg-gray-900/30 border-border-ui/50 opacity-50'
+                        : 'bg-gray-900/80 border-border-ui hover:border-gray-600 hover:shadow-lg hover:shadow-blue-900/10 hover:-translate-y-1'}
           ${isBoss && !isLocked ? 'border-red-900/30 hover:border-red-500/50 bg-red-950/10' : ''}
         `}
                 onClick={!isLocked ? onClick : undefined}
@@ -72,7 +72,7 @@ const GymNode = ({ gym, isLast, onClick }: { gym: Gym; isLast: boolean; onClick:
                     {gym.description || "準備好接受挑戰了嗎？"}
                 </p>
 
-                <div className="flex items-center justify-between pt-3 border-t border-gray-800/50">
+                <div className="flex items-center justify-between pt-3 border-t border-border-ui/50">
                     <div className="text-xs text-gray-500 flex items-center gap-3">
                         <span className="bg-gray-800 px-2 py-1 rounded text-gray-300">EXP +{reward?.exp || 0}</span>
                         {isUnlocked && (
@@ -81,11 +81,11 @@ const GymNode = ({ gym, isLast, onClick }: { gym: Gym; isLast: boolean; onClick:
                             </span>
                         )}
                     </div>
-                    <div className="flex items-center gap-1 bg-black/40 px-3 py-1 rounded-full border border-gray-800">
-                        <span className={`text-sm font-mono ${(currentStars || 0) > 0 ? 'text-yellow-400' : 'text-gray-600'}`}>
+                    <div className="flex items-center gap-1 bg-black/40 px-3 py-1 rounded-full border border-border-ui">
+                        <span className={`text-sm font-mono ${(currentStars || 0) > 0 ? 'text-primary' : 'text-gray-600'}`}>
                             {currentStars || 0}
                         </span>
-                        <Star size={14} className={(currentStars || 0) > 0 ? "text-yellow-500 fill-current" : "text-gray-700"} />
+                        <Star size={14} className={(currentStars || 0) > 0 ? "text-primary fill-current" : "text-gray-700"} />
                     </div>
                 </div>
             </div>
@@ -176,7 +176,7 @@ export default function RoadmapView() {
             <div className="mb-16 animate-in fade-in slide-in-from-bottom-8 duration-700">
                 <h2 className="text-center text-gray-400 mb-10 relative flex items-center justify-center">
                     <div className="h-px bg-gray-800 w-full absolute left-0" />
-                    <span className="bg-[#0d0e11] px-6 py-1 z-10 border border-gray-800 rounded-full text-sm font-medium text-gray-300 shadow-xl">
+                    <span className="bg-background px-6 py-1 z-10 border border-border-ui rounded-full text-sm font-medium text-gray-300 shadow-xl">
                         {title}
                     </span>
                 </h2>
@@ -191,28 +191,28 @@ export default function RoadmapView() {
     };
 
     if (journeyLoading || loading) return (
-        <div className="min-h-screen bg-[#0d0e11] flex items-center justify-center text-white">
-            <Loader2 className="animate-spin w-10 h-10 text-yellow-500" />
+        <div className="min-h-screen bg-background flex items-center justify-center text-white">
+            <Loader2 className="animate-spin w-10 h-10 text-primary" />
         </div>
     );
 
     return (
-        <div className="min-h-screen bg-[#0d0e11] text-white p-4 md:p-8">
+        <div className="min-h-screen bg-background text-white p-4 md:p-8">
             <div className="max-w-4xl mx-auto pb-20">
                 <div className="text-center mb-10 pt-6">
-                    <h1 className="text-3xl md:text-4xl font-bold text-yellow-500 mb-6">{activeJourney?.title}</h1>
-                    <div className="grid grid-cols-4 gap-4 bg-[#161b22] border border-gray-800 rounded-xl p-4 max-w-3xl mx-auto">
+                    <h1 className="text-3xl md:text-4xl font-bold text-primary mb-6">{activeJourney?.title}</h1>
+                    <div className="grid grid-cols-4 gap-4 bg-[#161b22] border border-border-ui rounded-xl p-4 max-w-3xl mx-auto">
                         <StatItem label="STATUS" value={stats.status} icon={<Clock size={12} />} />
                         <StatItem label="DAYS LEFT" value={stats.daysLeft} icon={<Clock size={12} />} color={stats.daysLeft !== '∞' ? 'text-blue-400' : 'text-white'} />
                         <StatItem label="CLEARED" value={`${stats.cleared} / ${stats.total}`} icon={<Trophy size={12} />} />
-                        <StatItem label="XP EARNED" value={`${stats.exp} XP`} icon={<TrendingUp size={12} />} color="text-yellow-500" />
+                        <StatItem label="XP EARNED" value={`${stats.exp} XP`} icon={<TrendingUp size={12} />} color="text-primary" />
                     </div>
                 </div>
 
                 <div className="flex justify-center mb-16">
-                    <div className="bg-[#161b22] p-1 rounded-lg border border-gray-800 flex w-full max-w-lg">
+                    <div className="bg-[#161b22] p-1 rounded-lg border border-border-ui flex w-full max-w-lg">
                         {['MAIN', 'SIDE'].map(tab => (
-                            <button key={tab} onClick={() => setActiveTab(tab as any)} className={`flex-1 py-2 rounded-md text-sm font-bold transition-all ${activeTab === tab ? 'bg-yellow-500 text-black shadow-md' : 'text-gray-400 hover:text-gray-200'}`}>
+                            <button key={tab} onClick={() => setActiveTab(tab as any)} className={`flex-1 py-2 rounded-md text-sm font-bold transition-all ${activeTab === tab ? 'bg-primary text-black shadow-md' : 'text-gray-400 hover:text-gray-200'}`}>
                                 {tab === 'MAIN' ? '主線任務' : '支線任務'}
                             </button>
                         ))}
@@ -228,7 +228,7 @@ export default function RoadmapView() {
 
 function StatItem({ label, value, icon, color = "text-white" }: { label: string; value: string; icon: React.ReactNode; color?: string }) {
     return (
-        <div className="flex flex-col items-center border-r last:border-0 border-gray-800">
+        <div className="flex flex-col items-center border-r last:border-0 border-border-ui">
             <span className="text-gray-500 text-xs mb-1 flex items-center gap-1">{icon} {label}</span>
             <span className={`text-xl font-mono ${color}`}>{value}</span>
         </div>
