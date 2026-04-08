@@ -30,7 +30,7 @@ export default function NotFound() {
           </Link>
           <button
             onClick={() => window.history.back()}
-            className="px-8 py-3 border border-slate-700 hover:bg-slate-800 transition-colors rounded-full font-medium"
+            className="px-8 py-3 border border-border-ui hover:bg-slate-800 transition-colors rounded-full font-medium"
           >
             返回上一頁
           </button>

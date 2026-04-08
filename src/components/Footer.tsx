@@ -4,7 +4,7 @@
 import Link from 'next/link';
 
 // 假設這就是您的網站名稱
-const SITE_NAME = '水球軟體學院';
+const SITE_NAME = 'Σ-Codeatl';
 
 const Footer: React.FC = () => {
     const currentYear = new Date().getFullYear();
@@ -45,7 +45,7 @@ const Footer: React.FC = () => {
                         </ul>
                     </div>
 
-                    {/* 社群 (水球軟體學院可能有的社群連結) */}
+                    {/* 社群 (Σ-Codeatl 可能有的社群連結) */}
                     <div>
                         <h3 className="text-lg font-semibold mb-4">追蹤我們</h3>
                         <ul className="space-y-2 text-sm">
