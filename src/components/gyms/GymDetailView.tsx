@@ -7,6 +7,7 @@ import ChallengeModal from './ChallengeModal';
 import { apiRequest } from '@/lib/api';
 import { FileText, PlayCircle, CheckCircle, Lock, ArrowLeft } from 'lucide-react';
 import { GymDetailData, LessonDetail } from '@/types';
+import MarkdownRenderer from '@/components/ui/MarkdownRenderer';
 
 interface GymDetailViewProps {
     gymData: GymDetailData;
@@ -208,8 +209,7 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
                             ) : (
                                 <div className="w-full h-full p-10 overflow-y-auto custom-scrollbar bg-card">
                                     <article className="prose prose-invert max-w-none prose-primary">
-                                        {/* 這裡假設後端傳來的是 Markdown 字串，若已是 HTML 則用 dangerouslySetInnerHTML */}
-                                        <div dangerouslySetInnerHTML={{ __html: currentContent.text || "" }} />
+                                        <MarkdownRenderer content={currentContent.text || ""} />
                                     </article>
                                     {!selectedLesson.isFinished && (
                                         <div className="mt-12 text-center">

@@ -1,25 +1,4 @@
-// 根據資料庫中的 status 欄位定義
-export type MissionStatus = 'LOCKED' | 'AVAILABLE' | 'IN_PROGRESS' | 'COMPLETED' | 'CLAIMED';
-
-export interface MemberMission {
-    missionId: number;
-    name: string;
-    description: string;
-    status: MissionStatus;
-
-    // 顯示用欄位 (後端已經格式化好的字串，前端直接顯示即可)
-    rewardDescription: string;          // e.g. "經驗值 100, 金幣 50"
-    unlockConditionDescription: string; // e.g. "通過道館 2"
-    duration: number;
-    // 期限與進度
-    deadline: string | null; // ISO 字串
-    currentProgress: number; // 0-100
-
-    // 機會卡機制
-    opportunityCardsUsed: number;
-    maxOpportunityCards: number;
-    isExtendable: boolean;
-}
+// Record 相關的其他定義
 
 export type GymStatus = 'LOCKED' | 'NOT_STARTED' | 'PENDING' | 'PASSED' | 'FAILED' | 'REVIEWING';
 

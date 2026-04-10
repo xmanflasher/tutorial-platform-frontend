@@ -7,6 +7,7 @@ import Header from "@/components/layout/Header";
 import LoginModal from "@/components/auth/LoginModal";
 import { useAuth } from "@/context/AuthContext";
 import { useJourney } from "@/context/JourneyContext";
+import { API_BASE_URL } from "@/lib/api-config";
 
 export default function MainJourneyLayout({
     children,
@@ -21,7 +22,7 @@ export default function MainJourneyLayout({
 
     const handleMockLogin = async (email: string) => {
         try {
-            const res = await fetch(`http://localhost:8080/api/auth/dev-login?email=${email}`, {
+            const res = await fetch(`${API_BASE_URL}/auth/dev-login?email=${email}`, {
                 method: 'POST',
             });
 

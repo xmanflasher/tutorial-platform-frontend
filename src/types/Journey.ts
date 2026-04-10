@@ -79,6 +79,31 @@ export interface Mission {
   reward: Reward;
 }
 
+// 三、會員任務狀態 (Member Specific)
+export interface MemberMission {
+  missionId: number;
+  name: string;
+  description: string;
+  status: 'LOCKED' | 'AVAILABLE' | 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'CLAIMED' | 'FAILED';
+  
+  // 顯示用與進度欄位
+  rewardDescription?: string;         // e.g. "經驗值 100"
+  unlockConditionDescription?: string; // e.g. "通過道館"
+  duration: number;                    // 總時長
+  deadline?: string | null;           // 截止時間
+  currentProgress?: number;           // 0-100
+  
+  // 機會卡機制
+  opportunityCardsUsed?: number;
+  maxOpportunityCards?: number;
+  isExtendable?: boolean;
+  
+  // 原本的系統時間戳記
+  remainingTime?: number;
+  startedAt?: number;
+  expiresAt?: number;
+}
+
 // 單元內容 (影片連結或 Markdown 文字)
 export interface LessonContent {
   type: 'VIDEO' | 'MARKDOWN' | 'video' | 'markdown';

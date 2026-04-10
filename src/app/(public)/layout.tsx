@@ -8,6 +8,7 @@ import { useJourney } from '@/context/JourneyContext';
 import { useAuth } from '@/context/AuthContext';
 import Header from '@/components/layout/Header';
 import LoginModal from '@/components/auth/LoginModal';
+import { API_BASE_URL } from '@/lib/api-config';
 
 // ★ 修改處：直接將 LayoutContent 改名為 default export 的 PublicLayout
 // 不需要再外面包一層 <AuthProvider> 了
@@ -24,7 +25,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
   const handleMockLogin = async (email: string) => {
     try {
-      const res = await fetch(`http://localhost:8080/api/auth/dev-login?email=${email}`, {
+      const res = await fetch(`${API_BASE_URL}/auth/dev-login?email=${email}`, {
         method: 'POST',
       });
 

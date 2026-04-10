@@ -16,6 +16,7 @@ import { useAuth } from "@/context/AuthContext";
 import { JourneyDetail, Course } from "@/types";
 import { createEmptyJourney } from "@/lib/factories";
 import { homeService } from "@/services";
+import { API_BASE_URL } from "@/lib/api-config";
 
 interface JourneyContextType {
   activeJourney: JourneyDetail;
@@ -106,7 +107,7 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
 
     try {
       const res = await fetch(
-        `http://localhost:8080/api/journeys/${slugToFetch}/progress?userId=${userId}`
+        `${API_BASE_URL}/journeys/${slugToFetch}/progress?userId=${userId}`
       );
 
       if (lastRequestedSlugRef.current !== slugToFetch) return;
