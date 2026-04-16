@@ -32,6 +32,7 @@ export const journeyService = {
 
     /**
      * 動態組裝 Mock 旅程詳情 (從 SQL 轉出的各表進行 Join)
+     * [Optimization] 採用 Map 預分組邏輯，將複雜度從 O(Chapters * Lessons) 降至 O(Chapters + Lessons)
      */
     getMockJourneyDetail(slug: string): JourneyDetail {
         // 1. 找旅程 (預設給 SDP)
@@ -41,26 +42,41 @@ export const journeyService = {
         // 2. 找講師名稱
         const instructor = MOCK_MEMBERS.find(m => m.id === journeyRaw.instructorId);
 
-        // 3. 找章節
+        // 3. [Perf] 預處理單元 Map
+        const lessonsByChapter = new Map<number, any[]>();
+        let videoCount = 0;
+
+        MOCK_LESSONS.forEach((l: any) => {
+            if (l.journeyId === journeyId) {
+                if (!lessonsByChapter.has(l.chapterId)) {
+                    lessonsByChapter.set(l.chapterId, []);
+                }
+                lessonsByChapter.get(l.chapterId)?.push({
+                    id: String(l.id),
+                    name: l.name || '',
+                    type: (l.type?.toLowerCase() || 'video') as any,
+                    premiumOnly: !!l.premiumOnly,
+                    videoLength: l.videoLength,
+                    displayOrder: l.displayOrder || 0
+                });
+
+                if (l.type === 'VIDEO') videoCount++;
+            }
+        });
+
+        // 4. 找章節並掛載單元
         const chapters = MOCK_CHAPTERS
             .filter((c: any) => c.journeyId === journeyId)
             .sort((a: any, b: any) => (a.displayOrder || 0) - (b.displayOrder || 0))
             .map((c: any) => ({
                 id: Number(c.id),
                 name: c.name || '',
-                lessons: MOCK_LESSONS
-                    .filter((l: any) => l.chapterId === c.id)
-                    .sort((a: any, b: any) => (a.displayOrder || 0) - (b.displayOrder || 0))
-                    .map((l: any) => ({
-                        id: String(l.id),
-                        name: l.name || '',
-                        type: (l.type?.toLowerCase() || 'video') as any,
-                        premiumOnly: !!l.premiumOnly,
-                        videoLength: l.videoLength
-                    }))
+                lessons: (lessonsByChapter.get(c.id) || [])
+                    .sort((a, b) => a.displayOrder - b.displayOrder)
+                    .map(({ displayOrder, ...rest }) => rest) // 移除輔助欄位
             }));
 
-        // 4. 合定格式
+        // 5. 合定格式
         return {
             id: journeyId,
             slug: journeyRaw.slug,
@@ -69,7 +85,7 @@ export const journeyService = {
             instructorName: instructor?.name,
             description: journeyRaw.description,
             price: slug === 'javascript-basics-140' ? 0 : 3000,
-            totalVideos: MOCK_LESSONS.filter(l => l.journeyId === journeyId && l.type === 'VIDEO').length,
+            totalVideos: videoCount,
             tags: journeyRaw.slug.includes('js') ? ['JS 基礎', '尚硅谷'] : ['設計模式', '實戰'],
             chapters: chapters,
             missions: (MOCK_MISSIONS_RAW as any[]).filter(m => m.journeyId === journeyId),
