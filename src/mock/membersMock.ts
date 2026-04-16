@@ -1,0 +1,57 @@
+// Generated from SQL
+export const MOCK_MEMBERS = [
+  {
+    "id": 201,
+    "name": "李立超 (超哥)",
+    "nickName": "Li Lichao",
+    "email": "li-lichao@codeatl.tw",
+    "role": "ROLE_INSTRUCTOR",
+    "level": 99,
+    "exp": 999999,
+    "coin": 0,
+    "password": "password",
+    "createdAt": "2026-03-02 20:59:56.850501"
+  },
+  {
+    "id": 202,
+    "name": "Σ-Codeatl 專業導師團隊",
+    "nickName": "Σ-Team",
+    "email": "team@codeatl.tw",
+    "role": "ROLE_INSTRUCTOR",
+    "level": 99,
+    "exp": 999999,
+    "coin": 0,
+    "password": "password",
+    "createdAt": "2026-03-02 20:59:56.850501"
+  },
+  {
+    "id": 999,
+    "avatar": "",
+    "birthDate": null,
+    "coin": 88888,
+    "email": "god@codeatl.tw",
+    "exp": 999999,
+    "jobTitle": "技術主管",
+    "level": 99,
+    "name": "大神驗收專用",
+    "sex": null,
+    "location": null,
+    "githubLink": null,
+    "discordLink": null,
+    "breakthroughCount": 0,
+    "subscriptionEndDate": null,
+    "nickName": "大神",
+    "occupation": "技術主管",
+    "nextLevelExp": 1000000,
+    "originVisitorId": null,
+    "visitorCategory": null,
+    "password": "password",
+    "discordId": null,
+    "githubUrl": null,
+    "region": "",
+    "createdAt": "2026-03-02 20:59:56.850501",
+    "instructorBio": null,
+    "role": "ROLE_ADMIN",
+    "socialLinks": null
+  }
+];

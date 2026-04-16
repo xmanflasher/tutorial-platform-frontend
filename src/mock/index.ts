@@ -1,8 +1,52 @@
-// src/mock/index.ts
-import { Announcement, Course, ResourceCard, Instructor, LeaderboardMember, JourneyDetail, MemberMission } from '@/types';
+import { 
+    Announcement, 
+    Course, 
+    ResourceCard, 
+    Instructor, 
+    LeaderboardMember, 
+    JourneyDetail, 
+    MemberMission 
+} from '@/types';
+import { User } from '@/context/AuthContext';
+
+export const MOCK_USER: User = {
+    id: 100,
+    name: '驗收大神 (Mock)',
+    nickName: '大神本尊',
+    email: 'god_mode@mock.tw',
+    avatar: '/images/avatar_1.png',
+    level: 99,
+    exp: 99999,
+    nextLevelExp: 100000,
+    role: 'ADMIN',
+    jobTitle: '軟體架構導讀者',
+    region: 'Σ-Sector 01'
+};
 
 // ==========================================
-// 首頁相關 Mock Data
+// 全自動同步的 Mock 資料 (Generated)
+// ==========================================
+import { MOCK_MEMBERS } from './membersMock';
+import { MOCK_JOURNEYS } from './journeysMock';
+import { MOCK_LESSONS } from './lessonsMock';
+import { MOCK_CHAPTERS } from './chaptersMock';
+import { MOCK_GYMS } from './gymsMock';
+import { MOCK_CHALLENGES } from './challengesMock';
+import { MOCK_MISSIONS as MOCK_MISSIONS_RAW } from './missionsMock';
+import { MOCK_JOURNEY_MENUS } from './journey_menusMock';
+import { MOCK_LESSON_CONTENTS } from './lesson_contentsMock';
+import { MOCK_GYM_BADGES } from './gym_badgesMock';
+import { MOCK_MISSION_REQUIREMENTS } from './mission_requirementsMock';
+
+// 匯出 Generated 原始資料
+export { 
+    MOCK_MEMBERS, MOCK_JOURNEYS, MOCK_LESSONS, MOCK_CHAPTERS, 
+    MOCK_GYMS, MOCK_CHALLENGES, MOCK_MISSIONS_RAW, MOCK_JOURNEY_MENUS,
+    MOCK_LESSON_CONTENTS, MOCK_GYM_BADGES, MOCK_MISSION_REQUIREMENTS
+};
+
+// ==========================================
+// 首頁相關 Mock Data (手動定義或整合)
 // ==========================================
 
 // 廣告條
@@ -13,57 +57,38 @@ export const MOCK_ANNOUNCEMENT: Announcement = {
   linkHref: '/journeys/software-design-pattern',
 };
 
-// 首頁精選課程
-export const MOCK_FEATURED_COURSES: Course[] = [
-  {
-    id: 1,
-    title: 'JavaScript 基礎實戰 (140集精通)',
-    subtitle: '尚硅谷經典教程，從零基礎到精通 DOM/BOM',
-    author: '李立超 (超哥)',
-    description: '涵蓋 ES 標準、BOM 與 DOM 核心內容，建立扎實前端開發基礎。',
-    slug: 'javascript-basics-140',
-    statusLabel: '免費課程',
-    primaryAction: { text: '開始學習', href: '/journeys/javascript-basics-140', style: 'solid' },
-    tags: ['JS 基礎', '尚硅谷'],
-    image: '/images/course_js.png'
-  },
-  {
-    id: 2,
-    title: '軟體設計模式精通之旅',
-    subtitle: '用一趟旅程的時間，成為硬核的 Coding 實戰高手',
-    author: '水球潘',
-    description: '用一趟旅程的時間，成為硬核的 Coding 實戰高手',
-    slug: 'software-design-pattern',
-    statusLabel: '尚未擁有',
-    couponText: '你有一張 3,000 折價券',
-    primaryAction: { text: '試聽課程', href: '/journeys/software-design-pattern', style: 'solid' },
-    secondaryAction: { text: '立刻購買', href: '/journeys/software-design-pattern/orders', style: 'outline' },
-    tags: ['軟體架構', '設計模式'],
-    image: '/images/course_0.png'
-  },
-  {
-    id: 4,
-    title: 'AI x BDD：規格驅動全自動開發術',
-    subtitle: 'AI Top 1% 工程師必修課，掌握規格驅動的全自動化開發',
-    author: '水球潘',
-    description: 'AI Top 1% 工程師必修課，掌握規格驅動的全自動化開發',
-    slug: 'ai-bdd',
-    statusLabel: '尚未擁有',
-    primaryAction: { text: '試聽課程', href: '/journeys/ai-bdd', style: 'solid' },
-    secondaryAction: { text: '立刻購買', href: '/journeys/ai-bdd/orders', style: 'outline' },
-    tags: ['AI', 'BDD'],
-    image: '/images/course_4.png'
-  },
-];
+// 首頁精選課程 (從 Generated 資料動態組合成 Course 格式)
+export const MOCK_FEATURED_COURSES: Course[] = MOCK_JOURNEYS
+    .filter((j: any) => j.visible !== false) // 尊重隱身屬性
+    .sort((a: any, b: any) => a.id - b.id)    // 依照 ID 排序
+    .slice(0, 3)                             // 只取前三門
+    .map((j: any) => {
+        const instructor = MOCK_MEMBERS.find(m => m.id === j.instructorId);
+        return {
+            id: j.id,
+            title: j.name,
+            subtitle: instructor ? `${instructor.name} 的專業課程` : '尚硅谷經典教程',
+            author: instructor?.name || 'Σ-Codeatl 導師',
+            description: j.description || '',
+            slug: j.slug,
+            statusLabel: j.id === 6 ? '免費課程' : '尚未擁有',
+            primaryAction: { 
+                text: j.id === 6 ? '開始學習' : '試聽課程', 
+                href: `/journeys/${j.slug}`, 
+                style: 'solid' 
+            },
+            image: `/images/course_${j.id}.png`
+        };
+    });
 
 // 資源卡片
 export const MOCK_RESOURCE_CARDS: ResourceCard[] = [
   {
     id: 1,
     iconName: 'BookOpen',
-    title: '軟體設計模式之旅課程',
-    description: '「用一趟旅程的時間，成為硬核的 Coding 高手」—— 精通一套高效率的 OOAD 思路。',
-    primaryAction: { text: '查看課程', href: '/journeys' },
+    title: 'JavaScript 基礎實戰完整課程',
+    description: '從零開始學 JavaScript，透過實作掌握 DOM、非同步與 API。',
+    primaryAction: { text: '查看課程', href: '/courses' },
   },
   {
     id: 2,
