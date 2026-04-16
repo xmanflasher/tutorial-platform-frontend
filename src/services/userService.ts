@@ -15,7 +15,7 @@ export const userService = {
 
         try {
             // 這裡對接後端：/api/users?ids=xxx
-            const data = await apiRequest(`/users?ids=${userId}`);
+            const data = await apiRequest<any>(`/users?ids=${userId}`, { silent: true, timeout: 5000 });
 
             if (Array.isArray(data) && data.length > 0) {
                 const user = data[0];

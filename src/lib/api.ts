@@ -86,14 +86,18 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
 
       // 處理 500 (後端炸裂)
       if (response.status >= 500) {
-        toast.error('伺服器錯誤', {
-          description: '系統發生問題，請稍後再試'
-        });
+        if (typeof window !== 'undefined') {
+          toast.error('伺服器錯誤', {
+            description: '系統發生問題，請稍後再試'
+          });
+        }
       }
 
       // 其他 API 錯誤 (忽略 401/403 因為上面處理過了)
       if (!options.silent && response.status !== 401 && response.status !== 403 && response.status < 500) {
-        toast.error(`請求失敗 (${response.status})`);
+        if (typeof window !== 'undefined') {
+          toast.error(`請求失敗 (${response.status})`);
+        }
       }
 
       throw new Error(`API Error: ${response.status}`);

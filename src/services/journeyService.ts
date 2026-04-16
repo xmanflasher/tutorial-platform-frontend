@@ -1,5 +1,6 @@
 import { JourneyDetail } from '@/types';
 import { API_BASE_URL, USE_MOCK_DATA, delay } from '@/lib/api-config';
+import { apiRequest } from '@/lib/api';
 import { 
     MOCK_JOURNEYS, 
     MOCK_CHAPTERS, 
@@ -20,9 +21,7 @@ export const journeyService = {
         }
 
         try {
-            const res = await fetch(`${API_BASE_URL}/journeys/${slug}`, { cache: 'no-store' });
-            if (!res.ok) throw new Error(`Status: ${res.status}`);
-            const data = await res.json();
+            const data = await apiRequest<any>(`/journeys/${slug}`, { silent: true, timeout: 5000 });
             return this.adaptJourneyDetail(data, slug);
         } catch (error) {
             console.warn(`[API] 連線失敗，降級使用動態 Mock 組裝: ${slug}`, error);
