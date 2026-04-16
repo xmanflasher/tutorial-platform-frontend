@@ -9,6 +9,8 @@ interface RequestOptions extends RequestInit {
   silent?: boolean;
   // 內部標記：是否為重試請求
   _isRetry?: boolean;
+  // 請求超時時間 (ms)
+  timeout?: number;
 }
 
 /**
@@ -30,11 +32,16 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
   };
 
   try {
+    const controller = new AbortController();
+    const id = options.timeout ? setTimeout(() => controller.abort(), options.timeout) : null;
+
     const response = await fetch(url, {
       ...options,
+      signal: options.timeout ? controller.signal : options.signal,
       headers,
       credentials: 'include', // ★ 重要：允許發送 Cookie (Session)
     });
+    if (id) clearTimeout(id);
 
     // 4. 統一錯誤處理 (Interceptor)
     if (!response.ok) {
@@ -109,7 +116,16 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
       return text as unknown as T;
     }
 
-  } catch (error) {
+  } catch (error: any) {
+    // Timeout 處理
+    if (error.name === 'AbortError') {
+      console.warn(`[API] 請求超時 (${options.timeout}ms): ${endpoint}`);
+      if (!options.silent && typeof window !== 'undefined') {
+        toast.error('伺服器連線超時', { description: '正在切換至離線模式...' });
+      }
+      throw new Error(`Timeout: ${endpoint}`);
+    }
+
     // 網路斷線或其他 fetch 錯誤
     if (!options.silent) {
       // 避免在 401 已經拋出錯誤後重複跳 toast

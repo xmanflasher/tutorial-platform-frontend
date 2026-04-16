@@ -2,7 +2,7 @@ import { Course } from '@/types';
 import CourseCard from '@/components/courses/CourseCard';
 
 // [Best Practice] Static Hoisting: 將不依賴 Props 與 State 的靜態 JSX 移出元件
-const WELCOME_HEADER = (
+export const WELCOME_HEADER = (
   <div className="mb-8">
     <h1 className="text-3xl font-bold text-white mb-4">歡迎來到 Σ-Codeatl</h1>
     <p className="text-slate-400 max-w-4xl leading-relaxed text-lg">
