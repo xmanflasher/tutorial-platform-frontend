@@ -60,10 +60,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // 檢查登入錯誤 (OAuth2 失敗)
       const urlError = urlParams.get('error');
+      const urlMessage = urlParams.get('message');
       if (urlError) {
         import('sonner').then(({ toast }) => {
            toast.error('第三方登入失敗', {
-              description: '這可能是系統環境尚未就緒 (遺漏 Client Secret) 或您取消了授權。'
+              description: urlMessage || '這可能是系統環境尚未就緒 (遺漏 Client Secret) 或您取消了授權。'
            });
         });
         const cleanUrl = window.location.pathname + window.location.hash;
