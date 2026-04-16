@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { apiRequest } from '@/lib/api';
 import { getVisitorId } from '@/lib/visitorUtils'; // ★ 新增
 import { orderService } from '@/services/orderService'; // ★ 新增
+import { MOCK_USER } from '@/mock';
 
 export interface User {
 // ... (rest of the interface)
@@ -59,6 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // 2. 取得當前有效的 Token
       const token = localStorage.getItem('accessToken');
+      
       const hasToken = token && token !== 'null' && token !== 'undefined' && token.length > 10;
 
       if (hasToken) {

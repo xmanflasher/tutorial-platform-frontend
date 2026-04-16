@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useNotification } from '@/context/NotificationContext';
 import { Map, Bell } from 'lucide-react';
 import NotificationDropdown from './NotificationDropdown';
+import BackendStatusWatcher from '@/components/common/BackendStatusWatcher';
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -49,6 +50,7 @@ export default function Header({ onMenuClick, onLoginClick }: HeaderProps) {
       </div>
 
       <div className="flex items-center gap-4">
+        <BackendStatusWatcher />
         {user ? (
           <>
             <Link
