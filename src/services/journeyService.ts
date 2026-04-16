@@ -83,7 +83,7 @@ export const journeyService = {
             title: journeyRaw.name,
             subtitle: instructor ? `${instructor.name} 的專業課程` : 'Σ-Codeatl 專業導航',
             instructorName: instructor?.name,
-            description: journeyRaw.description,
+            description: journeyRaw.description || '',
             price: slug === 'javascript-basics-140' ? 0 : 3000,
             totalVideos: videoCount,
             tags: journeyRaw.slug.includes('js') ? ['JS 基礎', '尚硅谷'] : ['設計模式', '實戰'],

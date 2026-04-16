@@ -1,4 +1,5 @@
 import { USE_MOCK_DATA, delay } from '@/lib/api-config';
+import { apiRequest } from '@/lib/api';
 
 export interface Notification {
     id: number;

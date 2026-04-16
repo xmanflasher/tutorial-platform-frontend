@@ -50,8 +50,14 @@ export const lessonService = {
             type: (finalLesson.type?.toLowerCase() || 'video') as any,
             createdAt: Date.now(),
             content: contents,
-            reward: { exp: 50 },
-            videoLength: finalLesson.videoLength,
+            reward: { 
+                exp: 50,
+                coin: 0,
+                subscriptionExtensionInDays: 0,
+                journeyId: 0,
+                externalRewardDescription: ''
+            },
+            videoLength: finalLesson.videoLength || undefined,
             premiumOnly: !!finalLesson.premiumOnly
         };
     }
