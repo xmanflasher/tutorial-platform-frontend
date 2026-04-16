@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { X, ArrowLeft, Loader2, Briefcase, User, Rocket, Info } from 'lucide-react';
 import { logVisitorIdentity } from "@/lib/visitorUtils";
 import { API_BASE_URL, BASE_URL } from '@/lib/api-config';
+import { useAuth } from '@/context/AuthContext';
 
 interface LoginModalProps {
   isOpen: boolean;

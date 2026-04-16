@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';//強制設定動態渲染 (解決 Route 錯誤)
+export const revalidate = 300; // ISR Optimization//強制設定動態渲染 (解決 Route 錯誤)
 
 import { journeyService } from '@/services';
 import ChapterList from '@/components/journeys/ChapterList';

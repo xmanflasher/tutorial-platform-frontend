@@ -51,6 +51,20 @@ export default function MissionsPage() {
         );
     }
 
+    if (missions.length === 0) {
+        return (
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center text-white">
+                <div className="text-xl font-bold text-gray-400 mb-6 pb-20">目前該路線尚未指派任務，敬請期待。</div>
+                <button
+                    onClick={() => window.history.back()}
+                    className="px-6 py-2 bg-primary text-black font-bold rounded hover:opacity-90 transition-colors"
+                >
+                    回上一頁
+                </button>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-background text-white p-8">
             {/* Banner (保持不變) */}

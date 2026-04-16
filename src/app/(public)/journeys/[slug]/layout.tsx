@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+export const revalidate = 300; // ISR Optimization
 import { journeyService } from '@/services';
 export default async function JourneyLayout({
     children,

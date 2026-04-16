@@ -1,7 +1,6 @@
-// src/services/userService.ts
 import { apiRequest } from '@/lib/api';
-import { UserProfile } from '@/types/User';
 import { USE_MOCK_DATA, delay } from '@/lib/api-config';
+import { MOCK_MEMBERS } from '@/mock';
 
 export const userService = {
     /**
@@ -10,7 +9,7 @@ export const userService = {
     async getUserProfile(userId: string): Promise<UserProfile | null> {
         if (USE_MOCK_DATA) {
             await delay(200);
-            return null;
+            return MOCK_MEMBERS.find(m => String(m.id) === userId) || MOCK_MEMBERS[0];
         }
 
         try {
@@ -39,10 +38,10 @@ export const userService = {
                     socialLinks: user.socialLinks
                 };
             }
-            return null;
+            return MOCK_MEMBERS.find(m => String(m.id) === userId) || null;
         } catch (error) {
-            console.error("[userService] Failed to fetch profile", error);
-            return null;
+            console.warn("[userService] Failed to fetch profile, using mock fallback", error);
+            return MOCK_MEMBERS.find(m => String(m.id) === userId) || MOCK_MEMBERS[0];
         }
     },
 

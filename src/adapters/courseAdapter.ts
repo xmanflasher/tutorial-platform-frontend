@@ -9,11 +9,11 @@ export const toFeaturedCourse = (journey: JourneyDetail): Course => {
         id: journey.id,
         title: journey.title,
         subtitle: journey.subtitle || (journey.description ? journey.description.slice(0, 30) + '...' : ''),
-        author: journey.instructorName || (journey.slug === 'javascript-basics-140' ? '李立超 (超哥)' : 'Σ-Codeatl 導師'),
+        author: journey.instructorName || 'Σ-Codeatl 導師',
         description: journey.description,
         slug: journey.slug,
-        // 圖片邏輯封裝在這裡
-        image: journey.slug.includes('ai') ? '/images/course_4.png' : '/images/course_0.png',
+        // 圖片邏輯：統一由 ID 對應，例如 ID 6 對應 course_6.png
+        image: `/images/course_${journey.id}.png`,
         tags: journey.tags || [],
         statusLabel: '尚未擁有',
         //couponText: 'ALWAYS SHOW',

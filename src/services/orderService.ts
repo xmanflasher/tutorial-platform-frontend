@@ -17,9 +17,19 @@ export const orderService = {
     }): Promise<Order> {
         if (USE_MOCK_DATA) {
             await delay(500);
-            // Fallback to local store for demo if needed, but let's try to call API 
-            // even if USE_MOCK_DATA is true, if we want real backend sync.
-            // However, project pattern usually respects USE_MOCK_DATA.
+            const mockOrder: Order = {
+                id: String(Date.now()),
+                orderNumber: `MOCK-${Date.now()}`,
+                courseId: String(params.journeyId),
+                courseSlug: 'software-design-pattern',
+                courseName: '模擬課程 (Mock)',
+                amount: params.amount,
+                status: 'PENDING',
+                createdAt: Date.now(),
+                paymentDeadline: Date.now() + (3 * 24 * 60 * 60 * 1000)
+            };
+            orderStore.addOrder(mockOrder);
+            return mockOrder;
         }
 
         try {

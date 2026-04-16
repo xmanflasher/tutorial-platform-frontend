@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';//強制設定動態渲染 (解決 Route 錯誤)
+export const revalidate = 300; // 每 5 分鐘在背景更新一次 (ISR)，避免後端冷啟動導致的前端卡死
 
 import { homeService, journeyService } from '@/services';
 import AnnouncementBar from '@/components/home/AnnouncementBar';

@@ -18,8 +18,8 @@ export const missionService = {
     try {
       return await apiRequest<MemberMission[]>(`/journeys/${slug}/missions`);
     } catch (error) {
-      console.error("[missionService] 請求失敗，回傳空陣列", error);
-      return [];
+      console.warn("[missionService] 請求失敗，降級回傳 Mock 任務列表", error);
+      return MOCK_MISSIONS;
     }
   },
 

@@ -36,13 +36,6 @@ export default function OrderHistory() {
 
     useEffect(() => {
         loadOrders();
-
-        window.addEventListener('storage', loadOrders);
-        window.addEventListener('order-completed', loadOrders);
-        return () => {
-            window.removeEventListener('storage', loadOrders);
-            window.removeEventListener('order-completed', loadOrders);
-        };
     }, []);
 
     const handleCompleteOrder = async (order: Order) => {

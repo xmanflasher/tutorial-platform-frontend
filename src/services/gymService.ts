@@ -11,14 +11,24 @@ export const gymService = {
   async getGymDetail(gymId: string): Promise<GymDetailData | null> {
     if (USE_MOCK_DATA) {
       await delay(300);
-      return null;
+      return {
+          id: Number(gymId),
+          name: '模擬道館 (Mock Gym)',
+          description: '當前處於離線或 Mock 模式，無法由後端取得道館內容，但地圖功能仍可運作。',
+          challenges: []
+      } as any;
     }
 
     try {
       return await apiRequest(`/gyms/${gymId}`);
     } catch (error) {
-      console.warn(`[gymService] 取得道館 ${gymId} 失敗`, error);
-      return null;
+      console.warn(`[gymService] 取得道館 ${gymId} 失敗，傳回基礎 Mock 以降級渲染`, error);
+      return {
+          id: Number(gymId),
+          name: '修煉道館 (Offline)',
+          description: '連線不穩，目前呈現離線內容。',
+          challenges: []
+      } as any;
     }
   },
 

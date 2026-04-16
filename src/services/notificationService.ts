@@ -1,5 +1,4 @@
-// src/services/notificationService.ts
-import { apiRequest } from '@/lib/api';
+import { USE_MOCK_DATA, delay } from '@/lib/api-config';
 
 export interface Notification {
     id: number;
@@ -11,16 +10,31 @@ export interface Notification {
     createdAt: string;
 }
 
+const MOCK_NOTIFICATIONS: Notification[] = [
+    {
+        id: 1,
+        memberId: 1,
+        message: '歡迎來到 Σ-Codeatl！你的冒險旅程即將開始。',
+        isRead: false,
+        createdAt: new Date().toISOString()
+    }
+];
+
 class NotificationService {
     /**
      * 取得目前登入使用者的所有通知 (包含已讀與未讀)
      */
     async fetchMyNotifications(): Promise<Notification[]> {
+        if (USE_MOCK_DATA) {
+            await delay(300);
+            return MOCK_NOTIFICATIONS;
+        }
+
         try {
             return await apiRequest<Notification[]>('/notifications/me', { silent: true });
         } catch (e) {
-            console.error('[NotificationService] Failed to fetch notifications', e);
-            return [];
+            console.warn('[NotificationService] Failed to fetch notifications, using empty/mock list', e);
+            return MOCK_NOTIFICATIONS;
         }
     }
 
