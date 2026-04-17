@@ -123,4 +123,5 @@ export interface LessonDetail {
   reward: Reward;
   videoLength?: string;
   premiumOnly?: boolean;
+  isLocked?: boolean;
 }

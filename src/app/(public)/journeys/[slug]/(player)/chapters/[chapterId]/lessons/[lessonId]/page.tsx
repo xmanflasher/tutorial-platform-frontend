@@ -97,8 +97,8 @@ export default function LessonPage({
                       type === "text" ||
                       !!markdownContent;
 
-    // 權限檢查：如果是收費課程且尚未購買
-    const isLocked = lesson.premiumOnly && !isOwned;
+    // 權限檢查：使用後端回傳的鎖定狀態，若無則降級使用前端判斷 [Ref: ISSUE-PLCY-08]
+    const isLocked = lesson.isLocked ?? (lesson.premiumOnly && !isOwned);
 
     return (
         <div className="max-w-5xl mx-auto w-full pb-20 px-4 pt-6">

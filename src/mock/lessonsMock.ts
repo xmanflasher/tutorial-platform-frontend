@@ -228,7 +228,7 @@ export const MOCK_LESSONS = [
     "name": "其他進位數字",
     "originalId": 1011,
     "passwordRequired": null,
-    "premiumOnly": false,
+    "premiumOnly": true,
     "rewardCoin": null,
     "rewardExp": null,
     "rewardDesc": null,
