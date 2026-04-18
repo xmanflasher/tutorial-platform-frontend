@@ -26,9 +26,9 @@ export function getVisitorId(): string {
 
 export function logVisitorIdentity(category: 'GUEST' | 'PASSERBY') {
   const visitorId = getVisitorId();
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+  const { API_BASE_URL } = require('@/lib/api-config');
   
-  fetch(`${apiUrl}/visitor/log`, {
+  fetch(`${API_BASE_URL}/visitor/log`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ category, visitorId })

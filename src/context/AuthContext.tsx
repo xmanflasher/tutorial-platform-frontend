@@ -128,9 +128,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       // 1. 呼叫後端專屬登出接口 (手動失效 Session)
-      // 注意：apiRequest 的 BASE_URL 是 http://localhost:8080/api
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
-      const logoutUrl = baseUrl.endsWith('/api') ? `${baseUrl}/auth/logout` : `${baseUrl}/api/auth/logout`;
+      const { API_BASE_URL } = require('@/lib/api-config');
+      const logoutUrl = `${API_BASE_URL}/auth/logout`;
 
       await fetch(logoutUrl, {
         method: 'POST',

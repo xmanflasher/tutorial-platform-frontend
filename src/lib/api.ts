@@ -1,8 +1,5 @@
-// src/lib/api.ts
 import { toast } from 'sonner';
-
-// 定義後端基礎網址
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+import { API_BASE_URL } from '@/lib/api-config';
 
 interface RequestOptions extends RequestInit {
   // 選項：是否要安靜模式 (不跳錯誤視窗)
@@ -18,7 +15,7 @@ interface RequestOptions extends RequestInit {
  */
 export async function apiRequest<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   // 1. 處理網址
-  const url = `${BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+  const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
   // 2. 自動取得 Token (增加判斷，避免抓到 "null" 或 "undefined" 字串)
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;

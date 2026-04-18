@@ -1,5 +1,8 @@
 // 後端基礎位址 (不含 /api)
-export const BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api').replace(/\/api$/, '');
+// 支援處理尾隨斜線和重複的 /api 路徑
+export const BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api')
+  .replace(/\/+$/, '') // 移除尾隨斜線
+  .replace(/\/api$/, ''); // 移除 /api 後綴
 
 // 後端 API 位址 (含 /api)
 export const API_BASE_URL = `${BASE_URL}/api`;
