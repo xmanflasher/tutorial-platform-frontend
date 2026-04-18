@@ -23,6 +23,27 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**", // 允許該網域下的所有路徑
       },
+      {
+        // 針對 Google OAuth 頭像
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        // 針對 Discord OAuth 頭像
+        protocol: "https",
+        hostname: "cdn.discordapp.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        // 針對 GitHub OAuth 頭像
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };
