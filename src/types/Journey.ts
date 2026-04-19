@@ -47,6 +47,7 @@ export interface JourneyDetail {
     primary: string;
     secondary: string;
   };
+  visible?: boolean;
 }
 
 // 任務條件/門檻介面 (用於 prerequisites 與 criteria)

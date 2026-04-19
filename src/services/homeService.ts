@@ -55,7 +55,9 @@ export const homeService = {
 
             // 2. 透過 Adapter 轉換成 UI 需要的格式 (Course[])
             // 這行程式碼非常優雅：把 data 陣列裡的每一項都丟給 toFeaturedCourse 處理
-            return data.map(toFeaturedCourse);
+            return data
+                .filter(j => j.visible !== false) // 防禦性過濾：確保隱身課程不會出現在首頁
+                .map(toFeaturedCourse);
 
         } catch (error) {
             console.error(`[homeService] 課程載入失敗，降級回傳 Mock`, error);
