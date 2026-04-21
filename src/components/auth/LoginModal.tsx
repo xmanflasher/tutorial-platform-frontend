@@ -178,40 +178,44 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
               </button>
             </div>
 
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border-ui"></div>
-              </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="px-2 bg-card text-gray-500 uppercase tracking-widest">開發測試</span>
-              </div>
-            </div>
+            {process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN === 'true' && (
+              <>
+                <div className="relative my-6">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-border-ui"></div>
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span className="px-2 bg-card text-gray-500 uppercase tracking-widest">開發測試</span>
+                  </div>
+                </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={async () => {
-                  try {
-                    await logVisitorIdentity('GUEST');
-                    onMockLogin('god@codeatl.tw');
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-                className="bg-primary hover:bg-primary text-black text-sm py-2.5 rounded border border-yellow-600 transition-all flex flex-col items-center gap-1 shadow-lg shadow-yellow-500/20"
-              >
-                <span className="font-black">👑 登入大神驗收帳號</span>
-                <span className="text-[10px] text-black/70 font-bold">(最高進度/權限)</span>
-              </button>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={async () => {
+                      try {
+                        await logVisitorIdentity('GUEST');
+                        onMockLogin('god@codeatl.tw');
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    }}
+                    className="bg-primary hover:bg-primary text-black text-sm py-2.5 rounded border border-yellow-600 transition-all flex flex-col items-center gap-1 shadow-lg shadow-yellow-500/20"
+                  >
+                    <span className="font-black">👑 登入大神驗收帳號</span>
+                    <span className="text-[10px] text-black/70 font-bold">(最高進度/權限)</span>
+                  </button>
 
 
-              <button
-                onClick={handleStartRegistration}
-                className="bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm py-2.5 rounded border border-border-ui transition-all flex flex-col items-center gap-1"
-              >
-                <span className="font-bold">✨ 建立新帳號</span>
-                <span className="text-[10px] text-gray-500 opacity-80">(冒險者註冊)</span>
-              </button>
-            </div>
+                  <button
+                    onClick={handleStartRegistration}
+                    className="bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm py-2.5 rounded border border-border-ui transition-all flex flex-col items-center gap-1"
+                  >
+                    <span className="font-bold">✨ 建立新帳號</span>
+                    <span className="text-[10px] text-gray-500 opacity-80">(冒險者註冊)</span>
+                  </button>
+                </div>
+              </>
+            )}
           </>
         )}
 
