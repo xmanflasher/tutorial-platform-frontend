@@ -21,7 +21,7 @@ export const journeyService = {
         }
 
         try {
-            const data = await apiRequest<any>(`/journeys/${slug}`, { silent: true, timeout: 5000 });
+            const data = await apiRequest<any>(`/journeys/${slug}`, { silent: true, timeout: 15000 });
             return this.adaptJourneyDetail(data, slug);
         } catch (error) {
             console.warn(`[API] 連線失敗，降級使用動態 Mock 組裝: ${slug}`, error);

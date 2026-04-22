@@ -33,7 +33,7 @@ export const homeService = {
         try {
             // apiRequest 會自動處理 401/500 錯誤與 Base URL
             // [Perf] 設定 5s 超時，避免 Render 冷啟動導致 Vercel 504
-            return await apiRequest<Announcement>('/announcements/latest', { silent: true, timeout: 5000 });
+            return await apiRequest<Announcement>('/announcements/latest', { silent: true, timeout: 15000 });
         } catch (error) {
             console.warn('[homeService] 公告載入失敗，降級回傳 Mock');
             return MOCK_ANNOUNCEMENT;
@@ -51,7 +51,7 @@ export const homeService = {
 
         try {
             // 1. 取得後端原始資料 (JourneyDetail[])
-            const data = await apiRequest<JourneyDetail[]>('/journeys', { silent: true, timeout: 5000 });
+            const data = await apiRequest<JourneyDetail[]>('/journeys', { silent: true, timeout: 15000 });
 
             // 2. 透過 Adapter 轉換成 UI 需要的格式 (Course[])
             // 這行程式碼非常優雅：把 data 陣列裡的每一項都丟給 toFeaturedCourse 處理
@@ -93,7 +93,7 @@ export const homeService = {
         }
 
         try {
-            return await apiRequest<LeaderboardMember[]>('/leaderboard', { silent: true, timeout: 5000 });
+            return await apiRequest<LeaderboardMember[]>('/leaderboard', { silent: true, timeout: 15000 });
         } catch (error) {
             console.warn('[homeService] 排行榜載入失敗，降級回傳 Mock');
             return MOCK_LEADERBOARD;
