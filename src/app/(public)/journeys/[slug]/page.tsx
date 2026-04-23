@@ -1,8 +1,8 @@
 export const revalidate = 300; // ISR Optimization//強制設定動態渲染 (解決 Route 錯誤)
 
-import { journeyService } from '@/services';
 import ChapterList from '@/components/journeys/ChapterList';
 import CertificateWidget from '@/components/journeys/CertificateWidget';
+import { journeyService } from '@/services';
 import { Video, CheckCircle2, ArrowRight } from 'lucide-react';
 
 export default async function JourneyDetailPage({
@@ -10,21 +10,11 @@ export default async function JourneyDetailPage({
 }: {
   params: Promise<{ slug: string }>
 }) {
-  const { slug } = await params; // 這裡已經取得了 slug
+  const { slug } = await params;
   const journey = await journeyService.getJourneyBySlug(slug);
 
   return (
-    <div className="max-w-7xl mx-auto pb-20 px-4 pt-6">
-
-      {/* ... (Banner 區域程式碼省略，保持原樣) ... */}
-      <div className="bg-[#1e1f24] border border-border-ui rounded-lg p-4 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-black/20">
-        <p className="text-gray-200 text-sm md:text-base font-medium text-center sm:text-left">
-          將軟體設計精通之旅體驗課程的全部影片看完就可以獲得 3000 元課程折價券！
-        </p>
-        <button className="bg-primary text-black font-bold px-6 py-2 rounded hover:bg-primary transition-colors shrink-0 flex items-center gap-2">
-          前往 <ArrowRight size={16} />
-        </button>
-      </div>
+    <div className="max-w-7xl mx-auto pb-20 px-4 pt-0">
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
         <div className="md:col-span-2 space-y-10">

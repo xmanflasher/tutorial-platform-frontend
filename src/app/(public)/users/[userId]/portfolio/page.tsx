@@ -4,7 +4,6 @@
 import React, { useEffect, useState } from "react";
 import ChallengePortfolio from "@/components/ChallengePortfolio";
 import PortfolioHeader from "@/components/PortfolioHeader";
-import MarketingBanner from "@/components/MarketingBanner";
 import { Loader2 } from "lucide-react";
 import { userService } from "@/services/userService"; // 匯入 Service
 import { UserProfile } from "@/types/User";
@@ -110,9 +109,6 @@ export default function PortfolioPage({ params }: { params: Promise<{ userId: st
     return (
         // ★★★ 外層容器已移至 layout.tsx，這裡直接開始排版內容 ★★★
         <div className="max-w-[1400px] mx-auto w-full p-4 md:p-8 space-y-4">
-
-            {/* 1. 行銷 Banner */}
-            <MarketingBanner />
 
             {/* 2. 個人檔案頭部 (Header + Stats) */}
             <PortfolioHeader profile={profile} stats={stats} />

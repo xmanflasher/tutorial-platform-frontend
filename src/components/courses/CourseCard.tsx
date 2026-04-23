@@ -7,54 +7,67 @@ import { Image as ImageIcon } from 'lucide-react';
 import { orderStore } from '@/lib/orderStore';
 import { useAuth } from '@/context/AuthContext';
 
-
-const getButtonStyle = (style: 'solid' | 'outline' | 'disabled') => {
-  switch (style) {
-    case 'solid':
-      return 'bg-primary text-black hover:opacity-90 border border-transparent';
-    case 'outline':
-      return 'bg-transparent text-primary border border-primary hover:bg-primary/10';
-    case 'disabled':
-      return 'bg-slate-700 text-slate-400 cursor-not-allowed border border-transparent';
-    default:
-      return '';
-  }
-};
-
 export default function CourseCard({ course }: { course: Course }) {
   const { user } = useAuth();
+  const [mounted, setMounted] = useState(false);
   const [isOwned, setIsOwned] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
-    const checkOwnership = () => {
-      // 只有登入後才讀取擁有權狀態，防止訪客看到殘留的 localStorage 資料
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const checkOwnership = (reason: string = 'init') => {
       if (!user) {
         setIsOwned(false);
         setIsPending(false);
         return;
       }
-      setIsOwned(orderStore.isCourseOwned(course.slug));
-      setIsPending(orderStore.hasPendingOrder(course.slug));
+      const owned = orderStore.isCourseOwned(course.slug);
+      const pending = orderStore.hasPendingOrder(course.slug);
+      console.log(`[CourseCard][${course.slug}] checkOwnership triggered by: ${reason}`, { owned, pending });
+      setIsOwned(owned);
+      setIsPending(pending);
     };
 
-    checkOwnership();
+    checkOwnership('mount');
+    const storageHandler = () => checkOwnership('storage-event');
+    const orderHandler = () => checkOwnership('order-completed-event');
 
-    window.addEventListener('storage', checkOwnership);
-    // Also listen for custom events if we are in the same tab
-    window.addEventListener('order-completed', checkOwnership);
+    window.addEventListener('storage', storageHandler);
+    window.addEventListener('order-completed', orderHandler);
 
     return () => {
-      window.removeEventListener('storage', checkOwnership);
-      window.removeEventListener('order-completed', checkOwnership);
+      window.removeEventListener('storage', storageHandler);
+      window.removeEventListener('order-completed', orderHandler);
     };
   }, [course.slug, user]);
 
-  // Override labels and buttons if owned
-  const displayStatusLabel = isOwned ? '已擁有' : course.statusLabel;
-  const primaryAction = isOwned
-    ? { text: '開始上課', href: `/journeys/${course.slug}`, style: 'solid' as const }
-    : course.primaryAction;
+  const handlePrimaryClick = (e: React.MouseEvent) => {
+    // 只有在未登入且未擁有時才攔截跳轉
+    if (!user && !isOwned) {
+      e.preventDefault();
+      console.log("[CourseCard] Visitor clicked buy, triggering login modal");
+      window.dispatchEvent(new CustomEvent('open-login-modal'));
+    }
+  };
+
+  // 1. SSR 骨架 (防止 Hydration Mismatch)
+  if (!mounted) {
+    return (
+      <div className="flex flex-col bg-card border border-border-ui rounded-xl overflow-hidden h-full animate-pulse">
+        <div className="h-48 w-full bg-slate-800" />
+        <div className="p-5 flex-1 space-y-4">
+          <div className="h-6 bg-slate-800 rounded w-3/4" />
+          <div className="h-4 bg-slate-800 rounded w-1/2" />
+          <div className="h-20 bg-slate-800 rounded w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  const displayStatusLabel = isOwned ? '已擁有' : (isPending ? '待付款' : course.statusLabel);
 
   return (
     <div className="flex flex-col bg-card border border-border-ui rounded-xl overflow-hidden hover:border-primary/50 transition-colors duration-300 shadow-lg relative group h-full">
@@ -74,10 +87,11 @@ export default function CourseCard({ course }: { course: Course }) {
           </div>
         )}
 
-        {/* 狀態標籤 (懸浮在圖片右上角) */}
+        {/* 狀態標籤 */}
         {displayStatusLabel && (
           <div className={cn(
-            isOwned ? "bg-emerald-500 text-white" : "bg-primary text-black"
+            "absolute top-3 right-3 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter shadow-xl z-10",
+            isOwned ? "bg-emerald-500 text-white" : (isPending ? "bg-amber-500 text-black" : "bg-primary text-black")
           )}>
             {displayStatusLabel}
           </div>
@@ -86,61 +100,64 @@ export default function CourseCard({ course }: { course: Course }) {
 
       {/* 2. 內容區域 */}
       <div className="p-5 flex-1 flex flex-col">
-        {/* 標題 (限制 2 行，防止撐高) */}
         <h3 className="text-lg font-bold text-white mb-2 leading-snug line-clamp-2 h-14">
           {course.title}
         </h3>
 
-        {/* 作者 */}
         <div className="mb-3">
           <span className="text-primary text-sm font-bold">
             {course.author}
           </span>
         </div>
 
-        {/* 描述 (限制 3 行) */}
         <p className="text-slate-400 text-sm leading-relaxed mb-6 flex-1 line-clamp-3">
           {course.description}
         </p>
 
-        {/* 3. 底部區塊 (Coupon + 按鈕) */}
         <div className="mt-auto space-y-3">
-
-          {/* 折價券 */}
           {course.couponText && !isOwned ? (
             <div className="bg-primary/10 border border-primary/20 text-primary text-xs font-bold py-2 px-3 rounded text-center truncate">
               {course.couponText}
             </div>
           ) : (
-            // 佔位，保持卡片高度一致 or 顯示已擁有文字
             <div className="h-[34px]" />
           )}
 
-          {/* 按鈕群組 */}
+          {/* 按鈕群組 (遵循 SA-05.1 狀態機) */}
           <div className={cn("grid gap-3", isOwned ? "grid-cols-1" : "grid-cols-2")}>
-            <Link
-              href={primaryAction.href}
-              className={`py-2 text-center text-sm font-bold rounded transition-all flex items-center justify-center truncate px-1 ${getButtonStyle(primaryAction.style)}`}
-            >
-              {primaryAction.text}
-            </Link>
+            {isOwned ? (
+              <Link
+                href={`/journeys/${course.slug}`}
+                className="py-2 text-center text-sm font-bold rounded bg-emerald-500 text-white hover:bg-emerald-600 transition-all flex items-center justify-center"
+              >
+                開始上課
+              </Link>
+            ) : (
+              <>
+                {isPending ? (
+                  <Link
+                    href="/users/me/orders"
+                    className="py-2 text-center text-sm font-bold rounded bg-amber-500 text-black hover:bg-amber-600 transition-all flex items-center justify-center truncate px-1"
+                  >
+                    前往付款
+                  </Link>
+                ) : (
+                  <Link
+                    href={`/journeys/${course.slug}/orders`}
+                    onClick={handlePrimaryClick}
+                    className="py-2 text-center text-sm font-bold rounded bg-primary text-black hover:opacity-90 transition-all flex items-center justify-center truncate px-1"
+                  >
+                    立刻購買
+                  </Link>
+                )}
 
-            {!isOwned && (
-              isPending ? (
                 <Link
-                  href="/users/me/orders"
-                  className={`py-2 text-center text-sm font-bold rounded transition-all flex items-center justify-center truncate px-1 bg-amber-500 text-black hover:bg-amber-600`}
+                  href={`/journeys/${course.slug}`}
+                  className="py-2 text-center text-sm font-bold rounded border border-primary text-primary hover:bg-primary/10 transition-all flex items-center justify-center truncate px-1"
                 >
-                  前往付款
+                  詳細內容
                 </Link>
-              ) : course.secondaryAction ? (
-                <Link
-                  href={course.secondaryAction.href}
-                  className={`py-2 text-center text-sm font-bold rounded transition-all flex items-center justify-center truncate px-1 bg-primary text-black hover:opacity-90`}
-                >
-                  {course.secondaryAction.text}
-                </Link>
-              ) : null
+              </>
             )}
           </div>
         </div>

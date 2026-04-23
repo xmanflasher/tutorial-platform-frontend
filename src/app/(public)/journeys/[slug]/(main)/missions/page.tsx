@@ -67,15 +67,6 @@ export default function MissionsPage() {
 
     return (
         <div className="min-h-screen bg-background text-white p-8">
-            {/* Banner (保持不變) */}
-            <div className="mb-8 p-6 rounded-xl border border-border-ui bg-card flex items-center justify-between">
-                <div className="text-gray-300">
-                    將軟體設計精通之旅體驗課程的全部影片看完就可以獲得 <span className="text-white font-bold">3000 元課程折價券！</span>
-                </div>
-                <button className="px-4 py-2 bg-primary text-black font-bold rounded hover:opacity-90 transition-colors">
-                    前往
-                </button>
-            </div>
 
             <h1 className="text-3xl font-bold mb-6">獎勵任務</h1>
 

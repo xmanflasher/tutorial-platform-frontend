@@ -29,11 +29,25 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
   };
 
   try {
+    const method = options.method || 'GET';
+    const requestId = Math.random().toString(36).substring(7);
     const controller = new AbortController();
     const id = options.timeout ? setTimeout(() => controller.abort(), options.timeout) : null;
 
+    // 安全地紀錄日誌，避免 parse 失敗
+    let bodyLog = '';
+    if (options.body) {
+        try {
+            bodyLog = typeof options.body === 'string' ? JSON.parse(options.body) : options.body;
+        } catch (e) {
+            bodyLog = '[Unparseable Body]';
+        }
+    }
+    console.log(`[API Request][${requestId}] Starting ${method} ${endpoint}`, bodyLog);
+
     const response = await fetch(url, {
       ...options,
+      method,
       signal: options.timeout ? controller.signal : options.signal,
       headers,
       credentials: 'include', // ★ 重要：允許發送 Cookie (Session)
@@ -42,19 +56,21 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
 
     // 4. 統一錯誤處理 (Interceptor)
     if (!response.ok) {
+      console.warn(`[API Error Response] ${response.status} ${endpoint}`);
       // 處理 401 (Token 過期/未登入/Session 失效)
       if (response.status === 401) {
-        // 如果原本有送 Token 卻失敗了，嘗試清除 Token 並重試一次 (可能是 Token 髒了，但 Session 其實還在)
+        // 如果原本有送 Token 卻失敗了，嘗試清除 Token 並重試一次
         if (hasToken && !options._isRetry) {
-          console.warn('Token 驗證失敗，嘗試清除並重試一次 (Session 備援)...');
+          console.warn(`[API 401] Token 驗證失敗，嘗試清除並重試一次: ${endpoint}`);
           localStorage.removeItem('accessToken');
           return await apiRequest<T>(endpoint, { ...options, _isRetry: true });
         }
-
-        if (!options.silent) {
-          console.error(`登入過期或未授權 (401). 端點: ${endpoint}, 有送 Token: ${hasToken}`);
-        }
         
+        if (options._isRetry) {
+          console.error(`[API 401] Retry also failed for ${endpoint}. Stack Trace:`);
+          console.trace();
+        }
+
         if (typeof window !== 'undefined') {
           // 只在「原本有 Token 但伺服器不收」的情況下徹底清除
           if (hasToken) {
@@ -63,7 +79,7 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
 
           // 如果不是靜默請求且非重試失敗，則跳出提示
           if (!options.silent) {
-            toast.error('登入已過期或未授權，請重新登入');
+            window.dispatchEvent(new CustomEvent('api-unauthorized', { detail: { message: '登入已過期或未授權，請重新登入' } }));
           }
         }
         
@@ -79,6 +95,19 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
         toast.error('權限不足', {
           description: '您沒有權限執行此操作'
         });
+      }
+
+      // 處理 429 (速率限制)
+      if (response.status === 429) {
+        console.error(`[API 429] Rate limit exceeded for ${endpoint}. Stack Trace:`);
+        console.trace();
+        if (typeof window !== 'undefined' && !options.silent) {
+          toast.warning('操作太快囉！', {
+            description: '請稍等幾秒再繼續冒險。',
+            duration: 5000,
+          });
+        }
+        throw new Error('RATE_LIMIT_EXCEEDED');
       }
 
       // 處理 500 (後端炸裂)

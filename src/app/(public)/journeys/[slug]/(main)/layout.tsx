@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
+import MarketingBanner from "@/components/MarketingBanner";
 import LoginModal from "@/components/auth/LoginModal";
 import { useAuth } from "@/context/AuthContext";
 import { useJourney } from "@/context/JourneyContext";
@@ -63,6 +64,8 @@ export default function MainJourneyLayout({
                     onMenuClick={() => setSidebarOpen(true)}
                     onLoginClick={() => setLoginModalOpen(true)}
                 />
+
+                <MarketingBanner />
 
                 <main className="flex-1 p-6 overflow-y-auto">
                     {children}

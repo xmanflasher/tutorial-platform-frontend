@@ -28,6 +28,7 @@ export default function CheckoutPage() {
     const [selectedInvoice, setSelectedInvoice] = useState('TAIWAN_ID');
     const [showAgreement, setShowAgreement] = useState(false);
     const [showInvoiceSection, setShowInvoiceSection] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [orderNumber, setOrderNumber] = useState('');
     const [paymentDeadline, setPaymentDeadline] = useState('');
 
@@ -48,6 +49,9 @@ export default function CheckoutPage() {
     }, [slug]);
 
     const handleCreateOrder = async () => {
+        if (isSubmitting) return;
+        
+        console.log('[CheckoutPage] handleCreateOrder clicked', { courseSlug: course?.slug, userId: user?.id });
         if (!course || !user) {
             if (!user) alert('請先登入才能下單');
             return;
@@ -61,11 +65,12 @@ export default function CheckoutPage() {
 
         if (orderStore.hasPendingOrder(course.slug)) {
             alert('您已有一筆待付款的訂單，請直接前往付款');
-            router.push('/users/me/orders'); // Assuming /users/me/orders exists or just route to courses? Wait, in CourseCard it routes to /users/me/orders. OrderHistory is rendered inside courses/page.tsx, right? Wait! CourseCard redirects to `/users/me/orders` but `OrderHistory.tsx` is located at `src/components/courses/OrderHistory.tsx` and usually lives on `/courses` (All Courses page). Wait, is there a `/users/me/orders` route?
+            router.push('/users/me/orders');
             return;
         }
 
         try {
+            setIsSubmitting(true);
             const newOrder = await orderService.createOrder({
                 userId: user.id,
                 journeyId: course.id,
@@ -78,12 +83,18 @@ export default function CheckoutPage() {
             // Update with local info if missing from backend
             newOrder.courseSlug = course.slug;
             orderStore.saveOrders(orderStore.getOrders()); // Re-save to ensure slug is there
+            
+            // 重要：更新為後端生成的正式訂單編號
+            setOrderNumber(newOrder.orderNumber);
 
             announcementService.emit(`🎉 訂單 ${newOrder.orderNumber} 已建立成功！請前往完成支付。`, '查看訂單', '/courses');
 
             setCurrentStep(2);
         } catch (error) {
+            console.error('[CheckoutPage] Create order failed:', error);
             alert('訂單建立失敗，詳情請見控制台');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -278,9 +289,22 @@ export default function CheckoutPage() {
                             <div className="pt-6 space-y-4">
                                 <button
                                     onClick={handleCreateOrder}
-                                    className="w-full bg-[#3B82F6] hover:bg-[#2563EB] text-white font-bold py-4 rounded-lg transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]"
+                                    disabled={isSubmitting}
+                                    className={cn(
+                                        "w-full font-bold py-4 rounded-lg transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2",
+                                        isSubmitting 
+                                            ? "bg-gray-600 cursor-not-allowed text-gray-300" 
+                                            : "bg-[#3B82F6] hover:bg-[#2563EB] text-white shadow-blue-500/20"
+                                    )}
                                 >
-                                    進行支付
+                                    {isSubmitting ? (
+                                        <>
+                                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            <span>處理中...</span>
+                                        </>
+                                    ) : (
+                                        "進行支付"
+                                    )}
                                 </button>
 
                                 <p className="text-xs text-gray-400 leading-relaxed bg-white/5 p-4 rounded-lg border border-white/5">

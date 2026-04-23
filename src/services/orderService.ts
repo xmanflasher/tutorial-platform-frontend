@@ -78,11 +78,12 @@ export const orderService = {
                 paymentDeadline: o.createdAt + (3 * 24 * 60 * 60 * 1000)
             }));
             
-            // Sync local store
+            console.log(`[orderService] Syncing local store with ${orders.length} orders`);
             orderStore.saveOrders(orders);
             
             // 重要：發送事件通知其他組件 (例如首頁 CourseCard) 重新檢查擁有狀態
             if (typeof window !== 'undefined') {
+                console.log('[orderService] Dispatching order-completed event');
                 window.dispatchEvent(new CustomEvent('order-completed'));
             }
             

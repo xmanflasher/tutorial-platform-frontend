@@ -28,8 +28,8 @@ const GUIDE_STEPS: GuideStep[] = [
         image: "/guide/step1.png"
     },
     {
-        title: "Google Auth 登入",
-        description: "使用 Google 帳號即可快速登入。登入後您的學習歷程將會被永久保存，並能與其他學員互動。",
+        title: "第三方登入",
+        description: "使用第三方帳號即可快速登入。登入後您的學習歷程將會被永久保存，並能與其他學員互動。",
         image: "/guide/step2.png"
     },
     {
@@ -199,12 +199,12 @@ export default function OnboardingOverlay() {
                                         onClick={async () => {
                                             setIsSimulating(true);
                                             const toastId = toast.loading('正在啟動「Σ-導讀精靈」分析您的作品...');
-                                            
+
                                             try {
                                                 // 1. 偵測當前道館 ID (從網址或預設)
                                                 const gymIdMatch = window.location.pathname.match(/\/gyms\/(\d+)/);
                                                 const currentGymId = gymIdMatch ? parseInt(gymIdMatch[1]) : 0;
-                                                
+
                                                 if (!currentGymId) {
                                                     toast.error('請先進入特定道館頁面再執行精靈批改', { id: toastId });
                                                     return;
@@ -224,7 +224,7 @@ export default function OnboardingOverlay() {
 
                                                 // 3. 本地暫存備援邏輯
                                                 const localRecords = JSON.parse(localStorage.getItem('local_gym_records') || '[]');
-                                                const targetIdx = localRecords.findLastIndex((r: any) => 
+                                                const targetIdx = localRecords.findLastIndex((r: any) =>
                                                     r.gymId === currentGymId && (r.status === 'REVIEWING' || r.status === 'SUBMITTED')
                                                 );
 
@@ -236,7 +236,7 @@ export default function OnboardingOverlay() {
                                                     ];
                                                     const grades = ["SSS", "S", "A", "B"];
                                                     const rand = Math.floor(Math.random() * templates.length);
-                                                    
+
                                                     localRecords[targetIdx] = {
                                                         ...localRecords[targetIdx],
                                                         status: 'SUCCESS',
@@ -249,7 +249,7 @@ export default function OnboardingOverlay() {
                                                         },
                                                         reviewedAt: Date.now()
                                                     };
-                                                    
+
                                                     localStorage.setItem('local_gym_records', JSON.stringify(localRecords));
                                                     toast.success('精靈已針對您的「暫存作品」完成批改！', { id: toastId });
                                                     setTimeout(() => window.location.reload(), 2000);

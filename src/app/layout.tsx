@@ -9,6 +9,7 @@ import { JourneyProvider } from "@/context/JourneyContext";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import OnboardingOverlay from "@/components/layout/OnboardingOverlay";
+import GlobalToastHandler from "@/components/common/GlobalToastHandler";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -63,6 +64,7 @@ export default function RootLayout({
           <AuthProvider>
             <JourneyProvider>
               <NotificationProvider>
+                <GlobalToastHandler />
                 <OnboardingOverlay />
                 {children}
 

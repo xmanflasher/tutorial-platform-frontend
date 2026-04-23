@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
 // ★ 修改處：只引入 Hook，移除 Provider
 import { useJourney } from '@/context/JourneyContext';
 import { useAuth } from '@/context/AuthContext';
 import Header from '@/components/layout/Header';
+import MarketingBanner from '@/components/MarketingBanner';
 import LoginModal from '@/components/auth/LoginModal';
 import { API_BASE_URL } from '@/lib/api-config';
 
@@ -22,6 +23,13 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   // 這裡的 useJourney 和 useAuth 會自動往上層找 (src/app/layout.tsx) 的 Provider
   const { activeJourney } = useJourney();
   const { login } = useAuth();
+
+  // ★ 新增：全域登入彈窗觸發器 (供 CourseCard 等深層組件使用)
+  useEffect(() => {
+    const handleOpenLogin = () => setLoginModalOpen(true);
+    window.addEventListener('open-login-modal', handleOpenLogin);
+    return () => window.removeEventListener('open-login-modal', handleOpenLogin);
+  }, []);
 
   const handleMockLogin = async (email: string) => {
     try {
@@ -92,6 +100,9 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             setLoginModalOpen(true);
           }}
         />
+
+        {/* 全站行銷公告 (排除沉浸式閱讀) */}
+        <MarketingBanner />
 
         {/* 頁面內容 */}
         <main className="flex-1 overflow-x-hidden">
