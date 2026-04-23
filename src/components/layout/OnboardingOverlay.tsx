@@ -25,32 +25,32 @@ const GUIDE_STEPS: GuideStep[] = [
     {
         title: "訪客與權限差異",
         description: "作為訪客，您可以瀏覽公開課程與資訊。登入後，您將解鎖更多個人化功能，包括挑戰進度追蹤、作業提交與講師互動。",
-        image: "/guide/step1.png"
+        image: "/guide/step1_full.png"
     },
     {
         title: "第三方登入",
         description: "使用第三方帳號即可快速登入。登入後您的學習歷程將會被永久保存，並能與其他學員互動。",
-        image: "/guide/step2.png"
+        image: "/guide/step2_full.png"
     },
     {
         title: "課程閱讀與互動",
         description: "按照規畫閱讀課程。您可以隨時提交作業，講師會針對您的作品給予專業批改與回饋，助您快速成長。",
-        image: "/guide/step3.png"
+        image: "/guide/step3_full.png"
     },
     {
-        title: "個人檔案與排行榜",
-        description: "在個人檔案查看您的成就與等級。透過排行榜與其他優秀人才競爭，展現您的實力！",
-        image: "/guide/step4.png"
+        title: "實戰作品與作品集",
+        description: "在您的個人檔案中，所有挑戰成功的作品都將自動彙整。您可以查看導師批改的詳細建議，並透過架構圖優化您的實戰力！",
+        image: "/guide/step4_full.png"
     },
     {
-        title: "挑戰地圖與歷程",
-        description: "挑戰地圖引導您的學習路徑。挑戰歷程記錄了您在學院中的每一個里程碑，見證您的進化。",
-        image: "/guide/step5.png"
+        title: "榮譽榜與實力競爭",
+        description: "透過挑戰獲取積分。在榮譽榜上與來自各地的開發者切磋，爭奪頂尖大師的席位！",
+        image: "/guide/step5_full.png"
     },
     {
-        title: "獎勵任務",
-        description: "完成特定任務即可獲得獎勵！這些任務旨在鼓勵您持續學習並探索學院的各項核心功能。",
-        image: "/guide/step6.png"
+        title: "獎勵任務系統",
+        description: "完成每日或特定挑戰任務，獲取額外獎勵與加倍經驗，加速您的升級之路。",
+        image: "/guide/step6_full.png"
     }
 ];
 
@@ -343,7 +343,7 @@ export default function OnboardingOverlay() {
 
     return (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-            <div className="bg-[#1a1c1e] border border-border-ui rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl relative">
+            <div className="bg-[#1a1c1e] border border-border-ui rounded-2xl w-full max-w-5xl overflow-hidden shadow-2xl relative">
                 <button
                     onClick={handleComplete}
                     className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors z-10"
@@ -377,7 +377,7 @@ export default function OnboardingOverlay() {
                 )}
 
                 {(step === 'guide' || step === 'completed') && (
-                    <div className="flex flex-col h-[500px]">
+                    <div className="flex flex-col min-h-[700px]">
                         <div className="p-6 border-b border-border-ui flex justify-between items-center bg-white/5 pt-8">
                             <div>
                                 <h2 className="text-xl font-bold text-white uppercase tracking-wider">功能導覽</h2>
@@ -385,22 +385,22 @@ export default function OnboardingOverlay() {
                             </div>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-8 flex flex-col items-center">
-                            <div className="w-full aspect-video bg-gray-800 rounded-lg mb-6 overflow-hidden border border-white/5 relative group">
+                        <div className="flex-1 overflow-y-auto p-8 flex flex-col items-center justify-center">
+                            <div className="w-full aspect-video bg-gray-800 rounded-xl mb-8 overflow-hidden border border-white/10 shadow-2xl relative group">
                                 <img
                                     src={GUIDE_STEPS[guideIndex].image}
                                     alt={GUIDE_STEPS[guideIndex].title}
                                     className="w-full h-full object-cover"
                                     onError={(e) => {
-                                        (e.target as HTMLImageElement).src = 'https://via.placeholder.com/800x450/1a1c1e/ffffff?text=' + encodeURIComponent(GUIDE_STEPS[guideIndex].title);
+                                        (e.target as HTMLImageElement).src = 'https://via.placeholder.com/1280x720/1a1c1e/ffffff?text=' + encodeURIComponent(GUIDE_STEPS[guideIndex].title);
                                     }}
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                                <div className="absolute bottom-4 left-4">
-                                    <h3 className="text-2xl font-bold text-white drop-shadow-lg">{GUIDE_STEPS[guideIndex].title}</h3>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                                <div className="absolute bottom-6 left-6">
+                                    <h3 className="text-3xl font-bold text-white drop-shadow-2xl">{GUIDE_STEPS[guideIndex].title}</h3>
                                 </div>
                             </div>
-                            <p className="text-gray-300 text-center leading-relaxed max-w-lg">
+                            <p className="text-gray-300 text-center text-lg leading-relaxed max-w-3xl">
                                 {GUIDE_STEPS[guideIndex].description}
                             </p>
                         </div>
