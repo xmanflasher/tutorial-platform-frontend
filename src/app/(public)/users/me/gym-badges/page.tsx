@@ -5,6 +5,8 @@ import Image from "next/image";
 import { Loader2, Medal, Lock } from "lucide-react";
 import { useJourney } from "@/context/JourneyContext";
 import { apiRequest } from "@/lib/api";
+import { AnimatePresence } from "framer-motion";
+import BadgeCelebrationOverlay from "@/components/common/BadgeCelebrationOverlay";
 
 // 定義徽章介面
 interface GymBadge {
@@ -16,27 +18,28 @@ interface GymBadge {
 }
 
 // 徽章卡片組件
-function BadgeCard({ name, imageUrl, unlocked }: { name: string; imageUrl: string; unlocked: boolean }) {
+function BadgeCard({ name, imageUrl, unlocked, onClick }: { name: string; imageUrl: string; unlocked: boolean; onClick?: () => void }) {
     return (
         <div
+            onClick={unlocked ? onClick : undefined}
             className={`
-                relative flex flex-col items-center justify-center p-4 border rounded-lg h-48 transition-all duration-300
+                relative flex flex-col items-center justify-center p-4 border rounded-xl h-52 transition-all duration-300
                 ${unlocked
-                    ? 'bg-card border-gray-700 group hover:border-primary/50 hover:-translate-y-1'
+                    ? 'bg-card/50 border-gray-700 group hover:border-primary/50 hover:-translate-y-2 cursor-pointer shadow-xl hover:shadow-primary/5'
                     : 'bg-[#0f1218] border-border-ui grayscale opacity-60 cursor-not-allowed'
                 }
             `}
         >
             <div className={`
-                relative w-24 h-24 mb-4 transition-transform duration-300
-                ${unlocked ? 'drop-shadow-[0_0_10px_rgba(250,204,21,0.2)] group-hover:scale-110' : ''}
+                relative w-28 h-28 mb-4 transition-transform duration-500
+                ${unlocked ? 'drop-shadow-[0_0_15px_rgba(250,204,21,0.15)] group-hover:scale-110 group-hover:rotate-6' : ''}
             `}>
                 <Image
                     src={imageUrl}
                     alt={name}
                     fill
                     className="object-contain"
-                    sizes="(max-width: 768px) 100px, 150px"
+                    sizes="(max-width: 768px) 120px, 180px"
                 />
 
                 {!unlocked && (
@@ -47,14 +50,20 @@ function BadgeCard({ name, imageUrl, unlocked }: { name: string; imageUrl: strin
             </div>
 
             <span className={`
-                px-3 py-1 text-xs font-bold rounded-full text-center transition-colors
+                px-3 py-1.5 text-xs font-black rounded-full text-center transition-colors uppercase tracking-tight
                 ${unlocked
                     ? 'bg-primary text-black'
-                    : 'bg-gray-700 text-gray-400'
+                    : 'bg-gray-800 text-gray-500'
                 }
             `}>
                 {name}
             </span>
+            
+            {unlocked && (
+                <div className="absolute bottom-2 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] text-primary/60 font-medium">
+                    點擊重溫榮耀
+                </div>
+            )}
         </div>
     );
 }
@@ -63,16 +72,17 @@ export default function GymBadgesPage() {
     const { activeJourney, isLoading: isJourneyLoading } = useJourney();
     const [badges, setBadges] = useState<GymBadge[]>([]);
     const [loading, setLoading] = useState(true);
+    const [celebratingBadge, setCelebratingBadge] = useState<GymBadge | null>(null);
 
     useEffect(() => {
         const fetchBadges = async () => {
             if (!activeJourney?.id) return;
-            
+
             try {
                 setLoading(true);
                 // 使用 apiRequest 取代原生的 fetch 以確保帶上 Token
                 const data = await apiRequest(`/journeys/${activeJourney.id}/gym-badges`);
-                
+
                 if (Array.isArray(data)) {
                     setBadges(data);
                 } else {
@@ -99,40 +109,61 @@ export default function GymBadgesPage() {
 
     return (
         <div className="space-y-12 pb-12">
+            <AnimatePresence>
+                {celebratingBadge && (
+                    <BadgeCelebrationOverlay 
+                        badgeId={celebratingBadge.id}
+                        badgeName={celebratingBadge.name}
+                        imageUrl={celebratingBadge.imageUrl}
+                        onClose={() => setCelebratingBadge(null)} 
+                    />
+                )}
+            </AnimatePresence>
+
             <section>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-border-ui pb-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-border-ui pb-6">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-primary/10 rounded-lg">
+                        <div className="p-3 bg-primary/10 rounded-xl border border-primary/20">
                             <Medal className="text-primary w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-bold text-white tracking-tight">{activeJourney.title}</h2>
-                            <p className="text-gray-500 text-sm mt-1">目前旅程的徽章蒐集進度</p>
+                            <h2 className="text-2xl font-black text-white tracking-tight uppercase">{activeJourney.title}</h2>
+                            <p className="text-gray-500 text-sm mt-1 font-medium">榮譽勳章收納盒</p>
                         </div>
                     </div>
-                    
-                    <div className="flex items-center gap-6 text-sm">
+
+                    <div className="flex items-center gap-6 text-sm bg-white/5 px-6 py-3 rounded-2xl border border-white/5">
                         <div className="text-center">
-                            <div className="text-gray-500 mb-1">已解鎖</div>
-                            <div className="text-primary font-bold text-xl">{badges.filter(b => b.unlocked).length}</div>
+                            <div className="text-gray-500 mb-1 font-bold text-[10px] uppercase">已解鎖</div>
+                            <div className="text-primary font-black text-2xl leading-none">
+                                {badges.filter(b => b.unlocked).length}
+                            </div>
                         </div>
-                        <div className="w-px h-8 bg-gray-800"></div>
+                        <div className="w-px h-8 bg-gray-700"></div>
                         <div className="text-center">
-                            <div className="text-gray-500 mb-1">總數</div>
-                            <div className="text-white font-bold text-xl">{badges.length}</div>
+                            <div className="text-gray-500 mb-1 font-bold text-[10px] uppercase">總數</div>
+                            <div className="text-white font-black text-2xl leading-none">
+                                {badges.length}
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {badges.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center p-20 bg-card/50 rounded-xl border border-dashed border-border-ui">
-                        <Medal size={48} className="text-gray-700 mb-4" />
-                        <p className="text-gray-500 italic">此旅程目前尚無設定徽章資料</p>
+                    <div className="flex flex-col items-center justify-center p-20 bg-card/20 rounded-2xl border border-dashed border-border-ui">
+                        <Medal size={48} className="text-gray-700 mb-4 opacity-20" />
+                        <p className="text-gray-500 italic font-medium">此旅程目前尚未配置榮譽徽章</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
                         {badges.map((badge) => (
-                            <BadgeCard key={badge.id} name={badge.name} imageUrl={badge.imageUrl} unlocked={badge.unlocked} />
+                            <BadgeCard 
+                                key={badge.id} 
+                                name={badge.name} 
+                                imageUrl={badge.imageUrl} 
+                                unlocked={badge.unlocked} 
+                                onClick={() => setCelebratingBadge(badge)}
+                            />
                         ))}
                     </div>
                 )}
