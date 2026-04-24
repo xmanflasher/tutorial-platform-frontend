@@ -329,8 +329,12 @@ export default function OnboardingOverlay() {
                             <span className="text-xs font-black bg-primary text-black px-2 py-0.5 rounded shadow-sm animate-bounce">Σ-導讀精靈</span>
                             <span className="text-[10px] text-white font-bold drop-shadow-lg">點我閱讀導覽</span>
                         </div>
-                        <div className="relative">
-                            <HelpCircle className="w-8 h-8" />
+                        <div className="relative w-12 h-12">
+                            <img 
+                                src="/brand/spirit.png" 
+                                alt="Σ-Spirit" 
+                                className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+                            />
                             <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-pulse" />
                         </div>
                     </button>

@@ -81,9 +81,16 @@ export default function CourseCard({ course }: { course: Course }) {
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-card to-background">
-            <ImageIcon size={48} className="text-slate-600 mb-2 opacity-50" />
-            <span className="text-xs text-slate-600 font-mono tracking-widest uppercase opacity-50">NO IMAGE</span>
+          <div className="w-full h-full relative">
+            <img 
+              src="/brand/portfolio-cover.png" 
+              alt="Default Course Cover" 
+              className="w-full h-full object-cover opacity-30 grayscale hover:grayscale-0 transition-all duration-500"
+            />
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-background to-transparent">
+              <ImageIcon size={32} className="text-primary mb-1 opacity-50" />
+              <span className="text-[10px] text-primary/50 font-mono tracking-[0.2em] uppercase">Σ-Codeatl</span>
+            </div>
           </div>
         )}
 

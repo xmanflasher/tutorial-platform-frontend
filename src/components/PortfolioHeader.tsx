@@ -43,10 +43,16 @@ export default function PortfolioHeader({
                     {/* ... (原有橫幅內容) */}
 
 
-                    {/* 1. 背景特效 (漸層 + 網格) */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-black">
+                    {/* 1. 背景特效 (Premium Cover) */}
+                    <div className="absolute inset-0">
+                        <img 
+                            src="/brand/portfolio-cover.png" 
+                            alt="Banner Background" 
+                            className="w-full h-full object-cover opacity-40 mix-blend-luminosity"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-black/60 to-black"></div>
                         {/* 模擬 bg-grid-white/[0.03] 的網格效果 */}
-                        <div className="absolute inset-0"
+                        <div className="absolute inset-0 opacity-20"
                             style={{
                                 backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)',
                                 backgroundSize: '24px 24px'
