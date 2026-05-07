@@ -79,3 +79,4 @@ export * from './User';
 export * from './Journey';
 export * from './Gym';
 export * from './Record';
+export * from './Achievement';

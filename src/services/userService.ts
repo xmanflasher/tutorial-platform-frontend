@@ -99,5 +99,18 @@ export const userService = {
      */
     async updateUserRole(userId: string, role: string): Promise<boolean> {
         return this.updateProfile(userId, { jobTitle: role, occupation: role });
+    },
+
+    /**
+     * [ARCH-FIX-02] 獲取課程專屬技能統計
+     */
+    async getSkillStats(journeyId?: number): Promise<any[]> {
+        try {
+            const params = journeyId ? `?journeyId=${journeyId}` : '';
+            return await apiRequest<any[]>(`/api/members/me/skill-stats${params}`, { silent: true });
+        } catch (error) {
+            console.warn("[userService] Failed to fetch skill stats", error);
+            return [];
+        }
     }
 };
