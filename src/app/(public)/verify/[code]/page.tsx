@@ -6,7 +6,7 @@ import { achievementService } from '@/services';
 import { Certificate } from '@/types';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Award, ShieldCheck, Calendar, User, BookOpen } from 'lucide-react';
-import { LoadingRunner } from '@/components/ui/LoadingRunner';
+import LoadingRunner from '@/components/ui/LoadingRunner';
 
 /**
  * 證書查驗頁面 (Public)

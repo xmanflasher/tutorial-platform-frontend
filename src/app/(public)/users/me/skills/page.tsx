@@ -12,7 +12,7 @@ import { GrowthAnalysis } from '@/components/profile/skills/GrowthAnalysis';
 import { DimensionDefinitions } from '@/components/profile/skills/DimensionDefinitions';
 
 export default function SkillsPage() {
-    const { user, isLoading: authLoading } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const { activeJourney } = useJourney();
     const [achievements, setAchievements] = useState<MemberAchievements | null>(null);
     const [globalAchievements, setGlobalAchievements] = useState<MemberAchievements | null>(null);
