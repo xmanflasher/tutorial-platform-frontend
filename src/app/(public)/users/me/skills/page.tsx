@@ -1,30 +1,84 @@
-import Link from 'next/link';
+'use client';
 
-function SkillCard({ title }: { title: string }) {
-    return (
-        <div className="bg-[#1e1f24] border border-border-ui rounded-lg p-8 flex flex-col md:flex-row items-center gap-8">
-            {/* 左側吉祥物 Placeholder */}
-            <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-cyan-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
-                <span className="text-4xl">💧</span>
-            </div>
-
-            {/* 右側內容 */}
-            <div className="flex-1 text-center md:text-left space-y-4">
-                <h3 className="text-2xl font-bold text-primary">{title}</h3>
-                <p className="text-gray-400">尚未取得任何技能評級！</p>
-                <Link href="/challenges" className="inline-block px-6 py-2 bg-primary hover:bg-primary text-black font-bold rounded transition-colors">
-                    挑戰道館
-                </Link>
-            </div>
-        </div>
-    )
-}
+import React, { useEffect, useState } from 'react';
+import { achievementService } from '@/services';
+import { MemberAchievements } from '@/types';
+import { useAuth } from '@/context/AuthContext';
+import { useJourney } from '@/context/JourneyContext';
+import { Loader2, AlertCircle } from 'lucide-react';
+import { SkillsHeader } from '@/components/profile/skills/SkillsHeader';
+import { RadarSection } from '@/components/profile/skills/RadarSection';
+import { GrowthAnalysis } from '@/components/profile/skills/GrowthAnalysis';
+import { DimensionDefinitions } from '@/components/profile/skills/DimensionDefinitions';
 
 export default function SkillsPage() {
+    const { user, isLoading: authLoading } = useAuth();
+    const { activeJourney } = useJourney();
+    const [achievements, setAchievements] = useState<MemberAchievements | null>(null);
+    const [globalAchievements, setGlobalAchievements] = useState<MemberAchievements | null>(null);
+    const [showGlobal, setShowGlobal] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (authLoading) return;
+        if (!user) {
+            setLoading(false);
+            return;
+        }
+
+        setLoading(true);
+        // 並行請求：當前課程數據 與 全站綜合數據
+        Promise.all([
+            achievementService.getMyAchievements(activeJourney?.id),
+            achievementService.getMyAchievements(0)
+        ]).then(([specific, global]) => {
+            setAchievements(specific);
+            setGlobalAchievements(global);
+        }).catch(err => {
+            console.error("Failed to load achievements", err);
+            setError('無法取得資料，請稍後再試');
+        }).finally(() => setLoading(false));
+    }, [user, authLoading, activeJourney]);
+
+    // 加載中狀態
+    if (authLoading || loading) return (
+        <div className="flex h-[400px] w-full items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+    );
+
+    // 錯誤或未登入狀態
+    if (!user || error) return (
+        <div className="flex flex-col items-center justify-center h-[400px] space-y-4 text-foreground/40 bg-card/20 border border-dashed border-border-ui rounded-3xl">
+            <AlertCircle size={48} className="opacity-10" />
+            <p className="font-medium text-sm">{error || '請先登入後查看您的專業數據'}</p>
+        </div>
+    );
+
+    const skillData = achievements?.skillRating || {};
+    const globalSkillData = globalAchievements?.skillRating || {};
+    const journeySlug = activeJourney?.slug?.toUpperCase() || "COURSE";
+
     return (
-        <div className="space-y-6">
-            <SkillCard title="軟體設計模式精通之旅" />
-            <SkillCard title="AI x BDD : 規格驅動全自動開發術" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fadeIn">
+            {/* 左側：雷達圖核心區塊 */}
+            <div className="lg:col-span-7">
+                <RadarSection 
+                    title={`${journeySlug} SKILL RADAR`} 
+                    subtitle="COURSE SPECIFIC PROFICIENCY"
+                    skillData={skillData} 
+                    comparisonData={globalSkillData}
+                    showComparison={showGlobal}
+                    onToggleChange={setShowGlobal}
+                />
+            </div>
+
+            {/* 右側：說明與定義 */}
+            <section className="lg:col-span-5 space-y-6">
+                <GrowthAnalysis />
+                <DimensionDefinitions />
+            </section>
         </div>
     );
 }

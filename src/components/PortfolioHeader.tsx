@@ -16,12 +16,11 @@ export interface StatItem {
 }
 
 const DEFAULT_STATS: StatItem[] = [
-    { label: "需求結構化分析", value: "F-" },
-    { label: "區分結構與行為", value: "F-" },
-    { label: "抽象/萃取能力", value: "F-" },
-    { label: "建立 Well-Defined Context", value: "F-" },
-    { label: "熟悉設計模式的 Form", value: "F-" },
-    { label: "游刃有餘的開發能力", value: "F-" },
+    { label: "邏輯思維", value: "-" },
+    { label: "架構設計", value: "-" },
+    { label: "程式設計", value: "-" },
+    { label: "溝通協作", value: "-" },
+    { label: "問題解決", value: "-" },
 ];
 
 export default function PortfolioHeader({
@@ -100,12 +99,17 @@ export default function PortfolioHeader({
                 </div>
             )}
 
-            {/* 下半部：六維能力值 Grid */}
-            <div className={`grid grid-cols-2 gap-px bg-gray-800 border ${hideBanner ? 'rounded-lg' : 'border-t-0 rounded-b-lg'} border-border-ui sm:grid-cols-6 overflow-hidden`}>
+            {/* 下半部：能力值 Grid (動態欄位數) */}
+            <div className={`grid grid-cols-2 gap-px bg-gray-800 border ${hideBanner ? 'rounded-lg' : 'border-t-0 rounded-b-lg'} border-border-ui overflow-hidden
+                ${stats.length === 3 ? 'sm:grid-cols-3' : 
+                  stats.length === 4 ? 'sm:grid-cols-4' : 
+                  stats.length === 5 ? 'sm:grid-cols-5' : 
+                  stats.length === 6 ? 'sm:grid-cols-6' : 'sm:grid-cols-5'}
+            `}>
                 {stats.map((stat, index) => (
                     <div key={index} className="p-4 text-center bg-[#161b22] hover:bg-[#1c2128] transition-colors group cursor-default">
                         <div className={`text-xl font-bold mb-1 group-hover:scale-110 transition-transform duration-300
-                            ${stat.value === 'F-' ? 'text-gray-600' : 'text-primary'}
+                            ${stat.value === '-' ? 'text-gray-600' : 'text-primary'}
                         `}>
                             {stat.value}
                         </div>

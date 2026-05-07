@@ -17,12 +17,17 @@ interface ChallengePortfolioProps {
 }
 
 const RATING_LABELS: Record<string, string> = {
-    "1": "需求結構化分析",
-    "2": "區分結構與行為",
-    "3": "抽象/萃取能力",
-    "4": "建立 Well-Defined Context",
-    "5": "熟悉設計模式的 Form",
-    "6": "游刃有餘的開發能力"
+    "Logic": "邏輯思維",
+    "Arch": "架構設計",
+    "Design": "程式設計",
+    "Comm": "溝通協作",
+    "Solv": "問題解決",
+    "1": "邏輯思維",
+    "2": "架構設計",
+    "3": "架構設計",
+    "4": "架構設計",
+    "5": "程式設計",
+    "6": "問題解決"
 };
 
 const formatDate = (timestamp: number) => {

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import PortfolioHeader from "@/components/PortfolioHeader";
 import ChallengePortfolio from "@/components/ChallengePortfolio";
 import { useAuth } from "@/context/AuthContext";
+import { useJourney } from "@/context/JourneyContext";
 import { userService } from "@/services/userService";
 import { apiRequest } from "@/lib/api";
 import { UserProfile } from "@/types/User";
@@ -11,68 +12,33 @@ import { Loader2, User } from "lucide-react";
 
 export default function PortfolioPage() {
     const { user, loading: authLoading } = useAuth();
+    const { activeJourney } = useJourney();
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [stats, setStats] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const RATING_ORDER = ["SSS", "SS+", "SS", "S+", "S", "A+", "A", "B+", "B", "C+", "C", "D+", "D", "E+", "E", "F+", "F", "F-"];
-    const SKILL_LABELS: Record<string, string> = {
-        "1": "需求結構化分析",
-        "2": "區分結構與行為",
-        "3": "抽象/萃取能力",
-        "4": "建立 Well-Defined Context",
-        "5": "熟悉設計模式的 Form",
-        "6": "游刃有餘的開發能力"
-    };
-
-    const calculateMaxStats = (records: any[]) => {
-        const maxRatings: Record<string, string> = {};
-        Object.keys(SKILL_LABELS).forEach(key => maxRatings[key] = "F-");
-
-        records.forEach(record => {
-            if (record.ratings) {
-                Object.entries(record.ratings).forEach(([skillId, rating]) => {
-                    const currentRating = rating as string;
-                    const bestSoFar = maxRatings[skillId];
-                    const currentIndex = RATING_ORDER.indexOf(currentRating);
-                    const bestIndex = RATING_ORDER.indexOf(bestSoFar);
-                    if (currentIndex !== -1 && (bestIndex === -1 || currentIndex < bestIndex)) {
-                        maxRatings[skillId] = currentRating;
-                    }
-                });
-            }
-        });
-
-        return Object.entries(SKILL_LABELS).map(([id, label]) => ({
-            label,
-            value: maxRatings[id] || "F-"
-        }));
-    };
-
     useEffect(() => {
-        const loadData = async () => {
+        const fetchPortfolioData = async () => {
             if (!user?.id) return;
             try {
                 setLoading(true);
-                const uid = user.id.toString();
-                const [profileData, recordsData] = await Promise.all([
-                    userService.getUserProfile(uid),
-                    apiRequest<any[]>(`/gym-challenge-records/user/${uid}`)
-                ]);
-
+                // 1. 獲取個人檔案
+                const profileData = await userService.getUserProfile(user.id.toString());
                 setProfile(profileData);
-                if (Array.isArray(recordsData)) {
-                    const filteredRecords = recordsData.filter(r => r.reviewedAt != null || r.status === 'SUCCESS');
-                    setStats(calculateMaxStats(filteredRecords));
-                }
+
+                // 2. [ARCH-FIX-02] 獲取後端計算好的技能統計 (SSOT)
+                const skillStats = await userService.getSkillStats(activeJourney?.id);
+                setStats(skillStats);
+
             } catch (error) {
-                console.error("Error loading portfolio data:", error);
+                console.error("Failed to load portfolio data", error);
             } finally {
                 setLoading(false);
             }
         };
-        loadData();
-    }, [user?.id]);
+
+        fetchPortfolioData();
+    }, [user, activeJourney]);
 
     if (authLoading || loading) {
         return (
