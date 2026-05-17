@@ -8,6 +8,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { JourneyProvider } from "@/context/JourneyContext";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { LoadingProvider } from "@/context/LoadingContext";
 import OnboardingOverlay from "@/components/layout/OnboardingOverlay";
 import GlobalToastHandler from "@/components/common/GlobalToastHandler";
 
@@ -63,14 +64,16 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <JourneyProvider>
-              <NotificationProvider>
-                <GlobalToastHandler />
-                <OnboardingOverlay />
-                {children}
+              <LoadingProvider>
+                <NotificationProvider>
+                  <GlobalToastHandler />
+                  <OnboardingOverlay />
+                  {children}
 
-                {/* ★★★ 2. 必須加上這一行，Sonner 的提示視窗才會出現 ★★★ */}
-                <Toaster position="top-center" richColors closeButton />
-              </NotificationProvider>
+                  {/* ★★★ 2. 必須加上這一行，Sonner 的提示視窗才會出現 ★★★ */}
+                  <Toaster position="top-center" richColors closeButton />
+                </NotificationProvider>
+              </LoadingProvider>
             </JourneyProvider>
           </AuthProvider>
         </ThemeProvider>

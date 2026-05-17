@@ -10,6 +10,8 @@ import Header from '@/components/layout/Header';
 import MarketingBanner from '@/components/MarketingBanner';
 import LoginModal from '@/components/auth/LoginModal';
 import { API_BASE_URL } from '@/lib/api-config';
+import { useLoading } from '@/context/LoadingContext';
+import GlobalLoadingOverlay from '@/components/common/GlobalLoadingOverlay';
 
 // ★ 修改處：直接將 LayoutContent 改名為 default export 的 PublicLayout
 // 不需要再外面包一層 <AuthProvider> 了
@@ -23,13 +25,50 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   // 這裡的 useJourney 和 useAuth 會自動往上層找 (src/app/layout.tsx) 的 Provider
   const { activeJourney } = useJourney();
   const { login } = useAuth();
+  const { setIsLoading } = useLoading();
 
-  // ★ 新增：全域登入彈窗觸發器 (供 CourseCard 等深層組件使用)
   useEffect(() => {
     const handleOpenLogin = () => setLoginModalOpen(true);
     window.addEventListener('open-login-modal', handleOpenLogin);
     return () => window.removeEventListener('open-login-modal', handleOpenLogin);
   }, []);
+
+  // 全域瞬間加載觸發器：攔截所有內部 Link 點擊
+  useEffect(() => {
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest('a');
+      if (!target) return;
+
+      const href = target.getAttribute('href');
+      const targetAttr = target.getAttribute('target');
+
+      // 攔截條件：
+      // 1. 是內部路徑 (以 / 開頭，不是 //)
+      // 2. 不是另開視窗
+      // 3. 沒有按下修飾鍵 (Ctrl/Cmd 等)
+      if (
+        href &&
+        href.startsWith('/') &&
+        !href.startsWith('//') &&
+        targetAttr !== '_blank' &&
+        !e.ctrlKey &&
+        !e.shiftKey &&
+        !e.metaKey &&
+        !e.altKey
+      ) {
+        // 排除當前頁面的錨點或相同路徑
+        const cleanHref = href.split('#')[0].split('?')[0];
+        const cleanPathname = pathname.split('#')[0].split('?')[0];
+        
+        if (cleanHref !== cleanPathname) {
+          setIsLoading(true);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleAnchorClick);
+    return () => document.removeEventListener('click', handleAnchorClick);
+  }, [pathname, setIsLoading]);
 
   const handleMockLogin = async (email: string) => {
     try {
@@ -64,6 +103,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           onClose={() => setLoginModalOpen(false)}
           onMockLogin={handleMockLogin}
         />
+        <GlobalLoadingOverlay />
       </div>
     );
   }
@@ -114,6 +154,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           onClose={() => setLoginModalOpen(false)}
           onMockLogin={handleMockLogin}
         />
+        <GlobalLoadingOverlay />
       </div>
     </div>
   );
