@@ -8,11 +8,13 @@ import { useJourney } from "@/context/JourneyContext";
 import { userService } from "@/services/userService";
 import { apiRequest } from "@/lib/api";
 import { UserProfile } from "@/types/User";
-import { Loader2, User } from "lucide-react";
+import { User } from "lucide-react";
+import { useLoading } from "@/context/LoadingContext";
 
 export default function PortfolioPage() {
     const { user, loading: authLoading } = useAuth();
     const { activeJourney } = useJourney();
+    const { setIsLoading } = useLoading();
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [stats, setStats] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -21,7 +23,7 @@ export default function PortfolioPage() {
         const fetchPortfolioData = async () => {
             if (!user?.id) return;
             try {
-                setLoading(true);
+                setIsLoading(true);
                 // 1. 獲取個人檔案
                 const profileData = await userService.getUserProfile(user.id.toString());
                 setProfile(profileData);
@@ -34,19 +36,14 @@ export default function PortfolioPage() {
                 console.error("Failed to load portfolio data", error);
             } finally {
                 setLoading(false);
+                setIsLoading(false);
             }
         };
 
         fetchPortfolioData();
-    }, [user, activeJourney]);
+    }, [user, activeJourney, setIsLoading]);
 
-    if (authLoading || loading) {
-        return (
-            <div className="min-h-screen bg-background flex items-center justify-center">
-                <Loader2 className="w-12 h-12 text-primary animate-spin" />
-            </div>
-        );
-    }
+    if (authLoading || loading) return null;
 
     if (!user) {
         return (
@@ -62,7 +59,7 @@ export default function PortfolioPage() {
 
     return (
         <div className="space-y-6">
-            <PortfolioHeader profile={profile} stats={stats} hideBanner={true} />
+            <PortfolioHeader profile={profile} stats={stats} hideBanner={true} journeyId={activeJourney?.id} />
             <ChallengePortfolio
                 targetUserId={user.id.toString()}
                 onRecordsLoaded={(count: number) => console.log(`Loaded ${count} records`)}

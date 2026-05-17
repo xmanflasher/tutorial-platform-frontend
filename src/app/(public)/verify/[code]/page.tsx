@@ -6,7 +6,7 @@ import { achievementService } from '@/services';
 import { Certificate } from '@/types';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Award, ShieldCheck, Calendar, User, BookOpen } from 'lucide-react';
-import LoadingRunner from '@/components/ui/LoadingRunner';
+import { useLoading } from '@/context/LoadingContext';
 
 /**
  * 證書查驗頁面 (Public)
@@ -19,20 +19,22 @@ export default function VerifyPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
+    const { setIsLoading } = useLoading();
+
     useEffect(() => {
         if (code) {
+            setIsLoading(true);
             achievementService.verifyCertificate(code)
                 .then(setCertificate)
                 .catch(() => setError(true))
-                .finally(() => setLoading(false));
+                .finally(() => {
+                    setLoading(false);
+                    setIsLoading(false);
+                });
         }
-    }, [code]);
+    }, [code, setIsLoading]);
 
-    if (loading) return (
-        <div className="min-h-screen flex items-center justify-center bg-[#020617]">
-            <LoadingRunner />
-        </div>
-    );
+    if (loading) return null;
 
     if (error || !certificate) {
         return (

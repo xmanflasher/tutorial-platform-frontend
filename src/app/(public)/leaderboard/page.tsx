@@ -4,16 +4,17 @@ import { useEffect, useState } from 'react';
 import { homeService } from '@/services/homeService';
 import { LeaderboardMember } from '@/types';
 import { useAuth } from '@/context/AuthContext';
-import { Loader2 } from 'lucide-react';
+import { useLoading } from '@/context/LoadingContext';
 
 export default function LeaderboardPage() {
   const { user } = useAuth();
+  const { setIsLoading } = useLoading();
   const [members, setMembers] = useState<LeaderboardMember[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
-      setLoading(true);
+      setIsLoading(true);
       try {
         const data = await homeService.getLeaderboard();
         setMembers(data);
@@ -21,6 +22,7 @@ export default function LeaderboardPage() {
         console.error("Failed:", err);
       } finally {
         setLoading(false);
+        setIsLoading(false);
       }
     };
     fetchLeaderboard();
@@ -54,12 +56,7 @@ export default function LeaderboardPage() {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {loading ? (
-            <div className="p-8 text-center text-gray-500 h-full flex items-center justify-center flex-col gap-4">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              <span>正在載入資料...</span>
-            </div>
-          ) : (
+          {loading ? null : (
             <div className="divide-y divide-border-ui relative">
               {members.map((member, index) => (
                 <div

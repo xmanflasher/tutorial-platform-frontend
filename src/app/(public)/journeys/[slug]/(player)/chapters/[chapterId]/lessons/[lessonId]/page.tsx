@@ -4,7 +4,8 @@
 import { useEffect, useState, use } from "react";
 import { usePlayerUI } from "@/context/PlayerUIContext";
 import ReactMarkdown from "react-markdown";
-import { Loader2, AlertCircle, CheckCircle, Lock, ShoppingCart } from "lucide-react";
+import { AlertCircle, CheckCircle, Lock, ShoppingCart } from "lucide-react";
+import { useLoading } from "@/context/LoadingContext";
 import VideoPlayer from "@/components/VideoPlayer";
 import Link from "next/link";
 import { lessonService } from "@/services"; // 統一從 services 匯入
@@ -28,9 +29,11 @@ export default function LessonPage({
     // 從 Context 判斷完成狀態
     const isFinished = finishedLessonIds.includes(Number(lessonId));
 
+    const { setIsLoading } = useLoading();
+
     useEffect(() => {
         const loadData = async () => {
-            setLoading(true);
+            setIsLoading(true);
             try {
                 // 檢查購買狀態
                 setIsOwned(orderStore.isCourseOwned(slug));
@@ -41,10 +44,11 @@ export default function LessonPage({
                 console.warn('無法載入單元資料', error);
             } finally {
                 setLoading(false);
+                setIsLoading(false);
             }
         };
         loadData();
-    }, [lessonId]);
+    }, [lessonId, slug, setIsLoading]);
 
     const markAsComplete = async () => {
         // 樂觀更新 Context
@@ -64,11 +68,7 @@ export default function LessonPage({
         }
     };
 
-    if (loading) return (
-        <div className="flex justify-center p-10 h-[60vh] items-center">
-            <Loader2 className="animate-spin text-white w-10 h-10" />
-        </div>
-    );
+    if (loading) return null;
 
     if (!lesson) {
         return (

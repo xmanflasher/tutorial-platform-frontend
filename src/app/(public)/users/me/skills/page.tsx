@@ -5,7 +5,8 @@ import { achievementService } from '@/services';
 import { MemberAchievements } from '@/types';
 import { useAuth } from '@/context/AuthContext';
 import { useJourney } from '@/context/JourneyContext';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
+import { useLoading } from '@/context/LoadingContext';
 import { SkillsHeader } from '@/components/profile/skills/SkillsHeader';
 import { RadarSection } from '@/components/profile/skills/RadarSection';
 import { GrowthAnalysis } from '@/components/profile/skills/GrowthAnalysis';
@@ -14,6 +15,7 @@ import { DimensionDefinitions } from '@/components/profile/skills/DimensionDefin
 export default function SkillsPage() {
     const { user, loading: authLoading } = useAuth();
     const { activeJourney } = useJourney();
+    const { setIsLoading } = useLoading();
     const [achievements, setAchievements] = useState<MemberAchievements | null>(null);
     const [globalAchievements, setGlobalAchievements] = useState<MemberAchievements | null>(null);
     const [showGlobal, setShowGlobal] = useState(false);
@@ -27,7 +29,7 @@ export default function SkillsPage() {
             return;
         }
 
-        setLoading(true);
+        setIsLoading(true);
         // 並行請求：當前課程數據 與 全站綜合數據
         Promise.all([
             achievementService.getMyAchievements(activeJourney?.id),
@@ -38,15 +40,14 @@ export default function SkillsPage() {
         }).catch(err => {
             console.error("Failed to load achievements", err);
             setError('無法取得資料，請稍後再試');
-        }).finally(() => setLoading(false));
-    }, [user, authLoading, activeJourney]);
+        }).finally(() => {
+            setLoading(false);
+            setIsLoading(false);
+        });
+    }, [user, authLoading, activeJourney, setIsLoading]);
 
     // 加載中狀態
-    if (authLoading || loading) return (
-        <div className="flex h-[400px] w-full items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-    );
+    if (authLoading || loading) return null;
 
     // 錯誤或未登入狀態
     if (!user || error) return (

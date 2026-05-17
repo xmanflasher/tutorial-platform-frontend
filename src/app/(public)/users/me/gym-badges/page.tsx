@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Loader2, Medal, Lock } from "lucide-react";
+import { Medal, Lock } from "lucide-react";
+import { useLoading } from "@/context/LoadingContext";
 import { useJourney } from "@/context/JourneyContext";
+import { getBadgeImageUrl } from "@/lib/utils/badge";
 import { apiRequest } from "@/lib/api";
 import { AnimatePresence } from "framer-motion";
 import BadgeCelebrationOverlay from "@/components/common/BadgeCelebrationOverlay";
@@ -18,7 +20,7 @@ interface GymBadge {
 }
 
 // 徽章卡片組件
-function BadgeCard({ name, imageUrl, unlocked, onClick }: { name: string; imageUrl: string; unlocked: boolean; onClick?: () => void }) {
+function BadgeCard({ name, imageUrl, journeyId, unlocked, onClick }: { name: string; imageUrl: string; journeyId: number; unlocked: boolean; onClick?: () => void }) {
     return (
         <div
             onClick={unlocked ? onClick : undefined}
@@ -35,7 +37,7 @@ function BadgeCard({ name, imageUrl, unlocked, onClick }: { name: string; imageU
                 ${unlocked ? 'drop-shadow-[0_0_15px_rgba(250,204,21,0.15)] group-hover:scale-110 group-hover:rotate-6' : ''}
             `}>
                 <Image
-                    src={imageUrl}
+                    src={getBadgeImageUrl(journeyId, imageUrl)}
                     alt={name}
                     fill
                     className="object-contain"
@@ -70,6 +72,7 @@ function BadgeCard({ name, imageUrl, unlocked, onClick }: { name: string; imageU
 
 export default function GymBadgesPage() {
     const { activeJourney, isLoading: isJourneyLoading } = useJourney();
+    const { setIsLoading } = useLoading();
     const [badges, setBadges] = useState<GymBadge[]>([]);
     const [loading, setLoading] = useState(true);
     const [celebratingBadge, setCelebratingBadge] = useState<GymBadge | null>(null);
@@ -79,7 +82,7 @@ export default function GymBadgesPage() {
             if (!activeJourney?.id) return;
 
             try {
-                setLoading(true);
+                setIsLoading(true);
                 // 使用 apiRequest 取代原生的 fetch 以確保帶上 Token
                 const data = await apiRequest(`/journeys/${activeJourney.id}/gym-badges`);
 
@@ -93,19 +96,14 @@ export default function GymBadgesPage() {
                 setBadges([]);
             } finally {
                 setLoading(false);
+                setIsLoading(false);
             }
         };
 
         fetchBadges();
-    }, [activeJourney?.id, activeJourney?.slug]);
+    }, [activeJourney?.id, activeJourney?.slug, setIsLoading]);
 
-    if (isJourneyLoading || loading) {
-        return (
-            <div className="flex h-[50vh] w-full items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-        );
-    }
+    if (isJourneyLoading || loading) return null;
 
     return (
         <div className="space-y-12 pb-12">
@@ -115,6 +113,7 @@ export default function GymBadgesPage() {
                         badgeId={celebratingBadge.id}
                         badgeName={celebratingBadge.name}
                         imageUrl={celebratingBadge.imageUrl}
+                        journeyId={activeJourney.id}
                         onClose={() => setCelebratingBadge(null)} 
                     />
                 )}
@@ -161,6 +160,7 @@ export default function GymBadgesPage() {
                                 key={badge.id} 
                                 name={badge.name} 
                                 imageUrl={badge.imageUrl} 
+                                journeyId={activeJourney.id}
                                 unlocked={badge.unlocked} 
                                 onClick={() => setCelebratingBadge(badge)}
                             />

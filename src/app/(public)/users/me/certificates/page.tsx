@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { achievementService } from '@/services';
 import { Certificate } from '@/types';
-import { Loader2, Award, ExternalLink, ShieldCheck, Search } from 'lucide-react';
+import { Award, ExternalLink, ShieldCheck, Search } from 'lucide-react';
+import { useLoading } from '@/context/LoadingContext';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useJourney } from '@/context/JourneyContext';
@@ -14,21 +15,22 @@ import { useJourney } from '@/context/JourneyContext';
  */
 export default function CertificatesPage() {
     const { activeJourney } = useJourney();
+    const { setIsLoading } = useLoading();
     const [certificates, setCertificates] = useState<Certificate[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setIsLoading(true);
         achievementService.getMyAchievements()
             .then(data => setCertificates(data.certificates))
             .catch(err => console.error("Failed to load certificates", err))
-            .finally(() => setLoading(false));
-    }, []);
+            .finally(() => {
+                setLoading(false);
+                setIsLoading(false);
+            });
+    }, [setIsLoading]);
 
-    if (loading) return (
-        <div className="flex h-[400px] w-full items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-    );
+    if (loading) return null;
 
     if (certificates.length === 0) {
         return (

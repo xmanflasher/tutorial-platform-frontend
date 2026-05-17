@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { getBadgeImageUrl } from "@/lib/utils/badge";
 
 interface UserProfile {
     id: number;
@@ -26,11 +27,15 @@ const DEFAULT_STATS: StatItem[] = [
 export default function PortfolioHeader({
     profile,
     stats = DEFAULT_STATS,
-    hideBanner = false
+    hideBanner = false,
+    journeyId,
+    badgeImageUrl
 }: {
     profile: UserProfile | null,
     stats?: StatItem[],
-    hideBanner?: boolean
+    hideBanner?: boolean,
+    journeyId?: number,
+    badgeImageUrl?: string
 }) {
     if (!profile) return null;
 
@@ -76,7 +81,7 @@ export default function PortfolioHeader({
                                 <div className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-full overflow-hidden z-10 border-2 border-[#0d0e11] bg-[#1c2128]">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
-                                        src="https://cdn.waterballsa.tw/software-design-pattern/gym-badges/14.png"
+                                        src={badgeImageUrl ? getBadgeImageUrl(journeyId || 0, badgeImageUrl) : "https://cdn.waterballsa.tw/software-design-pattern/gym-badges/14.png"}
                                         alt="Level badge"
                                         className="h-full w-full object-cover"
                                     />

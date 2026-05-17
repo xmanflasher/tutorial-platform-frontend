@@ -5,7 +5,8 @@ import { useParams } from 'next/navigation';
 import { userService } from '@/services/userService';
 import { UserProfile } from '@/types/User';
 import ReactMarkdown from 'react-markdown';
-import { Youtube, Link2, MapPin, Loader2, UserRound, ArrowLeft } from 'lucide-react';
+import { Youtube, Link2, MapPin, UserRound, ArrowLeft } from 'lucide-react';
+import { useLoading } from '@/context/LoadingContext';
 import Link from 'next/link';
 
 export default function InstructorPage() {
@@ -16,25 +17,21 @@ export default function InstructorPage() {
   const [instructor, setInstructor] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const { setIsLoading } = useLoading();
+
   useEffect(() => {
     if (!id) return;
     const fetchInstructor = async () => {
-      setLoading(true);
+      setIsLoading(true);
       const user = await userService.getUserProfile(id);
-      // Optional check: ensure they actually have INSTRUCTOR role or just display anyway
       setInstructor(user);
       setLoading(false);
+      setIsLoading(false);
     };
     fetchInstructor();
-  }, [id]);
+  }, [id, setIsLoading]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen pt-32 pb-24 bg-black flex justify-center">
-        <Loader2 className="animate-spin text-primary" size={48} />
-      </div>
-    );
-  }
+  if (loading) return null;
 
   if (!instructor) {
     return (

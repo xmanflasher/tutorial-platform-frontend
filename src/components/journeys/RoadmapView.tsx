@@ -93,10 +93,13 @@ const GymNode = ({ gym, isLast, onClick }: { gym: Gym; isLast: boolean; onClick:
     );
 };
 
+import { useLoading } from '@/context/LoadingContext';
+
 // --- Main Roadmap Component ---
 export default function RoadmapView() {
     const router = useRouter();
     const { activeJourney, isLoading: journeyLoading } = useJourney();
+    const { setIsLoading } = useLoading();
     const [gymsWithProgress, setGymsWithProgress] = useState<Gym[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<'MAIN' | 'SIDE'>('MAIN');
@@ -107,7 +110,7 @@ export default function RoadmapView() {
 
         const loadData = async () => {
             try {
-                setLoading(true);
+                setIsLoading(true);
                 // 直接使用封裝好的 Service 方法
                 let mergedData = await gymService.getMergedGyms(activeJourney.gyms, activeJourney.slug);
 
@@ -125,11 +128,12 @@ export default function RoadmapView() {
                 console.error("載入 Roadmap 失敗:", error);
             } finally {
                 setLoading(false);
+                setIsLoading(false);
             }
         };
 
         loadData();
-    }, [activeJourney]);
+    }, [activeJourney, setIsLoading]);
 
     // 使用 useMemo 優化計算統計資料
     const stats = useMemo(() => {
@@ -190,11 +194,7 @@ export default function RoadmapView() {
         );
     };
 
-    if (journeyLoading || loading) return (
-        <div className="min-h-screen bg-background flex items-center justify-center text-white">
-            <Loader2 className="animate-spin w-10 h-10 text-primary" />
-        </div>
-    );
+    if (journeyLoading || loading) return null;
 
     return (
         <div className="min-h-screen bg-background text-white p-4 md:p-8">

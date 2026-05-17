@@ -6,7 +6,7 @@ import { Clock, Gift, Lock, CheckCircle2, Swords, Loader2, Calendar, X } from "l
 // ★ 請確認 @/types 裡的 MemberMission 介面已經包含 duration: number
 import { MemberMission } from "@/types";
 import { missionService } from "@/services/missionService";
-import LoadingRunner from "@/components/ui/LoadingRunner";
+import { useLoading } from "@/context/LoadingContext";
 
 export default function MissionsPage() {
     const params = useParams();
@@ -16,17 +16,22 @@ export default function MissionsPage() {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<"AVAILABLE" | "IN_PROGRESS" | "PAST">("AVAILABLE");
     const [selectedMission, setSelectedMission] = useState<MemberMission | null>(null);
+    const { setIsLoading } = useLoading();
 
     useEffect(() => {
         if (journeySlug) {
+            setIsLoading(true);
             missionService.getMissionsByJourneySlug(journeySlug)
                 .then((data) => {
                     setMissions(data);
                 })
                 .catch((err) => console.error(err))
-                .finally(() => setLoading(false));
+                .finally(() => {
+                    setLoading(false);
+                    setIsLoading(false);
+                });
         }
-    }, [journeySlug]);
+    }, [journeySlug, setIsLoading]);
 
     const displayMissions = missions.filter(m => {
         const status = m.status || "AVAILABLE";
@@ -43,13 +48,7 @@ export default function MissionsPage() {
         return false;
     });
 
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-background flex items-center justify-center text-white">
-                <LoadingRunner />
-            </div>
-        );
-    }
+    if (loading) return null;
 
     if (missions.length === 0) {
         return (

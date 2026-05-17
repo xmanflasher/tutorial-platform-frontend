@@ -5,11 +5,13 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trophy, Sparkles } from 'lucide-react';
 import ConfettiCanvas from '@/components/effects/ConfettiCanvas';
+import { getBadgeImageUrl } from '@/lib/utils/badge';
 
 interface BadgeCelebrationOverlayProps {
   badgeId: number;
   badgeName: string;
   imageUrl?: string;
+  journeyId?: number;
   onClose: (badgeId: number) => void;
 }
 
@@ -17,7 +19,7 @@ interface BadgeCelebrationOverlayProps {
  * 徽章慶祝彈窗組件
  * 只負責 UI 呈現與彈窗過場，將「撒花特效」抽離。
  */
-export default function BadgeCelebrationOverlay({ badgeId, badgeName, imageUrl, onClose }: BadgeCelebrationOverlayProps) {
+export default function BadgeCelebrationOverlay({ badgeId, badgeName, imageUrl, journeyId, onClose }: BadgeCelebrationOverlayProps) {
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
@@ -81,7 +83,7 @@ export default function BadgeCelebrationOverlay({ badgeId, badgeName, imageUrl, 
             >
               {imageUrl ? (
                 <img 
-                  src={imageUrl} 
+                  src={journeyId ? getBadgeImageUrl(journeyId, imageUrl) : imageUrl} 
                   alt={badgeName} 
                   className="w-32 h-32 object-contain filter drop-shadow-[0_0_20px_rgba(250,204,21,0.5)]"
                 />

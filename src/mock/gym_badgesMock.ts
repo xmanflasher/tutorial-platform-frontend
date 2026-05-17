@@ -193,7 +193,7 @@ export const MOCK_GYM_BADGES = [
   {
     "id": 25,
     "name": "JS 箭頭先鋒",
-    "imageUrl": "/badges/js-arrow.png",
+    "imageUrl": "js-arrow.png",
     "gymId": 601,
     "chapterId": 60,
     "journeyId": 6,
@@ -203,7 +203,7 @@ export const MOCK_GYM_BADGES = [
   {
     "id": 26,
     "name": "邏輯迷宮旅者",
-    "imageUrl": "/badges/js-logic.png",
+    "imageUrl": "js-logic.png",
     "gymId": 603,
     "chapterId": 62,
     "journeyId": 6,
@@ -213,7 +213,7 @@ export const MOCK_GYM_BADGES = [
   {
     "id": 27,
     "name": "輪迴塔挑戰者",
-    "imageUrl": "/badges/js-loop.png",
+    "imageUrl": "js-loop.png",
     "gymId": 604,
     "chapterId": 63,
     "journeyId": 6,
@@ -223,7 +223,7 @@ export const MOCK_GYM_BADGES = [
   {
     "id": 28,
     "name": "Callback 大師",
-    "imageUrl": "/badges/js-callback.png",
+    "imageUrl": "js-callback.png",
     "gymId": 605,
     "chapterId": 64,
     "journeyId": 6,
@@ -233,7 +233,7 @@ export const MOCK_GYM_BADGES = [
   {
     "id": 29,
     "name": "遺產繼承人",
-    "imageUrl": "/badges/js-inheritance.png",
+    "imageUrl": "js-inheritance.png",
     "gymId": 607,
     "chapterId": 66,
     "journeyId": 6,
@@ -243,7 +243,7 @@ export const MOCK_GYM_BADGES = [
   {
     "id": 30,
     "name": "API 獵人",
-    "imageUrl": "/badges/js-api.png",
+    "imageUrl": "js-api.png",
     "gymId": 610,
     "chapterId": 69,
     "journeyId": 6,
@@ -253,7 +253,7 @@ export const MOCK_GYM_BADGES = [
   {
     "id": 31,
     "name": "時空操縱者",
-    "imageUrl": "/badges/js-timer.png",
+    "imageUrl": "js-timer.png",
     "gymId": 613,
     "chapterId": 72,
     "journeyId": 6,
@@ -263,11 +263,61 @@ export const MOCK_GYM_BADGES = [
   {
     "id": 32,
     "name": "JS 傳說大師",
-    "imageUrl": "/badges/js-legend.png",
+    "imageUrl": "js-legend.png",
     "gymId": 615,
     "chapterId": 74,
     "journeyId": 6,
     "createdAt": "2026-03-31 00:00:49.126652",
     "unlockCondition": "GYM_COMPLETED:615"
+  },
+  {
+    "id": 2001,
+    "name": "初探真理",
+    "imageUrl": "bronze.png",
+    "gymId": 701,
+    "chapterId": 80,
+    "journeyId": 7,
+    "createdAt": "2026-05-11 00:00:00",
+    "unlockCondition": "GYM_COMPLETED:701"
+  },
+  {
+    "id": 2002,
+    "name": "邏輯守護者",
+    "imageUrl": "silver.png",
+    "gymId": 703,
+    "chapterId": 82,
+    "journeyId": 7,
+    "createdAt": "2026-05-11 00:00:00",
+    "unlockCondition": "GYM_COMPLETED:703"
+  },
+  {
+    "id": 2003,
+    "name": "閉包魔導士",
+    "imageUrl": "gold.png",
+    "gymId": 705,
+    "chapterId": 84,
+    "journeyId": 7,
+    "createdAt": "2026-05-11 00:00:00",
+    "unlockCondition": "GYM_COMPLETED:705"
+  },
+  {
+    "id": 2004,
+    "name": "異步之主",
+    "imageUrl": "platinum.png",
+    "gymId": 706,
+    "chapterId": 85,
+    "journeyId": 7,
+    "createdAt": "2026-05-11 00:00:00",
+    "unlockCondition": "GYM_COMPLETED:706"
+  },
+  {
+    "id": 2005,
+    "name": "JS 高級大師",
+    "imageUrl": "diamond.png",
+    "gymId": 706,
+    "chapterId": 85,
+    "journeyId": 7,
+    "createdAt": "2026-05-11 00:00:00",
+    "unlockCondition": "JOURNEY_COMPLETED:7"
   }
 ];

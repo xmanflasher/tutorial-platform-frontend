@@ -11,6 +11,7 @@ interface BadgeCelebrationData {
   id: number;
   name: string;
   imageUrl: string;
+  journeyId: number;
 }
 
 interface NotificationContextType {
@@ -129,6 +130,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
           badgeId={currentCelebration.id}
           badgeName={currentCelebration.name} 
           imageUrl={currentCelebration.imageUrl}
+          journeyId={currentCelebration.journeyId}
           onClose={handleCelebrationClose} 
         />
       )}
