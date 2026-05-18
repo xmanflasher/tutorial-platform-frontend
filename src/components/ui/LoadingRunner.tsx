@@ -3,7 +3,21 @@
 import React from "react";
 import Image from "next/image";
 
-export default function LoadingRunner() {
+const DEFAULT_GIFS = [
+    "/images/gifs/EagleWarrior-walk.gif",
+    "/images/gifs/EagleWarrior-run.gif"
+];
+
+export default function LoadingRunner({ gifs = DEFAULT_GIFS }: { gifs?: string[] }) {
+    const [gifSrc, setGifSrc] = React.useState(gifs[0]);
+
+    React.useEffect(() => {
+        if (gifs.length > 0) {
+            const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
+            setGifSrc(randomGif);
+        }
+    }, [gifs]);
+
     return (
         <div className="flex flex-col items-center justify-center space-y-6">
             <div className="relative w-32 h-32 flex items-center justify-center">
@@ -13,7 +27,7 @@ export default function LoadingRunner() {
                 {/* The Eagle Warrior GIF */}
                 <div className="relative z-10 drop-shadow-[0_0_15px_rgba(250,204,21,0.4)]">
                     <Image
-                        src="/visual_design/EagleWarrior_run_v2.gif"
+                        src={gifSrc}
                         alt="Loading Runner"
                         width={120}
                         height={120}

@@ -49,7 +49,7 @@ export default function Sidebar({ className = "", onClose }: SidebarProps) {
       <div className="p-6 flex justify-between items-center h-16">
         <Link href="/" className="flex items-center gap-3 font-bold text-lg tracking-wider">
           <div className="w-10 h-10 rounded-full bg-[var(--background)] flex items-center justify-center overflow-hidden shadow-[0_0_8px_var(--primary)] border-2 border-primary transition-all group-hover:scale-105">
-            <div className="w-full h-full bg-[url('/brand/icon-circle.png')] bg-cover bg-center" />
+            <div className="w-full h-full bg-[url('/images/brand/icon-circle.png')] bg-cover bg-center" />
           </div>
           <div className="flex flex-col leading-none">
             <span className="text-sm font-bold text-gray-200">Σ-Codeatl</span>

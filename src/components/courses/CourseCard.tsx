@@ -83,7 +83,7 @@ export default function CourseCard({ course }: { course: Course }) {
         ) : (
           <div className="w-full h-full relative">
             <img 
-              src="/brand/portfolio-cover.png" 
+              src="/images/brand/portfolio-cover.png" 
               alt="Default Course Cover" 
               className="w-full h-full object-cover opacity-30 grayscale hover:grayscale-0 transition-all duration-500"
             />

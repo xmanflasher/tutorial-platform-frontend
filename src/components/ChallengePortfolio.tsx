@@ -190,7 +190,7 @@ export default function ChallengePortfolio({ targetUserId, onRecordsLoaded }: Ch
                 ) : (
                     <div className="h-[500px] flex flex-col items-center justify-center border border-border-ui border-dashed rounded-xl bg-[#161b22]/50 relative overflow-hidden group">
                         <img 
-                            src="/brand/portfolio-cover.png" 
+                            src="/images/brand/portfolio-cover.png" 
                             alt="Empty Portfolio" 
                             className="w-64 h-auto opacity-10 grayscale group-hover:opacity-20 group-hover:grayscale-0 transition-all duration-700 mb-6"
                         />

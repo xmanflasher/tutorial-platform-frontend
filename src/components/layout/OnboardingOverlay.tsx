@@ -331,7 +331,7 @@ export default function OnboardingOverlay() {
                         </div>
                         <div className="relative w-12 h-12">
                             <img 
-                                src="/brand/spirit.png" 
+                                src="/images/brand/spirit.png" 
                                 alt="Σ-Spirit" 
                                 className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
                             />

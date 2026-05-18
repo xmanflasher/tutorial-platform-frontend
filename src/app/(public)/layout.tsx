@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
-// ★ 修改處：只引入 Hook，移除 Provider
+// 配合修改直接使用 Hook
 import { useJourney } from '@/context/JourneyContext';
 import { useAuth } from '@/context/AuthContext';
 import Header from '@/components/layout/Header';
@@ -13,8 +13,6 @@ import { API_BASE_URL } from '@/lib/api-config';
 import { useLoading } from '@/context/LoadingContext';
 import GlobalLoadingOverlay from '@/components/common/GlobalLoadingOverlay';
 
-// ★ 修改處：直接將 LayoutContent 改名為 default export 的 PublicLayout
-// 不需要再外面包一層 <AuthProvider> 了
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
@@ -22,7 +20,6 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   const router = useRouter();
   const pathname = usePathname();
 
-  // 這裡的 useJourney 和 useAuth 會自動往上層找 (src/app/layout.tsx) 的 Provider
   const { activeJourney } = useJourney();
   const { login } = useAuth();
   const { setIsLoading } = useLoading();
@@ -33,7 +30,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
     return () => window.removeEventListener('open-login-modal', handleOpenLogin);
   }, []);
 
-  // 全域瞬間加載觸發器：攔截所有內部 Link 點擊
+  // 攔截條件，觸發 Loading
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest('a');
@@ -43,9 +40,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       const targetAttr = target.getAttribute('target');
 
       // 攔截條件：
-      // 1. 是內部路徑 (以 / 開頭，不是 //)
-      // 2. 不是另開視窗
-      // 3. 沒有按下修飾鍵 (Ctrl/Cmd 等)
+      // 站內路徑 (以 / 開頭，且不是 //)
       if (
         href &&
         href.startsWith('/') &&
@@ -56,7 +51,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         !e.metaKey &&
         !e.altKey
       ) {
-        // 排除當前頁面的錨點或相同路徑
+        // 排除頁面錨點與查詢參數
         const cleanHref = href.split('#')[0].split('?')[0];
         const cleanPathname = pathname.split('#')[0].split('?')[0];
         
@@ -86,7 +81,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       }
     } catch (error) {
       console.error(error);
-      alert("連線錯誤");
+      alert("發生錯誤");
     }
   };
 
@@ -110,7 +105,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
   return (
     <div className="min-h-screen bg-background text-foreground flex transition-colors duration-300">
-      {/* 全站 Sidebar */}
+      {/* 側邊欄 Sidebar */}
       <Sidebar
         onClose={() => setSidebarOpen(false)}
         className={`
@@ -121,7 +116,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         `}
       />
 
-      {/* 手機版遮罩 */}
+      {/* 遮罩 */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
@@ -132,7 +127,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       {/* 右側內容區 */}
       <div className="flex-1 flex flex-col min-w-0">
 
-        {/* 全站 Header */}
+        {/* 頂部 Header */}
         <Header
           onMenuClick={() => setSidebarOpen(true)}
           onLoginClick={() => {
@@ -141,7 +136,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           }}
         />
 
-        {/* 全站行銷公告 (排除沉浸式閱讀) */}
+        {/* 行銷橫幅 */}
         <MarketingBanner />
 
         {/* 頁面內容 */}

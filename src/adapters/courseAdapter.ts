@@ -14,7 +14,7 @@ export const toFeaturedCourse = (journey: JourneyDetail): Course => {
         description: journey.description ? journey.description.slice(0, 150) + '...' : '',
         slug: journey.slug,
         // 圖片邏輯：統一由 ID 對應，例如 ID 6 對應 course_6.png
-        image: `/images/course_${journey.id}.png`,
+        image: `/images/courses/course_${journey.id}.png`,
         tags: journey.tags || [],
         statusLabel: '尚未擁有',
         //couponText: 'ALWAYS SHOW',

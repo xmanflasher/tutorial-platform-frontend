@@ -50,7 +50,7 @@ export default function PortfolioHeader({
                     {/* 1. 背景特效 (Premium Cover) */}
                     <div className="absolute inset-0">
                         <img 
-                            src="/brand/portfolio-cover.png" 
+                            src="/images/brand/portfolio-cover.png" 
                             alt="Banner Background" 
                             className="w-full h-full object-cover opacity-40 mix-blend-luminosity"
                         />

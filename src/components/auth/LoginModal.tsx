@@ -135,12 +135,12 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
         {/* LOGO 與標題 */}
         <div className="flex flex-col items-center mb-8 relative">
           <div className="absolute -top-8 -inset-x-8 h-40 opacity-10 pointer-events-none overflow-hidden rounded-t-xl">
-            <img src="/brand/portfolio-cover.png" alt="" className="w-full h-full object-cover grayscale" />
+            <img src="/images/brand/portfolio-cover.png" alt="" className="w-full h-full object-cover grayscale" />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-card"></div>
           </div>
           <div className="relative w-20 h-20 mb-4 transition-transform hover:scale-110 duration-500">
             <img 
-                src="/brand/icon-circle.png" 
+                src="/images/brand/icon-circle.png" 
                 alt="Σ-Codeatl Logo" 
                 className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(46,49,146,0.4)]"
             />
