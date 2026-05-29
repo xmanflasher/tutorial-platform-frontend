@@ -7,6 +7,7 @@ import { ChallengeRecord } from "@/types/Record";
 import { GymData } from "@/types/Gym";
 import SubmissionGallery from "./portfolio/SubmissionGallery";
 import FeedbackCard from "./portfolio/Feedback/FeedbackCard";
+import { logger } from '@/lib/logger';
 
 /**
  * [備份] 原始的 Portfolio 顯示方式
@@ -50,7 +51,7 @@ export default function ChallengePortfolioLegacy({ targetUserId, onRecordsLoaded
                 gyms.forEach(g => map[g.id] = g.name);
                 setGymMap(map);
             } catch (e) {
-                console.error("Failed to fetch gyms", e);
+                logger.error("Failed to fetch gyms", e);
             }
         };
         fetchGyms();
@@ -82,7 +83,7 @@ export default function ChallengePortfolioLegacy({ targetUserId, onRecordsLoaded
                     onRecordsLoaded?.(0);
                 }
             } catch (error) {
-                console.error("Fetch Error:", error);
+                logger.error("Fetch Error:", error);
                 setRecords([]);
                 setSelectedRecord(null);
                 onRecordsLoaded?.(0);

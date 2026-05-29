@@ -1,4 +1,5 @@
 'use client';
+import { cn } from "@/lib/utils";
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -6,6 +7,7 @@ import { Course } from '@/types';
 import { Image as ImageIcon } from 'lucide-react';
 import { orderStore } from '@/lib/orderStore';
 import { useAuth } from '@/context/AuthContext';
+import { logger } from '@/lib/logger';
 
 export default function CourseCard({ course }: { course: Course }) {
   const { user } = useAuth();
@@ -26,7 +28,7 @@ export default function CourseCard({ course }: { course: Course }) {
       }
       const owned = orderStore.isCourseOwned(course.slug);
       const pending = orderStore.hasPendingOrder(course.slug);
-      console.log(`[CourseCard][${course.slug}] checkOwnership triggered by: ${reason}`, { owned, pending });
+      logger.log(`[CourseCard][${course.slug}] checkOwnership triggered by: ${reason}`, { owned, pending });
       setIsOwned(owned);
       setIsPending(pending);
     };
@@ -48,7 +50,7 @@ export default function CourseCard({ course }: { course: Course }) {
     // 只有在未登入且未擁有時才攔截跳轉
     if (!user && !isOwned) {
       e.preventDefault();
-      console.log("[CourseCard] Visitor clicked buy, triggering login modal");
+      logger.log("[CourseCard] Visitor clicked buy, triggering login modal");
       window.dispatchEvent(new CustomEvent('open-login-modal'));
     }
   };
@@ -171,8 +173,4 @@ export default function CourseCard({ course }: { course: Course }) {
       </div>
     </div>
   );
-}
-
-function cn(...inputs: any[]) {
-  return inputs.filter(Boolean).join(' ');
 }

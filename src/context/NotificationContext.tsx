@@ -6,6 +6,7 @@ import { apiRequest } from '@/lib/api'; // 使用專案既有的 apiRequest
 import { notificationService, Notification } from '@/services/notificationService';
 import { useAuth } from './AuthContext';
 import BadgeCelebrationOverlay from '@/components/common/BadgeCelebrationOverlay';
+import { logger } from '@/lib/logger';
 
 interface BadgeCelebrationData {
   id: number;
@@ -43,7 +44,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
       const data = await apiRequest('/members/me/badges/unshown');
       return data as BadgeCelebrationData[];
     } catch (e) {
-      console.error("Failed to fetch unshown badges", e);
+      logger.error("Failed to fetch unshown badges", e);
     }
     return [];
   };
@@ -55,7 +56,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
         method: 'PATCH',
       });
     } catch (e) {
-      console.error("Failed to mark badge as shown", e);
+      logger.error("Failed to mark badge as shown", e);
     }
   };
 

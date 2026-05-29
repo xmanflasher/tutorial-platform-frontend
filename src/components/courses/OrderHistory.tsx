@@ -1,4 +1,5 @@
 'use client';
+import { cn } from "@/lib/utils";
 
 import React, { useState, useEffect } from 'react';
 import { Receipt, AlertCircle, Clock, CheckCircle2, XCircle } from 'lucide-react';
@@ -10,9 +11,7 @@ import { useAuth } from '@/context/AuthContext';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-function cn(...inputs: any[]) {
-    return twMerge(clsx(inputs));
-}
+
 
 export default function OrderHistory() {
     const { user } = useAuth();

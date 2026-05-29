@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { recordService } from '@/services/recordService';
 import { useJourney } from '@/context/JourneyContext';
 import { useAuth } from '@/context/AuthContext';
+import { logger } from '@/lib/logger';
 
 type Stage = 'SELECT' | 'DETAILS' | 'SUBMISSION' | 'SUCCESS';
 type ChallengeType = 'INSTANT' | 'PRACTICAL';
@@ -53,7 +54,7 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
                 const records = await recordService.getUserGymRecords();
                 setExistingRecords(records);
             } catch (err) {
-                console.error("Failed to fetch records", err);
+                logger.error("Failed to fetch records", err);
             } finally {
                 setIsLoadingRecords(false);
             }
@@ -129,7 +130,7 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
             }, 1500);
         } catch (e) {
             // Demo 模式下，即使 API 404 也嘗試本地完成
-            console.warn("API likely not ready, falling back to local completion", e);
+            logger.warn("API likely not ready, falling back to local completion", e);
             localStorage.setItem(`demo_gym_${gymId}_passed`, 'true');
             toast.success('已完成速戰速決挑戰 (本地模擬模式)', { id: toastId });
             setStage('SUCCESS');
@@ -180,7 +181,7 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
             }, 2000);
         } catch (e) {
             // API 404 Fallback
-            console.warn("API submit failed, saving to local records for Demo", e);
+            logger.warn("API submit failed, saving to local records for Demo", e);
             
             // 模擬一筆紀錄到 local_gym_records 以便在 Portfolio 看到
             const localRecords = JSON.parse(localStorage.getItem('local_gym_records') || '[]');
@@ -360,7 +361,7 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
                                                         toast.success('挑戰已啟動，您的計時已開始！', { id: toastId });
                                                         setTimeout(() => window.location.reload(), 1000);
                                                     } catch (e) {
-                                                        console.warn("Booking failed", e);
+                                                        logger.warn("Booking failed", e);
                                                         toast.error('啟動失敗，請稍後再試。');
                                                     }
                                                 }}
@@ -389,7 +390,7 @@ export default function ChallengeModal({ gymId, challenges, onClose }: Challenge
                                                         toast.success('挑戰已啟動，您的計時已開始！', { id: toastId });
                                                         setTimeout(() => window.location.reload(), 1000);
                                                     } catch (e) {
-                                                        console.warn("Booking failed", e);
+                                                        logger.warn("Booking failed", e);
                                                         toast.error('啟動失敗，請稍後再試。');
                                                     }
                                                 }}

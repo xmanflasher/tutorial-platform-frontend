@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 
 import React, { useState, useEffect } from 'react';
 import { X, ChevronRight, ChevronLeft, User, Briefcase, Rocket, Info, HelpCircle, Loader2 } from 'lucide-react';
@@ -8,10 +9,9 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useAuth } from '@/context/AuthContext';
 import { userService, orderService } from '@/services';
+import { logger } from '@/lib/logger';
 
-function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
+
 
 type Step = 'role-selection' | 'guide' | 'completed';
 
@@ -91,7 +91,7 @@ export default function OnboardingOverlay() {
         const success = await userService.updateUserRole(userId, role);
         if (success) {
             localStorage.setItem(`role_synced_${userId}`, 'true');
-            console.log("[Onboarding] Role synced to database");
+            logger.log("[Onboarding] Role synced to database");
         }
     };
 
@@ -219,7 +219,7 @@ export default function OnboardingOverlay() {
                                                         return;
                                                     }
                                                 } catch (e) {
-                                                    console.warn("[Simulation] Backend logic skipped or failed, falling back to local storage detection");
+                                                    logger.warn("[Simulation] Backend logic skipped or failed, falling back to local storage detection");
                                                 }
 
                                                 // 3. 本地暫存備援邏輯
@@ -257,7 +257,7 @@ export default function OnboardingOverlay() {
                                                     toast.error('找不到該道館待批改的紀錄。請先點擊「前往挑戰」並提交作品。', { id: toastId });
                                                 }
                                             } catch (error: any) {
-                                                console.error(error);
+                                                logger.error(error);
                                                 toast.error('模擬失敗：' + error.message, { id: toastId });
                                             } finally {
                                                 setIsSimulating(false);

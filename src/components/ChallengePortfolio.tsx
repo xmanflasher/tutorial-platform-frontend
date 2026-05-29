@@ -10,6 +10,7 @@ import SubmissionGallery from "./portfolio/SubmissionGallery";
 import FeedbackCard from "./portfolio/Feedback/FeedbackCard";
 import { useJourney } from "@/context/JourneyContext";
 import { gymService } from "@/services/gymService";
+import { logger } from '@/lib/logger';
 
 interface ChallengePortfolioProps {
     targetUserId: string;
@@ -55,7 +56,7 @@ export default function ChallengePortfolio({ targetUserId, onRecordsLoaded }: Ch
                 gyms.forEach(g => map[g.id] = g.name);
                 setGymMap(map);
             } catch (e) {
-                console.error("Failed to fetch gyms", e);
+                logger.error("Failed to fetch gyms", e);
             }
         };
         fetchGyms();
@@ -142,7 +143,7 @@ export default function ChallengePortfolio({ targetUserId, onRecordsLoaded }: Ch
                     onRecordsLoaded?.(0);
                 }
             } catch (error) {
-                console.error("Fetch Error:", error);
+                logger.error("Fetch Error:", error);
                 setRecords([]);
                 setSelectedRecord(null);
                 onRecordsLoaded?.(0);

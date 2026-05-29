@@ -17,6 +17,7 @@ import { JourneyDetail, Course } from "@/types";
 import { createEmptyJourney } from "@/lib/factories";
 import { homeService } from "@/services";
 import { API_BASE_URL } from "@/lib/api-config";
+import { logger } from '@/lib/logger';
 
 interface JourneyContextType {
   activeJourney: JourneyDetail;
@@ -117,17 +118,17 @@ export function JourneyProvider({ children }: { children: ReactNode }) {
         if (data.slug === slugToFetch) {
           setApiJourneyData(data);
         } else {
-          console.error("Slug mismatch");
+          logger.error("Slug mismatch");
           setIsError(true);
         }
       } else {
-        console.warn(`⚠️ API Fail: ${res.status}`);
+        logger.warn(`⚠️ API Fail: ${res.status}`);
         setIsError(true);
         setApiJourneyData(null);
       }
     } catch (error) {
       if (lastRequestedSlugRef.current === slugToFetch) {
-        console.error("💥 Network Error", error);
+        logger.error("💥 Network Error", error);
         setIsError(true);
         setApiJourneyData(null);
       }

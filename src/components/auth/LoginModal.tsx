@@ -5,6 +5,7 @@ import { X, ArrowLeft, Loader2, Briefcase, User, Rocket, Info } from 'lucide-rea
 import { logVisitorIdentity } from "@/lib/visitorUtils";
 import { API_BASE_URL, BASE_URL } from '@/lib/api-config';
 import { useAuth } from '@/context/AuthContext';
+import { logger } from '@/lib/logger';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -204,7 +205,7 @@ export default function LoginModal({ isOpen, onClose, onMockLogin }: LoginModalP
                         await logVisitorIdentity('GUEST');
                         onMockLogin('god@codeatl.tw');
                       } catch (err) {
-                        console.error(err);
+                        logger.error(err);
                       }
                     }}
                     className="bg-primary hover:bg-primary text-black text-sm py-2.5 rounded border border-yellow-600 transition-all flex flex-col items-center gap-1 shadow-lg shadow-yellow-500/20"

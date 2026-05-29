@@ -94,6 +94,7 @@ const GymNode = ({ gym, isLast, onClick }: { gym: Gym; isLast: boolean; onClick:
 };
 
 import { useLoading } from '@/context/LoadingContext';
+import { logger } from '@/lib/logger';
 
 // --- Main Roadmap Component ---
 export default function RoadmapView() {
@@ -125,7 +126,7 @@ export default function RoadmapView() {
 
                 setGymsWithProgress(mergedData);
             } catch (error) {
-                console.error("載入 Roadmap 失敗:", error);
+                logger.error("載入 Roadmap 失敗:", error);
             } finally {
                 setLoading(false);
                 setIsLoading(false);

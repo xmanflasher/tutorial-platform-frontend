@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import YouTube, { YouTubeProps, YouTubePlayer } from "react-youtube";
+import { logger } from '@/lib/logger';
 
 interface ProgressState {
     played: number;        // 百分比 (0~1)
@@ -49,7 +50,7 @@ export default function VideoPlayer({ url, onEnded, onProgress }: VideoPlayerPro
 
     // 2. 處理播放器狀態變更
     const onPlayerReady: YouTubeProps['onReady'] = (event) => {
-        console.log("✅ [YouTube API] Ready");
+        logger.log("✅ [YouTube API] Ready");
         playerRef.current = event.target;
     };
 
@@ -58,13 +59,13 @@ export default function VideoPlayer({ url, onEnded, onProgress }: VideoPlayerPro
         const player = event.target;
 
         if (event.data === 1) { // 播放中
-            console.log("▶️ [YouTube API] Playing");
+            logger.log("▶️ [YouTube API] Playing");
             startProgressTracking(player);
         } else {
             // 暫停或結束時停止追蹤
             stopProgressTracking();
             if (event.data === 0) {
-                console.log("⏹️ [YouTube API] Ended");
+                logger.log("⏹️ [YouTube API] Ended");
                 if (onEnded) onEnded();
             }
         }

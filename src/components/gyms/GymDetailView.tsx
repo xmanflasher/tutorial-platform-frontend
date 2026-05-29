@@ -8,6 +8,7 @@ import { apiRequest } from '@/lib/api';
 import { FileText, PlayCircle, CheckCircle, Lock, ArrowLeft } from 'lucide-react';
 import { GymDetailData, LessonDetail } from '@/types';
 import MarkdownRenderer from '@/components/ui/MarkdownRenderer';
+import { logger } from '@/lib/logger';
 
 interface GymDetailViewProps {
     gymData: GymDetailData;
@@ -40,7 +41,7 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
                     ));
                 }
             } catch (error) {
-                console.warn('無法載入課程學習進度', error);
+                logger.warn('無法載入課程學習進度', error);
             }
         };
         fetchFinishedLessons();
@@ -65,7 +66,7 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
                     setFullLessonContent(fullData);
                 }
             } catch (error) {
-                console.error("無法載入單元完整內容", error);
+                logger.error("無法載入單元完整內容", error);
             }
         };
         loadFullLesson();
@@ -85,9 +86,9 @@ export default function GymDetailView({ gymData }: GymDetailViewProps) {
             });
         } catch (error: any) {
             if (error.message === 'Unauthorized') {
-                console.warn('訪客模式：尚未登入，無法把課程進度記錄到資料庫中。請重新登入。');
+                logger.warn('訪客模式：尚未登入，無法把課程進度記錄到資料庫中。請重新登入。');
             } else {
-                console.error('儲存課程進度失敗', error);
+                logger.error('儲存課程進度失敗', error);
             }
         }
     };

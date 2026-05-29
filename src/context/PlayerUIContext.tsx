@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { apiRequest } from '@/lib/api';
+import { logger } from '@/lib/logger';
 
 // 定義 UI 的狀態介面
 interface PlayerUIContextType {
@@ -32,7 +33,7 @@ export function PlayerUIProvider({ children }: { children: ReactNode }) {
             const ids = await apiRequest<number[]>('/learning-records/me/finished-lessons', { silent: true });
             setFinishedLessonIds(Array.isArray(ids) ? ids : []);
         } catch (err) {
-            console.warn('[PlayerUIContext] 載入進度失敗', err);
+            logger.warn('[PlayerUIContext] 載入進度失敗', err);
         }
     };
 

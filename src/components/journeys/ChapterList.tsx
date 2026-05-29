@@ -6,6 +6,7 @@ import { Chapter } from '@/types';
 import { ChevronDown, ChevronUp, PlayCircle, FileText, Lock, CheckCircle } from 'lucide-react';
 import { orderStore } from '@/lib/orderStore';
 import { apiRequest } from '@/lib/api';
+import { logger } from '@/lib/logger';
 
 // ★ 2. 增加 journeySlug 到 props 定義中
 interface ChapterListProps {
@@ -29,7 +30,7 @@ export default function ChapterList({ chapters, journeySlug }: ChapterListProps)
         const ids = await apiRequest<number[]>('/learning-records/me/finished-lessons', { silent: true });
         setFinishedIds(Array.isArray(ids) ? ids : []);
       } catch (err) {
-        console.warn("[ChapterList] 載入進度失敗", err);
+        logger.warn("[ChapterList] 載入進度失敗", err);
       }
     };
     fetchProgress();

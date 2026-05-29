@@ -5,6 +5,7 @@ import { apiRequest } from '@/lib/api';
 import { getVisitorId } from '@/lib/visitorUtils'; // ★ 新增
 import { orderService } from '@/services/orderService'; // ★ 新增
 import { MOCK_USER } from '@/mock';
+import { logger } from '@/lib/logger';
 
 export interface User {
 // ... (rest of the interface)
@@ -55,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const urlToken = urlParams.get('token');
       
       if (urlToken) {
-        console.log("[AuthContext] 從 URL 捕捉到 Token");
+        logger.log("[AuthContext] 從 URL 捕捉到 Token");
         localStorage.setItem('accessToken', urlToken);
         // 清理 URL
         const cleanUrl = window.location.pathname + window.location.hash;
@@ -84,12 +85,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (isCheckingRef.current) return;
       isCheckingRef.current = true;
-      console.log("[AuthContext] 🏁 開始 Session 同步檢查...");
+      logger.log("[AuthContext] 🏁 開始 Session 同步檢查...");
       
       try {
         const token = localStorage.getItem('accessToken');
         if (!token) {
-          console.info("[AuthContext] 訪客模式 (No Token)");
+          logger.info("[AuthContext] 訪客模式 (No Token)");
           setLoading(false);
           isCheckingRef.current = false;
           return;
@@ -97,20 +98,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         const dbUser = await apiRequest<User>('/me', { silent: true });
         if (dbUser) {
-          console.log("[AuthContext] 使用者認證成功:", dbUser.email);
+          logger.log("[AuthContext] 使用者認證成功:", dbUser.email);
           setUser(dbUser);
           
           if (!ordersFetchedRef.current) {
-            console.log("[AuthContext] 發起初始訂單同步...");
+            logger.log("[AuthContext] 發起初始訂單同步...");
             orderService.getUserOrders(dbUser.id);
             ordersFetchedRef.current = true;
           }
         }
       } catch (error) {
         if (error instanceof Error && error.message === 'Unauthorized') {
-          console.info("[AuthContext] 👣 訪客瀏覽模式 (未登入)");
+          logger.info("[AuthContext] 👣 訪客瀏覽模式 (未登入)");
         } else {
-          console.warn("[AuthContext] 同步狀態異常:", error);
+          logger.warn("[AuthContext] 同步狀態異常:", error);
         }
         logoutLocal();
       } finally {
@@ -138,7 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // 輔助函式：僅清除本地狀態而不調用後端登出
   const logoutLocal = () => {
-    console.warn('[AuthContext] logoutLocal called. Clearing token and user state.');
+    logger.warn('[AuthContext] logoutLocal called. Clearing token and user state.');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('waterball_user');
     ordersFetchedRef.current = false;
@@ -146,7 +147,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = (userData: User, token?: string) => {
-    console.log('[AuthContext] login called for:', userData.name);
+    logger.log('[AuthContext] login called for:', userData.name);
     setUser(userData);
     localStorage.setItem('waterball_user', JSON.stringify(userData));
     if (token) {
@@ -170,7 +171,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         credentials: 'include'
       });
     } catch (error) {
-      console.error("後端登出失敗", error);
+      logger.error("後端登出失敗", error);
     }
 
     // 2. 徹底清空所有前端儲存空間
@@ -191,7 +192,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem('waterball_user', JSON.stringify(dbUser));
       }
     } catch (error) {
-      console.warn("Refresh user failed", error);
+      logger.warn("Refresh user failed", error);
     }
   };
 
