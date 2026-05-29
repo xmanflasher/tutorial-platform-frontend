@@ -9,6 +9,7 @@ import { getBadgeImageUrl } from "@/lib/utils/badge";
 import { apiRequest } from "@/lib/api";
 import { AnimatePresence } from "framer-motion";
 import BadgeCelebrationOverlay from "@/components/common/BadgeCelebrationOverlay";
+import { logger } from '@/lib/logger';
 
 // 定義徽章介面
 interface GymBadge {
@@ -92,7 +93,7 @@ export default function GymBadgesPage() {
                     setBadges([]);
                 }
             } catch (error) {
-                console.error("Failed to fetch badges", error);
+                logger.error("Failed to fetch badges", error);
                 setBadges([]);
             } finally {
                 setLoading(false);

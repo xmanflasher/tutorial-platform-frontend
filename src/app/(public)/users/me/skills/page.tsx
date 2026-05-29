@@ -11,6 +11,7 @@ import { SkillsHeader } from '@/components/profile/skills/SkillsHeader';
 import { RadarSection } from '@/components/profile/skills/RadarSection';
 import { GrowthAnalysis } from '@/components/profile/skills/GrowthAnalysis';
 import { DimensionDefinitions } from '@/components/profile/skills/DimensionDefinitions';
+import { logger } from '@/lib/logger';
 
 export default function SkillsPage() {
     const { user, loading: authLoading } = useAuth();
@@ -38,7 +39,7 @@ export default function SkillsPage() {
             setAchievements(specific);
             setGlobalAchievements(global);
         }).catch(err => {
-            console.error("Failed to load achievements", err);
+            logger.error("Failed to load achievements", err);
             setError('無法取得資料，請稍後再試');
         }).finally(() => {
             setLoading(false);

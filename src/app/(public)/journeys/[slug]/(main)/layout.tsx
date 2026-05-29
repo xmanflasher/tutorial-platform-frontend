@@ -9,6 +9,7 @@ import LoginModal from "@/components/auth/LoginModal";
 import { useAuth } from "@/context/AuthContext";
 import { useJourney } from "@/context/JourneyContext";
 import { API_BASE_URL } from "@/lib/api-config";
+import { logger } from '@/lib/logger';
 
 export default function MainJourneyLayout({
     children,
@@ -36,7 +37,7 @@ export default function MainJourneyLayout({
                 alert("登入失敗，請確認後端是否啟動");
             }
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             alert("連線錯誤");
         }
     };

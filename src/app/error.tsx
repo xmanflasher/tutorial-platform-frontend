@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { logger } from '@/lib/logger';
 
 export default function Error({
   error,
@@ -13,7 +14,7 @@ export default function Error({
 }) {
   useEffect(() => {
     // Log error manually for monitoring
-    console.error('Next.js Client Error:', error);
+    logger.error('Next.js Client Error:', error);
   }, [error]);
 
   return (

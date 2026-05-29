@@ -1,16 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { homeService } from '@/services/homeService';
 import { LeaderboardMember } from '@/types';
 import { useAuth } from '@/context/AuthContext';
 import { useLoading } from '@/context/LoadingContext';
+import { logger } from '@/lib/logger';
 
 export default function LeaderboardPage() {
   const { user } = useAuth();
   const { setIsLoading } = useLoading();
   const [members, setMembers] = useState<LeaderboardMember[]>([]);
   const [loading, setLoading] = useState(true);
+  const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -19,7 +21,7 @@ export default function LeaderboardPage() {
         const data = await homeService.getLeaderboard();
         setMembers(data);
       } catch (err) {
-        console.error("Failed:", err);
+        logger.error("Failed:", err);
       } finally {
         setLoading(false);
         setIsLoading(false);
@@ -61,6 +63,9 @@ export default function LeaderboardPage() {
               {members.map((member, index) => (
                 <div
                   key={member.id}
+                  ref={(el) => {
+                    itemRefs.current[member.id] = el;
+                  }}
                   id={`member-${member.id}`}
                   className={`flex items-center p-4 hover:bg-primary/5 transition-colors ${member.id === user?.id ? 'bg-primary/10' : ''}`}
                 >
@@ -131,7 +136,7 @@ export default function LeaderboardPage() {
 
                     <button
                       onClick={() => {
-                        const el = document.getElementById(`member-${user.id}`);
+                        const el = itemRefs.current[user.id];
                         el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                       }}
                       className="bg-gray-800 hover:bg-gray-700 text-gray-300 text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors border border-gray-700"

@@ -12,6 +12,7 @@ import LoginModal from '@/components/auth/LoginModal';
 import { API_BASE_URL } from '@/lib/api-config';
 import { useLoading } from '@/context/LoadingContext';
 import GlobalLoadingOverlay from '@/components/common/GlobalLoadingOverlay';
+import { logger } from '@/lib/logger';
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -80,7 +81,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         alert("登入失敗，請確認後端是否啟動");
       }
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       alert("發生錯誤");
     }
   };
@@ -131,7 +132,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         <Header
           onMenuClick={() => setSidebarOpen(true)}
           onLoginClick={() => {
-            console.log("Header Login Button Clicked");
+            logger.log("Header Login Button Clicked");
             setLoginModalOpen(true);
           }}
         />

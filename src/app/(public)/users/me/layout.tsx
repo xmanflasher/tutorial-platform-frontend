@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import { userService } from '@/services/userService';
 import { UserProfile } from '@/types/User';
+import { logger } from '@/lib/logger';
 
 const TABS = [
   { name: '基本資料', href: '/users/me/profile' },
@@ -27,7 +28,7 @@ export default function UserProfileLayout({ children }: { children: React.ReactN
     if (authUser?.id) {
       userService.getUserProfile(authUser.id.toString())
         .then(data => setProfile(data))
-        .catch(err => console.error("Failed to load layout profile:", err));
+        .catch(err => logger.error("Failed to load layout profile:", err));
     }
   }, [authUser?.id]);
 

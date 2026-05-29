@@ -1,4 +1,5 @@
 'use client';
+import { cn } from "@/lib/utils";
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -11,11 +12,10 @@ import { announcementService } from '@/services/announcementService';
 import { Course } from '@/types';
 import { useAuth } from '@/context/AuthContext';
 
-function cn(...inputs: any[]) {
-    return twMerge(clsx(inputs));
-}
+
 
 import { STEPS, PAYMENT_METHODS, INVOICE_TYPES } from '@/mock/checkout';
+import { logger } from '@/lib/logger';
 
 export default function CheckoutPage() {
     const { slug } = useParams();
@@ -51,7 +51,7 @@ export default function CheckoutPage() {
     const handleCreateOrder = async () => {
         if (isSubmitting) return;
         
-        console.log('[CheckoutPage] handleCreateOrder clicked', { courseSlug: course?.slug, userId: user?.id });
+        logger.log('[CheckoutPage] handleCreateOrder clicked', { courseSlug: course?.slug, userId: user?.id });
         if (!course || !user) {
             if (!user) alert('請先登入才能下單');
             return;
@@ -91,7 +91,7 @@ export default function CheckoutPage() {
 
             setCurrentStep(2);
         } catch (error) {
-            console.error('[CheckoutPage] Create order failed:', error);
+            logger.error('[CheckoutPage] Create order failed:', error);
             alert('訂單建立失敗，詳情請見控制台');
         } finally {
             setIsSubmitting(false);

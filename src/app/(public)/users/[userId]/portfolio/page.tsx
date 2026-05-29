@@ -11,6 +11,7 @@ import { useAuth } from "@/context/AuthContext"; // ★ 新增
 
 
 import { apiRequest } from "@/lib/api"; // ★ 修正路徑
+import { logger } from '@/lib/logger';
 
 export default function PortfolioPage({ params }: { params: Promise<{ userId: string }> }) {
     const { user: authUser } = useAuth(); // ★ 引入登入資訊
@@ -69,7 +70,7 @@ export default function PortfolioPage({ params }: { params: Promise<{ userId: st
             if (uid === 'me' && authUser?.id) {
                 uid = authUser.id.toString();
             } else if (uid === 'me') {
-                console.warn("[PortfolioPage] Cannot resolve 'me' without authenticated user id");
+                logger.warn("[PortfolioPage] Cannot resolve 'me' without authenticated user id");
                 setLoading(false);
                 return;
             }
@@ -90,7 +91,7 @@ export default function PortfolioPage({ params }: { params: Promise<{ userId: st
                     // setHasRecords(filteredRecords.length > 0); // This state is no longer used directly
                 }
             } catch (error) {
-                console.error("Error loading portfolio data:", error);
+                logger.error("Error loading portfolio data:", error);
             } finally {
                 setLoading(false);
             }

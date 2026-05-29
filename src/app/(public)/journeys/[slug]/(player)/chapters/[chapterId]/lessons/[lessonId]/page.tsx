@@ -13,6 +13,7 @@ import { LessonDetail } from "@/types";    // 統一從 types 匯入
 import { apiRequest } from "@/lib/api";
 import { orderStore } from "@/lib/orderStore";
 import { cn } from "@/lib/utils";
+import { logger } from '@/lib/logger';
 
 export default function LessonPage({
     params
@@ -41,7 +42,7 @@ export default function LessonPage({
                 const data = await lessonService.getLessonDetail(lessonId);
                 setLesson(data);
             } catch (error) {
-                console.warn('無法載入單元資料', error);
+                logger.warn('無法載入單元資料', error);
             } finally {
                 setLoading(false);
                 setIsLoading(false);
@@ -61,9 +62,9 @@ export default function LessonPage({
             });
         } catch (error: any) {
             if (error.message === 'Unauthorized') {
-                console.warn('訪客模式：尚未登入，無法把課程進度記錄到資料庫。');
+                logger.warn('訪客模式：尚未登入，無法把課程進度記錄到資料庫。');
             } else {
-                console.error('儲存進度失敗', error);
+                logger.error('儲存進度失敗', error);
             }
         }
     };

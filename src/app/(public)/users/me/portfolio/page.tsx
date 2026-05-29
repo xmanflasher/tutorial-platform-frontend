@@ -10,6 +10,7 @@ import { apiRequest } from "@/lib/api";
 import { UserProfile } from "@/types/User";
 import { User } from "lucide-react";
 import { useLoading } from "@/context/LoadingContext";
+import { logger } from '@/lib/logger';
 
 export default function PortfolioPage() {
     const { user, loading: authLoading } = useAuth();
@@ -33,7 +34,7 @@ export default function PortfolioPage() {
                 setStats(skillStats);
 
             } catch (error) {
-                console.error("Failed to load portfolio data", error);
+                logger.error("Failed to load portfolio data", error);
             } finally {
                 setLoading(false);
                 setIsLoading(false);
@@ -62,7 +63,7 @@ export default function PortfolioPage() {
             <PortfolioHeader profile={profile} stats={stats} hideBanner={true} journeyId={activeJourney?.id} />
             <ChallengePortfolio
                 targetUserId={user.id.toString()}
-                onRecordsLoaded={(count: number) => console.log(`Loaded ${count} records`)}
+                onRecordsLoaded={(count: number) => logger.log(`Loaded ${count} records`)}
             />
         </div>
     );

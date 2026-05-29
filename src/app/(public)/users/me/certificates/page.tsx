@@ -8,6 +8,7 @@ import { useLoading } from '@/context/LoadingContext';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useJourney } from '@/context/JourneyContext';
+import { logger } from '@/lib/logger';
 
 /**
  * 證書畫廊頁面 (Private Profile)
@@ -23,7 +24,7 @@ export default function CertificatesPage() {
         setIsLoading(true);
         achievementService.getMyAchievements()
             .then(data => setCertificates(data.certificates))
-            .catch(err => console.error("Failed to load certificates", err))
+            .catch(err => logger.error("Failed to load certificates", err))
             .finally(() => {
                 setLoading(false);
                 setIsLoading(false);

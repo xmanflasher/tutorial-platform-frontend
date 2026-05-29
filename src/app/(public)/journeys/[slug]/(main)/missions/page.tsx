@@ -7,6 +7,7 @@ import { Clock, Gift, Lock, CheckCircle2, Swords, Loader2, Calendar, X } from "l
 import { MemberMission } from "@/types";
 import { missionService } from "@/services/missionService";
 import { useLoading } from "@/context/LoadingContext";
+import { logger } from '@/lib/logger';
 
 export default function MissionsPage() {
     const params = useParams();
@@ -25,7 +26,7 @@ export default function MissionsPage() {
                 .then((data) => {
                     setMissions(data);
                 })
-                .catch((err) => console.error(err))
+                .catch((err) => logger.error(err))
                 .finally(() => {
                     setLoading(false);
                     setIsLoading(false);
