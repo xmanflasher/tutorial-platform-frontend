@@ -1,10 +1,11 @@
 import { JourneyDetail, Course } from '@/types';
+import { logger } from '@/lib/logger';
 
 /**
  * 將後端 JourneyDetail 轉換為前端首頁用的 Course
  */
 export const toFeaturedCourse = (journey: JourneyDetail): Course => {
-    console.log('[Adapter] Mapping journey:', journey.slug, 'title:', journey.title);
+    logger.log('[Adapter] Mapping journey:', journey.slug, 'title:', journey.title);
     return {
         id: journey.id,
         title: journey.title,

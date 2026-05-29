@@ -2,6 +2,7 @@ import { apiRequest } from '@/lib/api';
 import { UserProfile } from '@/types';
 import { USE_MOCK_DATA, delay } from '@/lib/api-config';
 import { MOCK_MEMBERS } from '@/mock';
+import { logger } from '@/lib/logger';
 
 export const userService = {
     /**
@@ -41,7 +42,7 @@ export const userService = {
             }
             return (MOCK_MEMBERS.find(m => String(m.id) === userId) || null) as any as UserProfile | null;
         } catch (error) {
-            console.warn("[userService] Failed to fetch profile, using mock fallback", error);
+            logger.warn("[userService] Failed to fetch profile, using mock fallback", error);
             return (MOCK_MEMBERS.find(m => String(m.id) === userId) || MOCK_MEMBERS[0]) as any as UserProfile;
         }
     },
@@ -57,7 +58,7 @@ export const userService = {
             });
             return true;
         } catch (error) {
-            console.error("[userService] Failed to update current profile", error);
+            logger.error("[userService] Failed to update current profile", error);
             return false;
         }
     },
@@ -73,7 +74,7 @@ export const userService = {
             });
             return true;
         } catch (error) {
-            console.error("[userService] Failed to update instructor profile", error);
+            logger.error("[userService] Failed to update instructor profile", error);
             return false;
         }
     },
@@ -89,7 +90,7 @@ export const userService = {
             });
             return true;
         } catch (error) {
-            console.error("[userService] Failed to update profile", error);
+            logger.error("[userService] Failed to update profile", error);
             return false;
         }
     },
@@ -109,7 +110,7 @@ export const userService = {
             const params = journeyId ? `?journeyId=${journeyId}` : '';
             return await apiRequest<any[]>(`/api/members/me/skill-stats${params}`, { silent: true });
         } catch (error) {
-            console.warn("[userService] Failed to fetch skill stats", error);
+            logger.warn("[userService] Failed to fetch skill stats", error);
             return [];
         }
     }

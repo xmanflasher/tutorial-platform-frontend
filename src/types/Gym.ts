@@ -10,7 +10,7 @@ export interface Challenge {
     name: string;
     recommendDurationInDays: number;
     maxDurationInDays: number;
-    submissionFields?: any[]; // 這裡可以根據具體需求再細化
+    submissionFields?: Record<string, unknown>[]; // 這裡可以根據具體需求再細化
 }
 
 export interface Gym {

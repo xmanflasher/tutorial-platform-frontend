@@ -3,6 +3,7 @@ import { USE_MOCK_DATA, delay } from '@/lib/api-config';
 import { Gym, GymDetailData } from '@/types';
 import { recordService } from '@/services/recordService'; 
 import { orderStore } from '@/lib/orderStore';
+import { logger } from '@/lib/logger';
 
 export const gymService = {
   /**
@@ -22,7 +23,7 @@ export const gymService = {
     try {
       return await apiRequest(`/gyms/${gymId}`);
     } catch (error) {
-      console.warn(`[gymService] 取得道館 ${gymId} 失敗，傳回基礎 Mock 以降級渲染`, error);
+      logger.warn(`[gymService] 取得道館 ${gymId} 失敗，傳回基礎 Mock 以降級渲染`, error);
       return {
           id: Number(gymId),
           name: '修煉道館 (Offline)',
@@ -56,7 +57,7 @@ export const gymService = {
         const passed = isSuccess(record?.status);
         
         // 取得星數：有紀錄則優先讀取 ratings.stars，若沒給則預設 3 (因 status 為成功)
-        const stars = passed ? (record?.ratings?.stars || 3) : 0;
+        const stars = passed ? (Number(record?.ratings?.stars) || 3) : 0;
         
         // 解鎖邏輯：已購買 且 (是第一關 或 前一關已通過)
         const isLocked = !isOwned || !previousCompleted;
@@ -72,7 +73,7 @@ export const gymService = {
         };
       });
     } catch (error) {
-      console.error("[gymService] 進度合併失敗", error);
+      logger.error("[gymService] 進度合併失敗", error);
       return this.fallbackGymProgress(journeyGyms, slug);
     }
   },

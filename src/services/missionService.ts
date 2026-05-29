@@ -2,6 +2,7 @@ import { MemberMission } from "@/types";
 import { MOCK_MISSIONS } from "@/mock"; 
 import { USE_MOCK_DATA, delay } from "@/lib/api-config";
 import { apiRequest } from '@/lib/api';
+import { logger } from '@/lib/logger';
 
 export const missionService = {
   /**
@@ -18,7 +19,7 @@ export const missionService = {
     try {
       return await apiRequest<MemberMission[]>(`/journeys/${slug}/missions`);
     } catch (error) {
-      console.warn("[missionService] 請求失敗，降級回傳 Mock 任務列表", error);
+      logger.warn("[missionService] 請求失敗，降級回傳 Mock 任務列表", error);
       return MOCK_MISSIONS;
     }
   },

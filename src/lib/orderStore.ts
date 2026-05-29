@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 // src/lib/orderStore.ts
 
 export type OrderStatus = 'PENDING' | 'PAID' | 'CANCELLED';
@@ -26,7 +28,7 @@ export const orderStore = {
         try {
             return JSON.parse(stored);
         } catch (e) {
-            console.error('Failed to parse orders from localStorage', e);
+            logger.error('Failed to parse orders from localStorage', e);
             return [];
         }
     },

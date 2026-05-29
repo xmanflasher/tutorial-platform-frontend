@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 export function getVisitorId(): string {
   if (typeof window === 'undefined') return '';
   
@@ -32,5 +34,5 @@ export function logVisitorIdentity(category: 'GUEST' | 'PASSERBY') {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ category, visitorId })
-  }).catch(err => console.error('[VisitorLog] Failed', err));
+  }).catch(err => logger.error('[VisitorLog] Failed', err));
 }

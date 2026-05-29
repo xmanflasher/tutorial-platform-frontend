@@ -19,6 +19,7 @@ import {
 import { USE_MOCK_DATA, delay } from '@/lib/api-config';
 import { apiRequest } from '@/lib/api'; // ★ 1. 改用統一的 API 請求工具
 import { toFeaturedCourse } from '@/adapters/courseAdapter'; // ★ 2. 引入 Adapter
+import { logger } from '@/lib/logger';
 
 export const homeService = {
     /**
@@ -35,7 +36,7 @@ export const homeService = {
             // [Perf] 設定 5s 超時，避免 Render 冷啟動導致 Vercel 504
             return await apiRequest<Announcement>('/announcements/latest', { silent: true, timeout: 5000 });
         } catch (error) {
-            console.warn('[homeService] 公告載入失敗，降級回傳 Mock');
+            logger.warn('[homeService] 公告載入失敗，降級回傳 Mock');
             return MOCK_ANNOUNCEMENT;
         }
     },
@@ -60,7 +61,7 @@ export const homeService = {
                 .map(toFeaturedCourse);
 
         } catch (error) {
-            console.error(`[homeService] 課程載入失敗，降級回傳 Mock`, error);
+            logger.error(`[homeService] 課程載入失敗，降級回傳 Mock`, error);
             return MOCK_FEATURED_COURSES;
         }
     },
@@ -95,7 +96,7 @@ export const homeService = {
         try {
             return await apiRequest<LeaderboardMember[]>('/leaderboard', { silent: true, timeout: 5000 });
         } catch (error) {
-            console.warn('[homeService] 排行榜載入失敗，降級回傳 Mock');
+            logger.warn('[homeService] 排行榜載入失敗，降級回傳 Mock');
             return MOCK_LEADERBOARD;
         }
     }

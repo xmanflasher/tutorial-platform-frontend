@@ -1,5 +1,6 @@
 import { toast } from 'sonner';
 import { API_BASE_URL } from '@/lib/api-config';
+import { logger } from '@/lib/logger';
 
 interface RequestOptions extends RequestInit {
   // 選項：是否要安靜模式 (不跳錯誤視窗)
@@ -43,7 +44,7 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
             bodyLog = '[Unparseable Body]';
         }
     }
-    console.log(`[API Request][${requestId}] Starting ${method} ${endpoint}`, bodyLog);
+    logger.log(`[API Request][${requestId}] Starting ${method} ${endpoint}`, bodyLog);
 
     const response = await fetch(url, {
       ...options,
@@ -56,18 +57,18 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
 
     // 4. 統一錯誤處理 (Interceptor)
     if (!response.ok) {
-      console.warn(`[API Error Response] ${response.status} ${endpoint}`);
+      logger.warn(`[API Error Response] ${response.status} ${endpoint}`);
       // 處理 401 (Token 過期/未登入/Session 失效)
       if (response.status === 401) {
         // 如果原本有送 Token 卻失敗了，嘗試清除 Token 並重試一次
         if (hasToken && !options._isRetry) {
-          console.warn(`[API 401] Token 驗證失敗，嘗試清除並重試一次: ${endpoint}`);
+          logger.warn(`[API 401] Token 驗證失敗，嘗試清除並重試一次: ${endpoint}`);
           localStorage.removeItem('accessToken');
           return await apiRequest<T>(endpoint, { ...options, _isRetry: true });
         }
         
         if (options._isRetry) {
-          console.error(`[API 401] Retry also failed for ${endpoint}. Stack Trace:`);
+          logger.error(`[API 401] Retry also failed for ${endpoint}. Stack Trace:`);
           console.trace();
         }
 
@@ -99,7 +100,7 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
 
       // 處理 429 (速率限制)
       if (response.status === 429) {
-        console.error(`[API 429] Rate limit exceeded for ${endpoint}. Stack Trace:`);
+        logger.error(`[API 429] Rate limit exceeded for ${endpoint}. Stack Trace:`);
         console.trace();
         if (typeof window !== 'undefined' && !options.silent) {
           toast.warning('操作太快囉！', {
@@ -138,7 +139,7 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
     try {
       return JSON.parse(text);
     } catch (e) {
-      console.error('解析 JSON 失敗!', {
+      logger.error('解析 JSON 失敗!', {
         error: e,
         endpoint,
         rawText: text.length > 500 ? text.substring(0, 500) + '...' : text
@@ -149,7 +150,7 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
   } catch (error: any) {
     // Timeout 處理
     if (error.name === 'AbortError') {
-      console.warn(`[API] 請求超時 (${options.timeout}ms): ${endpoint}`);
+      logger.warn(`[API] 請求超時 (${options.timeout}ms): ${endpoint}`);
       if (!options.silent && typeof window !== 'undefined') {
         toast.error('伺服器連線超時', { description: '正在切換至離線模式...' });
       }
@@ -162,7 +163,7 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
       if (error instanceof Error && error.message === 'Unauthorized') {
         // 401 已經在上面處理過報錯了
       } else {
-        console.error('API Request Failed:', error);
+        logger.error('API Request Failed:', error);
         toast.error('連線失敗', {
           description: '請檢查您的網路連線或聯繫管理員'
         });

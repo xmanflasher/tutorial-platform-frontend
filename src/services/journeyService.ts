@@ -1,6 +1,7 @@
 import { JourneyDetail } from '@/types';
 import { API_BASE_URL, USE_MOCK_DATA, delay } from '@/lib/api-config';
 import { apiRequest } from '@/lib/api';
+import { logger } from '@/lib/logger';
 import { 
     MOCK_JOURNEYS, 
     MOCK_CHAPTERS, 
@@ -24,7 +25,7 @@ export const journeyService = {
             const data = await apiRequest<any>(`/journeys/${slug}`, { silent: true, timeout: 5000 });
             return this.adaptJourneyDetail(data, slug);
         } catch (error) {
-            console.warn(`[API] 連線失敗，降級使用動態 Mock 組裝: ${slug}`, error);
+            logger.warn(`[API] 連線失敗，降級使用動態 Mock 組裝: ${slug}`, error);
             return this.getMockJourneyDetail(slug);
         }
     },

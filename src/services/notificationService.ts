@@ -1,5 +1,6 @@
 import { USE_MOCK_DATA, delay } from '@/lib/api-config';
 import { apiRequest } from '@/lib/api';
+import { logger } from '@/lib/logger';
 
 export interface Notification {
     id: number;
@@ -34,7 +35,7 @@ class NotificationService {
         try {
             return await apiRequest<Notification[]>('/notifications/me', { silent: true });
         } catch (e) {
-            console.warn('[NotificationService] Failed to fetch notifications, using empty/mock list', e);
+            logger.warn('[NotificationService] Failed to fetch notifications, using empty/mock list', e);
             return MOCK_NOTIFICATIONS;
         }
     }
@@ -47,7 +48,7 @@ class NotificationService {
             const res = await apiRequest<{ count: number }>('/notifications/me/unread-count', { silent: true });
             return res.count;
         } catch (e) {
-            console.warn('[NotificationService] Failed to fetch unread count', e);
+            logger.warn('[NotificationService] Failed to fetch unread count', e);
             return 0;
         }
     }
@@ -63,7 +64,7 @@ class NotificationService {
             });
             return true;
         } catch (e) {
-            console.error('[NotificationService] Failed to mark notification as read', e);
+            logger.error('[NotificationService] Failed to mark notification as read', e);
             return false;
         }
     }
@@ -79,7 +80,7 @@ class NotificationService {
             });
             return true;
         } catch (e) {
-            console.error('[NotificationService] Failed to mark all notifications as read', e);
+            logger.error('[NotificationService] Failed to mark all notifications as read', e);
             return false;
         }
     }

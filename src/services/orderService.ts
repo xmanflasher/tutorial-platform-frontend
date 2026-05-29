@@ -2,6 +2,7 @@
 import { apiRequest } from '@/lib/api';
 import { USE_MOCK_DATA, delay } from '@/lib/api-config';
 import { orderStore, Order } from '@/lib/orderStore';
+import { logger } from '@/lib/logger';
 
 export const orderService = {
     /**
@@ -54,7 +55,7 @@ export const orderService = {
 
             return newOrder;
         } catch (error) {
-            console.error('[orderService] Failed to create order', error);
+            logger.error('[orderService] Failed to create order', error);
             throw error;
         }
     },
@@ -78,18 +79,18 @@ export const orderService = {
                 paymentDeadline: o.createdAt + (3 * 24 * 60 * 60 * 1000)
             }));
             
-            console.log(`[orderService] Syncing local store with ${orders.length} orders`);
+            logger.log(`[orderService] Syncing local store with ${orders.length} orders`);
             orderStore.saveOrders(orders);
             
             // 重要：發送事件通知其他組件 (例如首頁 CourseCard) 重新檢查擁有狀態
             if (typeof window !== 'undefined') {
-                console.log('[orderService] Dispatching order-completed event');
+                logger.log('[orderService] Dispatching order-completed event');
                 window.dispatchEvent(new CustomEvent('order-completed'));
             }
             
             return orders;
         } catch (error) {
-            console.error('[orderService] Failed to fetch orders', error);
+            logger.error('[orderService] Failed to fetch orders', error);
             return orderStore.getOrders();
         }
     },
@@ -109,7 +110,7 @@ export const orderService = {
             }
             return true;
         } catch (error) {
-            console.error('[orderService] Failed to mark order as paid', error);
+            logger.error('[orderService] Failed to mark order as paid', error);
             return false;
         }
     },
@@ -128,7 +129,7 @@ export const orderService = {
             }
             return true;
         } catch (error) {
-            console.error('[orderService] Failed to cancel order', error);
+            logger.error('[orderService] Failed to cancel order', error);
             // fallback for mock
             const orders = orderStore.getOrders();
             const order = orders.find(o => o.orderNumber === orderNumber);

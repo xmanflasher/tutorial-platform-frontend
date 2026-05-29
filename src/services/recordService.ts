@@ -1,6 +1,7 @@
 import { apiRequest } from '@/lib/api';
 import { GymChallengeRecord } from '@/types';
 import { USE_MOCK_DATA, delay } from '@/lib/api-config';
+import { logger } from '@/lib/logger';
 
 export const recordService = {
     /**
@@ -35,7 +36,7 @@ export const recordService = {
 
             return remoteRecords;
         } catch (error) {
-            console.warn('[recordService] 無法取得挑戰紀錄，嘗試讀取本地暫存', error);
+            logger.warn('[recordService] 無法取得挑戰紀錄，嘗試讀取本地暫存', error);
             const localRecordsJson = localStorage.getItem('local_gym_records');
             return localRecordsJson ? JSON.parse(localRecordsJson) : [];
         }
@@ -58,7 +59,7 @@ export const recordService = {
                 body: JSON.stringify(params)
             });
         } catch (error) {
-            console.warn('[recordService] 提交挑戰失敗，嘗試進入 Demo 備援模式', error);
+            logger.warn('[recordService] 提交挑戰失敗，嘗試進入 Demo 備援模式', error);
             
             // 如果是 404 或其他連線問題，且 submission 內含有資料，則存入本地
             if (params.submission) {

@@ -13,8 +13,8 @@ export interface GymChallengeRecord {
     gymName?: string;          // 道館名稱
 
     // JSONB 類型在前端通常對應物件或 any
-    submission?: any;          // submission, jsonb (存放學員提交的內容)
-    ratings?: any;             // ratings, jsonb (存放評分)
+    submission?: Record<string, unknown>;          // submission, jsonb (存放學員提交的內容)
+    ratings?: Record<string, unknown>;             // ratings, jsonb (存放評分)
     feedback?: string;         // feedback, text (老師的回饋)
 
     // 時間戳記

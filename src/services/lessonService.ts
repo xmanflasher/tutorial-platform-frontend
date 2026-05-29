@@ -3,6 +3,7 @@ import { LessonDetail } from '@/types/Journey';
 import { USE_MOCK_DATA, delay } from '@/lib/api-config';
 import { MOCK_LESSONS } from '@/mock/lessonsMock';
 import { MOCK_LESSON_CONTENTS } from '@/mock/lesson_contentsMock';
+import { logger } from '@/lib/logger';
 
 export const lessonService = {
     /**
@@ -17,7 +18,7 @@ export const lessonService = {
         try {
             return await apiRequest<LessonDetail>(`/lessons/${lessonId}`, { silent: true, timeout: 5000 });
         } catch (error) {
-            console.warn(`[lessonService] 載入單元 ${lessonId} 失敗，降級使用動態 Mock 組裝`, error);
+            logger.warn(`[lessonService] 載入單元 ${lessonId} 失敗，降級使用動態 Mock 組裝`, error);
             return this.getMockLessonDetail(lessonId);
         }
     },

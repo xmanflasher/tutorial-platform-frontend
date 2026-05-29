@@ -1,5 +1,6 @@
 // src/services/announcementService.ts
 import { apiRequest } from '@/lib/api';
+import { logger } from '@/lib/logger';
 
 export interface AnnouncementData {
     id: number;
@@ -37,7 +38,7 @@ class AnnouncementService {
                 this.notify();
             }
         } catch (e) {
-            console.warn('[AnnouncementService] Failed to fetch latest', e);
+            logger.warn('[AnnouncementService] Failed to fetch latest', e);
         }
     }
 
@@ -45,7 +46,7 @@ class AnnouncementService {
         try {
             return await apiRequest<AnnouncementData[]>('/announcements', { silent: true });
         } catch (e) {
-            console.error('[AnnouncementService] Failed to fetch all', e);
+            logger.error('[AnnouncementService] Failed to fetch all', e);
             return [];
         }
     }
