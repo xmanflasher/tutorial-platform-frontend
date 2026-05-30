@@ -1,26 +1,26 @@
-import { 
-    Announcement, 
-    Course, 
-    ResourceCard, 
-    Instructor, 
-    LeaderboardMember, 
-    JourneyDetail, 
-    MemberMission 
+import {
+  Announcement,
+  Course,
+  ResourceCard,
+  Instructor,
+  LeaderboardMember,
+  JourneyDetail,
+  MemberMission
 } from '@/types';
 import { User } from '@/context/AuthContext';
 
 export const MOCK_USER: User = {
-    id: 100,
-    name: '驗收大神 (Mock)',
-    nickName: '大神本尊',
-    email: 'god_mode@mock.tw',
-    avatar: '/images/avatar_1.png',
-    level: 99,
-    exp: 99999,
-    nextLevelExp: 100000,
-    role: 'ADMIN',
-    jobTitle: '軟體架構導讀者',
-    region: 'Σ-Sector 01'
+  id: 100,
+  name: '驗收大神 (Mock)',
+  nickName: '大神本尊',
+  email: 'god_mode@mock.tw',
+  avatar: '/images/avatar_1.png',
+  level: 99,
+  exp: 99999,
+  nextLevelExp: 100000,
+  role: 'ADMIN',
+  jobTitle: '軟體架構導讀者',
+  region: 'Σ-Sector 01'
 };
 
 // ==========================================
@@ -39,10 +39,10 @@ import { MOCK_GYM_BADGES } from './gym_badgesMock';
 import { MOCK_MISSION_REQUIREMENTS } from './mission_requirementsMock';
 
 // 匯出 Generated 原始資料
-export { 
-    MOCK_MEMBERS, MOCK_JOURNEYS, MOCK_LESSONS, MOCK_CHAPTERS, 
-    MOCK_GYMS, MOCK_CHALLENGES, MOCK_MISSIONS_RAW, MOCK_JOURNEY_MENUS,
-    MOCK_LESSON_CONTENTS, MOCK_GYM_BADGES, MOCK_MISSION_REQUIREMENTS
+export {
+  MOCK_MEMBERS, MOCK_JOURNEYS, MOCK_LESSONS, MOCK_CHAPTERS,
+  MOCK_GYMS, MOCK_CHALLENGES, MOCK_MISSIONS_RAW, MOCK_JOURNEY_MENUS,
+  MOCK_LESSON_CONTENTS, MOCK_GYM_BADGES, MOCK_MISSION_REQUIREMENTS
 };
 
 // ==========================================
@@ -59,27 +59,27 @@ export const MOCK_ANNOUNCEMENT: Announcement = {
 
 // 首頁精選課程 (從 Generated 資料動態組合成 Course 格式)
 export const MOCK_FEATURED_COURSES: Course[] = MOCK_JOURNEYS
-    .filter((j: any) => j.visible !== false) // 尊重隱身屬性
-    .sort((a: any, b: any) => a.id - b.id)    // 依照 ID 排序
-    .slice(0, 3)                             // 只取前三門
-    .map((j: any) => {
-        const instructor = MOCK_MEMBERS.find(m => m.id === j.instructorId);
-        return {
-            id: j.id,
-            title: j.name,
-            subtitle: instructor ? `${instructor.name} 的專業課程` : '尚硅谷經典教程',
-            author: instructor?.name || 'Σ-Codeatl 導師',
-            description: j.description || '',
-            slug: j.slug,
-            statusLabel: j.id === 6 ? '免費課程' : '尚未擁有',
-            primaryAction: { 
-                text: j.id === 6 ? '開始學習' : '試聽課程', 
-                href: `/journeys/${j.slug}`, 
-                style: 'solid' 
-            },
-            image: `/images/course_${j.id}.png`
-        };
-    });
+  .filter((j: any) => j.visible !== false) // 尊重隱身屬性
+  .sort((a: any, b: any) => a.id - b.id)    // 依照 ID 排序
+  .slice(0, 3)                             // 只取前三門
+  .map((j: any) => {
+    const instructor = MOCK_MEMBERS.find(m => m.id === j.instructorId);
+    return {
+      id: j.id,
+      title: j.name,
+      subtitle: instructor ? `${instructor.name} 的專業課程` : '尚硅谷經典教程',
+      author: instructor?.name || 'Σ-Codeatl 導師',
+      description: j.description || '',
+      slug: j.slug,
+      statusLabel: j.id === 6 ? '免費課程' : '尚未擁有',
+      primaryAction: {
+        text: j.id === 6 ? '開始學習' : '試聽課程',
+        href: `/journeys/${j.slug}`,
+        style: 'solid'
+      },
+      image: `/images/courses/course_${j.id}.png`
+    };
+  });
 
 // 資源卡片
 export const MOCK_RESOURCE_CARDS: ResourceCard[] = [
@@ -87,7 +87,7 @@ export const MOCK_RESOURCE_CARDS: ResourceCard[] = [
     id: 1,
     iconName: 'BookOpen',
     title: 'JavaScript 基礎實戰完整課程',
-    description: '從零開始學 JavaScript，透過實作掌握 DOM、非同步與 API。',
+    description: '測試從零開始學 JavaScript，透過實作掌握 DOM、非同步與 API。',
     primaryAction: { text: '查看課程', href: '/courses' },
   },
   {
@@ -301,24 +301,24 @@ export const JOURNEY_MAP: Record<string, JourneyDetail> = {
   'software-design-pattern': SDP_DATA,
   'ai-bdd': AI_BDD_DATA,
   'javascript-basics-140': {
-      id: 3,
-      slug: 'javascript-basics-140',
-      title: 'JavaScript 基礎實戰 (140集精通)',
-      subtitle: '從零基礎到精通 DOM/BOM 實戰',
-      description: '本課程涵蓋了 ES 標準、BOM 以及 DOM 的大部分內容，適合有一定 HTML 和 CSS 基礎的同學學習。透過對該課程的学习，可以使同學初步掌握 JavaScript，對面向對象的語言有一個初步的理解。',
-      totalVideos: 140,
-      tags: ['零基礎', '尚硅谷'],
-      price: 0,
-      features: ['免費課程', '尚硅谷出品', '140集精華'],
-      actionButtons: { primary: '立即開始', secondary: '' },
-      chapters: [
-          { id: 1, name: 'JavaScript 基礎語法', lessons: [] },
-          { id: 2, name: 'DOM 操作實戰', lessons: [] },
-          { id: 3, name: 'BOM 與事件處理', lessons: [] }
-      ],
-      menus: [],
-      missions: [],
-      gyms: []
+    id: 3,
+    slug: 'javascript-basics-140',
+    title: 'JavaScript 基礎實戰 (140集精通)',
+    subtitle: '從零基礎到精通 DOM/BOM 實戰',
+    description: '本課程涵蓋了 ES 標準、BOM 以及 DOM 的大部分內容，適合有一定 HTML 和 CSS 基礎的同學學習。透過對該課程的学习，可以使同學初步掌握 JavaScript，對面向對象的語言有一個初步的理解。',
+    totalVideos: 140,
+    tags: ['零基礎', '尚硅谷'],
+    price: 0,
+    features: ['免費課程', '尚硅谷出品', '140集精華'],
+    actionButtons: { primary: '立即開始', secondary: '' },
+    chapters: [
+      { id: 1, name: 'JavaScript 基礎語法', lessons: [] },
+      { id: 2, name: 'DOM 操作實戰', lessons: [] },
+      { id: 3, name: 'BOM 與事件處理', lessons: [] }
+    ],
+    menus: [],
+    missions: [],
+    gyms: []
   }
 };
 

@@ -20,7 +20,7 @@ export const MOCK_JOURNEYS = [
   },
   {
     "id": 6,
-    "description": "從零開始學 JavaScript，透過實作掌握 DOM、非同步與 API。",
+    "description": "這門課是專為前端奠定扎實基本功的實戰影片教學。內容完整涵蓋 ES 標準規範、BOM 以及 DOM 的核心範疇，非常適合已有 HTML 和 CSS 基礎的開發者進階挑戰。\n\n透過這門課的洗禮，你將初步駕馭 JavaScript 的核心語法，並對物件導向（Object-Oriented）的程式邏輯有全方位的理解。同時，你還能熟練運用 DOM 和 BOM 的操作，獨立開發出各種動態網頁特效。\n\nJavaScript 的底子是否扎實，直接決定了前端工程師的職涯天花板。希望大家能沉下心來精準鍛鍊，完成這趟基礎修煉後，就能順理成章地開啟下一階段的 JS 高級技術之旅。",
     "name": "JavaScript 基礎實戰 (140集)",
     "originalId": 6,
     "slug": "javascript-basics-140",
@@ -52,6 +52,15 @@ export const MOCK_JOURNEYS = [
     "originalId": 1,
     "slug": "software-career",
     "visible": false,
+    "instructorId": null
+  },
+  {
+    "id": 7,
+    "description": "本套系列影片直擊 JavaScript 最核心的高階技術。課程將從最底層的基礎概念（資料型態、變數、記憶體管理、物件、函式）進行全方位的複習與總結，接著由淺入深，帶你解構 JS 最難啃的硬核技術：\n\n\n\n核心機制： 原型與原型鏈（Prototype Chain）、執行環境（Execution Context）與執行環境疊夾（Stack）\n\n語法特性： 變數提升（Hoisting）、函式提升、作用域（Scope）與作用域鏈、閉包（Closure）\n\n進階架構： 物件的多種創建模式、物件的繼承模式\n\n非同步底層： JavaScript 事件循環機制（Event Loop）\n\n\n\n這些底層原理與進階架構，是脫離素人階段、晉升為進階前端架構師的必備神兵。掌握它們，你將能看透程式碼背後的運作本質，寫出更高品質、更具擴充性的優雅程式碼。",
+    "name": "JavaScript 高級教程 (48集)",
+    "originalId": 7,
+    "slug": "javascript-advanced-48",
+    "visible": true,
     "instructorId": null
   }
 ];
