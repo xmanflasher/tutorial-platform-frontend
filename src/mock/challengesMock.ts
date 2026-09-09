@@ -1,156 +1,6 @@
 // Generated from SQL
 export const MOCK_CHALLENGES = [
   {
-    "id": 601,
-    "maxDuration": 3,
-    "name": "變數與資料類型的洗鍊",
-    "originalId": 601,
-    "recommendDuration": 1,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 601
-  },
-  {
-    "id": 602,
-    "maxDuration": 3,
-    "name": "運算符之舞：數值變幻",
-    "originalId": 602,
-    "recommendDuration": 1,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 602
-  },
-  {
-    "id": 603,
-    "maxDuration": 3,
-    "name": "if 聖盃的選擇：條件判定",
-    "originalId": 603,
-    "recommendDuration": 1,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 603
-  },
-  {
-    "id": 604,
-    "maxDuration": 5,
-    "name": "極限輪迴：乘法陣法實作",
-    "originalId": 604,
-    "recommendDuration": 2,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 604
-  },
-  {
-    "id": 605,
-    "maxDuration": 5,
-    "name": "函數召喚術：邏輯封裝",
-    "originalId": 605,
-    "recommendDuration": 2,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 605
-  },
-  {
-    "id": 606,
-    "maxDuration": 5,
-    "name": "this 的迷蹤：範圍掌控",
-    "originalId": 606,
-    "recommendDuration": 2,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 606
-  },
-  {
-    "id": 607,
-    "maxDuration": 5,
-    "name": "數組之風：結構化數據",
-    "originalId": 607,
-    "recommendDuration": 2,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 607
-  },
-  {
-    "id": 608,
-    "maxDuration": 7,
-    "name": "高級數組：數據處理大師",
-    "originalId": 608,
-    "recommendDuration": 3,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 608
-  },
-  {
-    "id": 609,
-    "maxDuration": 5,
-    "name": "符號秘術：郵件校驗咒語",
-    "originalId": 609,
-    "recommendDuration": 2,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 609
-  },
-  {
-    "id": 610,
-    "maxDuration": 5,
-    "name": "節點追蹤：元素捕捉術",
-    "originalId": 610,
-    "recommendDuration": 2,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 610
-  },
-  {
-    "id": 611,
-    "maxDuration": 5,
-    "name": "動態記錄冊：節點塑造",
-    "originalId": 611,
-    "recommendDuration": 2,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 611
-  },
-  {
-    "id": 612,
-    "maxDuration": 5,
-    "name": "鼠標之影：事件傳遞機制",
-    "originalId": 612,
-    "recommendDuration": 2,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 612
-  },
-  {
-    "id": 613,
-    "maxDuration": 5,
-    "name": "時空對準：定時器應用",
-    "originalId": 613,
-    "recommendDuration": 2,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 613
-  },
-  {
-    "id": 614,
-    "maxDuration": 14,
-    "name": "輪播圖大師：綜合界面實戰",
-    "originalId": 614,
-    "recommendDuration": 5,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 614
-  },
-  {
-    "id": 615,
-    "maxDuration": 3,
-    "name": "數據的回響：JSON 解析實戰",
-    "originalId": 615,
-    "recommendDuration": 1,
-    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
-    "type": "PRACTICAL_CHALLENGE",
-    "gymId": 615
-  },
-  {
     "id": 1,
     "maxDuration": 14,
     "name": "60% 自動化：AI 協作式開發的低效率",
@@ -559,6 +409,156 @@ export const MOCK_CHALLENGES = [
     "submissionFields": "[{\"name\": \"ooa_uml\", \"type\": \"image\", \"title\": \"物件導向分析 (OOA)\", \"description\": \"上傳你的 OOA 領域類別圖\"}, {\"name\": \"ood_sequence_diagram\", \"type\": \"image\", \"title\": \"循序圖設計 (OOD)\", \"description\": \"上傳你的 OOD 循序圖設計\"}, {\"name\": \"ood_uml\", \"type\": \"image\", \"title\": \"物件導向設計 (OOD)\", \"description\": \"上傳你的 OOD 類別圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案壓縮檔\", \"description\": \"請將你專案的原始碼壓縮至 ZIP 中並且上傳。(只包含原始碼檔案就好囉,不要包含編譯後的檔案。)\"}]",
     "type": "PRACTICAL_CHALLENGE",
     "gymId": 27
+  },
+  {
+    "id": 601,
+    "maxDuration": 3,
+    "name": "變數與資料類型的洗鍊",
+    "originalId": 601,
+    "recommendDuration": 1,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 601
+  },
+  {
+    "id": 602,
+    "maxDuration": 3,
+    "name": "運算符之舞：數值變幻",
+    "originalId": 602,
+    "recommendDuration": 1,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 602
+  },
+  {
+    "id": 603,
+    "maxDuration": 3,
+    "name": "if 聖盃的選擇：條件判定",
+    "originalId": 603,
+    "recommendDuration": 1,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 603
+  },
+  {
+    "id": 604,
+    "maxDuration": 5,
+    "name": "極限輪迴：乘法陣法實作",
+    "originalId": 604,
+    "recommendDuration": 2,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 604
+  },
+  {
+    "id": 605,
+    "maxDuration": 5,
+    "name": "函數召喚術：邏輯封裝",
+    "originalId": 605,
+    "recommendDuration": 2,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 605
+  },
+  {
+    "id": 606,
+    "maxDuration": 5,
+    "name": "this 的迷蹤：範圍掌控",
+    "originalId": 606,
+    "recommendDuration": 2,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 606
+  },
+  {
+    "id": 607,
+    "maxDuration": 5,
+    "name": "數組之風：結構化數據",
+    "originalId": 607,
+    "recommendDuration": 2,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 607
+  },
+  {
+    "id": 608,
+    "maxDuration": 7,
+    "name": "高級數組：數據處理大師",
+    "originalId": 608,
+    "recommendDuration": 3,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 608
+  },
+  {
+    "id": 609,
+    "maxDuration": 5,
+    "name": "符號秘術：郵件校驗咒語",
+    "originalId": 609,
+    "recommendDuration": 2,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 609
+  },
+  {
+    "id": 610,
+    "maxDuration": 5,
+    "name": "節點追蹤：元素捕捉術",
+    "originalId": 610,
+    "recommendDuration": 2,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 610
+  },
+  {
+    "id": 611,
+    "maxDuration": 5,
+    "name": "動態記錄冊：節點塑造",
+    "originalId": 611,
+    "recommendDuration": 2,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 611
+  },
+  {
+    "id": 612,
+    "maxDuration": 5,
+    "name": "鼠標之影：事件傳遞機制",
+    "originalId": 612,
+    "recommendDuration": 2,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 612
+  },
+  {
+    "id": 613,
+    "maxDuration": 5,
+    "name": "時空對準：定時器應用",
+    "originalId": 613,
+    "recommendDuration": 2,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 613
+  },
+  {
+    "id": 614,
+    "maxDuration": 14,
+    "name": "輪播圖大師：綜合界面實戰",
+    "originalId": 614,
+    "recommendDuration": 5,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 614
+  },
+  {
+    "id": 615,
+    "maxDuration": 3,
+    "name": "數據的回響：JSON 解析實戰",
+    "originalId": 615,
+    "recommendDuration": 1,
+    "submissionFields": "[{\"name\": \"screenshot\", \"type\": \"image\", \"title\": \"執行結果截圖\", \"description\": \"請上傳你的程式執行結果截圖\"}, {\"name\": \"code_files\", \"type\": \"zip\", \"title\": \"專案原始碼\", \"description\": \"請將原始碼壓縮為 ZIP 上傳\"}]",
+    "type": "PRACTICAL_CHALLENGE",
+    "gymId": 615
   },
   {
     "id": 42,
