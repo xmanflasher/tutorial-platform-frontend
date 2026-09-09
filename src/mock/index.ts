@@ -7,21 +7,6 @@ import {
   JourneyDetail,
   MemberMission
 } from '@/types';
-import { User } from '@/context/AuthContext';
-
-export const MOCK_USER: User = {
-  id: 100,
-  name: '驗收大神 (Mock)',
-  nickName: '大神本尊',
-  email: 'god_mode@mock.tw',
-  avatar: '/images/avatar_1.png',
-  level: 99,
-  exp: 99999,
-  nextLevelExp: 100000,
-  role: 'ADMIN',
-  jobTitle: '軟體架構導讀者',
-  region: 'Σ-Sector 01'
-};
 
 // ==========================================
 // 全自動同步的 Mock 資料 (Generated)

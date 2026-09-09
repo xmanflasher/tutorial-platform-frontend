@@ -4,7 +4,6 @@ import { createContext, useContext, useState, useEffect, useRef, ReactNode } fro
 import { apiRequest } from '@/lib/api';
 import { getVisitorId } from '@/lib/visitorUtils'; // ★ 新增
 import { orderService } from '@/services/orderService'; // ★ 新增
-import { MOCK_USER } from '@/mock';
 import { logger } from '@/lib/logger';
 
 export interface User {

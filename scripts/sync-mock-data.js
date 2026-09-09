@@ -51,9 +51,34 @@ function parseInserts(content, tableName) {
                           record[camelCol] = val;
                       });
                       
-                      // 使用 ID 作為 Key，後出現的會覆蓋先出現的 (去重)
-                      if (record.id) {
-                          results.set(record.id, record);
+                      // 安全防禦白名單 (SD-33: Sensitive Data Isolation)
+                      if (tableName === 'members') {
+                          // 1. 嚴格過濾測試管理員與大神帳號
+                          if (record.id === 999 || (record.email && String(record.email).includes('god@')) || record.role === 'ROLE_ADMIN') {
+                              currentRecord = [];
+                              currentField = '';
+                              continue;
+                          }
+                          // 2. 嚴格白名單投影：僅保留 UserProfile 公開屬性，物理拋棄 password、role、originVisitorId 等機敏資料
+                          const MEMBER_PUBLIC_ALLOWLIST = new Set([
+                              'id', 'name', 'nickName', 'avatar', 'jobTitle', 'occupation',
+                              'level', 'exp', 'nextLevelExp', 'coin', 'region', 'githubUrl',
+                              'discordId', 'sex', 'birthDate', 'instructorBio', 'socialLinks', 'createdAt'
+                          ]);
+                          const sanitizedRecord = {};
+                          Object.keys(record).forEach(k => {
+                              if (MEMBER_PUBLIC_ALLOWLIST.has(k)) {
+                                  sanitizedRecord[k] = record[k];
+                              }
+                          });
+                          if (sanitizedRecord.id) {
+                              results.set(sanitizedRecord.id, sanitizedRecord);
+                          }
+                      } else {
+                          // 使用 ID 作為 Key，後出現的會覆蓋先出現的 (去重)
+                          if (record.id) {
+                              results.set(record.id, record);
+                          }
                       }
                       
                       currentRecord = [];
